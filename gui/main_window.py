@@ -19,7 +19,7 @@ def load_bot_config():
 
 class MainWindow:
 
-    def __init__(self, adb, size=(450, 700)):
+    def __init__(self, adb, size=(450, 650)):
         self.adb = adb
         self.window = Tk()
         self.size = size

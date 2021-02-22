@@ -127,7 +127,7 @@ class Bot:
                 for i in range(self.config.breakTime):
                     time.sleep(1)
                     count = count + 1
-                    self.set_text(insert='{}/{} seconds'.format(count, self.config.breakTime), replace=0)
+                    self.set_text(replace='{}/{} seconds'.format(count, self.config.breakTime), index=0)
                 curr_task = TaskName.COLLECTING
 
             elif curr_task == TaskName.BREAK:
@@ -185,9 +185,12 @@ class Bot:
     def init_building_pos(self, next_task=TaskName.COLLECTING):
 
         try:
+            self.set_text(title='Init Building Position', remove=True)
+            self.set_text(insert='init view')
+            self.set_text(insert='progress: 0%', index=0)
+
             self.back_to_home_gui()
             self.home_gui_full_view()
-            bot_print("City Full View")
 
             # close menu
             self.menu_should_open(False)
@@ -245,11 +248,16 @@ class Bot:
                             if 'level ' in name:
                                 level, name = name.replace('level ', '').split(' ', 1)
                             self.building_pos[name.replace(' ', '_')] = (x, y)
-                            bot_print("Building <{}> on position ({}, {}) ".format(name, x, y))
+                            # bot_print("Building <{}> on position ({}, {}) ".format(name, x, y))
+                            self.set_text(insert='Building <{}> on position ({}, {})'.format(name, x, y),index=1)
                             self.back()
 
                     self.tap(x_start, y_start)
-                    bot_print("{}/{}".format((row * x_times) + (col + 1), total))
+                    self.set_text(
+                        replace='progress: {}%'.format( int(((row * x_times) + (col + 1)) / total * 100)),
+                        index=0)
+
+                    # bot_print("{}/{}".format((row * x_times) + (col + 1), total))
 
             # save building pos to json
             building_pos_json = json.dumps(self.building_pos)
@@ -659,7 +667,7 @@ class Bot:
                 self.set_text(insert="March")
                 self.tap(match_button_pos[0], match_button_pos[1], 2)
                 repeat_count = 0
-                self.swipe(300, 360, 980, 360, 1)
+                self.swipe(300, 360, 400, 360, 1)
 
         except Exception as e:
             return TaskName.GATHER
@@ -704,8 +712,12 @@ class Bot:
         self.tap(x_pos, y_pos, 2)
 
     def home_gui_full_view(self):
-        self.swipe(300, 360, 980, 360, 5)
-        self.find_home()
+        self.tap(60, 540, 0.5)
+        self.tap(1105, 200, 0.5)
+        self.tap(1220, 35, 2)
+
+        # self.swipe(300, 360, 980, 360, 5)
+        # self.find_home()
 
     # Building Position
     def find_building_title(self):
@@ -723,10 +735,8 @@ class Bot:
         c_x, c_y = x0 + (x1 - x0) / 2, y0 + (y1 - y0) / 2
         open, _, _ = self.gui.check(ImagePathAndProps.MENU_OPENED_IMAGE_PATH.value);
         if shouldOpen and not open:
-            bot_print("Open menu")
             self.tap(c_x, c_y, 0.5)
         elif not shouldOpen and open:
-            bot_print("Close menu")
             self.tap(c_x, c_y, 0.5)
 
     # Map
@@ -745,7 +755,6 @@ class Bot:
                 self.back(1);
             else:
                 self.back(1);
-            bot_print("Gui name: {}".format(gui_name))
             loop_count = loop_count + 1
             time.sleep(0.5)
         return loop_count
@@ -826,22 +835,22 @@ class Bot:
         str = self.device.shell(cmd)
 
     def set_text(self, **kwargs):
+        dt_string = datetime.now().strftime("[%H:%M:%S]")
         title = 'title'
         text_list = 'text_list'
         insert = 'insert'
         remove = 'remove'
         replace = 'replace'
+        index = 'index'
 
         if title in kwargs:
             self.text[title] = kwargs[title]
 
+        if replace in kwargs:
+            self.text[text_list][kwargs[index]] = dt_string + " " + kwargs[replace].lower()
+
         if insert in kwargs:
-            dt_string = datetime.now().strftime("[%H:%M:%S]")
-            if replace in kwargs:
-                self.text[text_list][kwargs[replace]] = dt_string + " " + kwargs[insert].lower()
-            else:
-                self.text[text_list].insert(0, dt_string + " "+ kwargs[insert].lower())
-                # self.text[text_list].append(dt_string + " "+ kwargs[insert].lower())
+            self.text[text_list].insert(kwargs.get('index', 0), dt_string + " "+ kwargs[insert].lower())
 
         if remove in kwargs and kwargs.get(remove, False):
             self.text[text_list].clear()
