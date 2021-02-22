@@ -10,8 +10,8 @@ Self using bot for Rise of Kingdom.
 
 - software
 
-  - ADB (put under:  ***<u>.\adb</u>***\)
-  - tesseract (put under:  ***<u>.\tesseract\</u>*** )
+  - ADB (place under project directory: **<u>*.\adb*</u>**\)
+  - tesseract (place under project directory:  ***<u>.\tesseract\</u>*** )
 
 - libraries
 
@@ -29,20 +29,20 @@ Self using bot for Rise of Kingdom.
 
 ### Function
 
-| Function Name                                          | Status |
-| ------------------------------------------------------ | ------ |
-| Collecting resource, troops, and help alliance         | Done   |
-| Product material                                       | Done   |
-| Open free chest in tavern                              | Done   |
-| Claim quest and daily objectives                       | Done   |
-| Claim VIP chest                                        | no yet |
-| Collecting allied resource, gifs and donate technology | Done   |
-| Upgrade and train troops                               | Done   |
-| Attack barbarians                                      | no yet |
-| Heal troops                                            | no yet |
-| Gather resource                                        | Done   |
-| A simple GUI                                           | Done   |
-
-1. Collecting resource, troops, and help alliance
-2. Product material
+| Function Name                                          | Status          |
+| ------------------------------------------------------ | --------------- |
+| Automatically target building location                 | **<u>Done</u>** |
+| Collecting resource, troops, and help alliance         | **<u>Done</u>** |
+| Product material                                       | **<u>Done</u>** |
+| Open free chest in tavern                              | **<u>Done</u>** |
+| Claim quest and daily objectives                       | **<u>Done</u>** |
+| Claim VIP chest                                        | no yet          |
+| Collecting allied resource, gifs and donate technology | **<u>Done</u>** |
+| Upgrade and train troops                               | <u>**Done**</u> |
+| Attack barbarians                                      | no yet          |
+| Heal troops                                            | no yet          |
+| Gather resource                                        | **<u>Done</u>** |
+| A simple GUI                                           | **<u>Done</u>** |
+| Pass verification with haoi API                        | **<u>Done</u>** |
+| Pass verification with 2captcha API                    | no yet          |
 
