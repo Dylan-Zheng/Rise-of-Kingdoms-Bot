@@ -68,13 +68,16 @@ Self using bot for Rise of Kingdom.
 
 ### WARNING
 
-​	**Use it at your own risk!**
-
-​	**I don't know will your account be banned by using it.**
+- **Use it at your own risk!**
+- **I don't know will your account be banned by using it!**
 
 
 
 ### Show case
+
+- Locating Building
+
+  ![](https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/blob/main/docs/init_building_pos.gif?raw=true)
 
 - Collection and Help
 
