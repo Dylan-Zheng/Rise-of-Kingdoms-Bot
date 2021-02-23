@@ -1,17 +1,13 @@
-from device_gui_detector import GuiName
-from device_gui_detector import GuiDetector
+from bot_related.device_gui_detector import GuiName
+from bot_related.device_gui_detector import GuiDetector
 from constants.file_relative_paths import ImagePathAndProps
-from constants.file_relative_paths import FilePaths
 from datetime import datetime
 from utils import aircv_rectangle_to_box
-from utils import resource_path
 from enum import Enum
 
 import math
 import time
-import json
-import haoi
-
+from bot_related import haoi
 
 DEFAULT_RESOLUTION = {'height': 720, 'width': 1280}
 

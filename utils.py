@@ -51,7 +51,6 @@ def aircv_rectangle_to_box(rectangle):
     return rectangle[0][0], rectangle[0][1], rectangle[3][0], rectangle[3][1]
 
 
-
 def bot_print(msg):
     print(msg)
 

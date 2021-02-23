@@ -1,6 +1,6 @@
 from tkinter import *
 from utils import resource_path
-from bot import BotConfig
+from bot_related import BotConfig
 from constants.file_relative_paths import FilePaths
 
 import json

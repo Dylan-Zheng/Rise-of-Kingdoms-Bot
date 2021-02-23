@@ -1,11 +1,12 @@
 from gui.creator import *
 from gui.main_frame import MainFrame
-from bot import BotConfig
+from bot_related import BotConfig
 import threading
 from utils import stop_thread
 
 from gui import all_title_fns as atf
-from bot import Bot
+from bot_related import Bot
+
 
 class MainWindow:
 
@@ -21,8 +22,5 @@ class MainWindow:
 
         main_frame = MainFrame(self.window, size, self.adb.get_device())
 
-
-
     def run(self):
         self.window.mainloop()
-

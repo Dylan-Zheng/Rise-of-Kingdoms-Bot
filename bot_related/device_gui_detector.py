@@ -10,7 +10,7 @@ from utils import bot_print
 from enum import Enum
 import numpy as np
 import cv2
-import aircve as aircv
+from bot_related import aircve as aircv
 import io
 
 

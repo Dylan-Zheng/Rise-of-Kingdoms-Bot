@@ -3,7 +3,7 @@ import threading
 from utils import stop_thread
 
 from gui import all_title_fns as atf
-from bot import Bot
+from bot_related.bot import Bot
 
 
 class MainFrame:
