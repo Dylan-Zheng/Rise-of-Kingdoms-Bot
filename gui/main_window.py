@@ -14,8 +14,6 @@ class MainWindow:
 
         self.window = Tk()
         self.size = size
-        # self.bot_config = load_bot_config()
-        # self.bot_thread = None
 
         self.window.title('Rise Of Kingdom Bot')
         self.window.geometry('{}x{}'.format(size[0], size[1]))
