@@ -1,6 +1,9 @@
 from tkinter import *
-import json
 from utils import resource_path
+from bot import BotConfig
+from constants.file_relative_paths import FilePaths
+
+import json
 
 
 def button(frame, on_click=lambda v: v, **kwargs):
@@ -51,7 +54,7 @@ def train_fn_creator(name, train_attr_name, upgrade_attr_name):
 
         def update_command(v):
             setattr(app.bot_config, upgrade_attr_name, option_value_to_num(v))
-            write_config_json(app.bot_config)
+            write_bot_config(app.bot_config)
 
         upgrade_label = Label(frame, text='Upgrade Lv.')
         upgrade_variable = StringVar()
@@ -65,7 +68,7 @@ def train_fn_creator(name, train_attr_name, upgrade_attr_name):
 
         def train_command(v):
             setattr(app.bot_config, train_attr_name, option_value_to_num(v))
-            write_config_json(app.bot_config)
+            write_bot_config(app.bot_config)
 
         train_label = Label(frame, text='Training Lv.')
         train_variable = StringVar()
@@ -93,7 +96,33 @@ def train_fn_creator(name, train_attr_name, upgrade_attr_name):
     return train
 
 
-def write_config_json(config):
+def load_bot_config(prefix):
+    try:
+        with open(resource_path(FilePaths.SAVE_FOLDER_PATH.value + '{}_config.json'.format(prefix))) as f:
+            config_dict = json.load(f)
+            config = BotConfig(config_dict)
+    except Exception as e:
+        config = BotConfig()
+    return config
+
+
+def write_bot_config(config, prefix):
     config_json = json.dumps(config.__dict__)
-    with open(resource_path("config.json"), 'w') as f:
+    with open(resource_path(FilePaths.SAVE_FOLDER_PATH.value + "{}_config.json".format(prefix)), 'w') as f:
         f.write(config_json)
+
+
+def load_building_pos(prefix):
+    try:
+        with open(resource_path(FilePaths.SAVE_FOLDER_PATH.value + "{}_building_pos.json".format(prefix)
+                                )) as f:
+            building_pos = json.load(f)
+    except Exception as e:
+        building_pos = None
+    return building_pos
+
+
+def write_building_pos(building_pos, prefix):
+    building_pos_json = json.dumps(building_pos)
+    with open(resource_path(FilePaths.SAVE_FOLDER_PATH.value + "{}_config.json".format(prefix)), 'w') as f:
+        f.write(building_pos_json)

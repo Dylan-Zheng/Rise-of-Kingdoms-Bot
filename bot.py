@@ -3,7 +3,6 @@ from device_gui_detector import GuiDetector
 from constants.file_relative_paths import ImagePathAndProps
 from constants.file_relative_paths import FilePaths
 from datetime import datetime
-from utils import bot_print
 from utils import aircv_rectangle_to_box
 from utils import resource_path
 from enum import Enum
@@ -90,6 +89,8 @@ class Bot:
             'text_list': []
         }
 
+        self.building_pos_update_event = lambda **kw: kw
+
         # get screen resolution
         str = device.shell('wm size').replace('\n', '')
         height, width = list(map(int, str[(str.find(':') + 1):len(str)].split('x')))
@@ -103,17 +104,10 @@ class Bot:
         self.config = BotConfig(config)
         self.curr_task = TaskName.BREAK
 
-    def load_building_pos(self):
-        try:
-            with open(resource_path(
-                    "{}{}.json".format(FilePaths.BUILDING_POS_FOLDER_PATH.value, self.device.serial.replace(':', "_"))
-            )) as f:
-                self.building_pos = json.load(f)
-                self.config.hasBuildingPos = True
-        except Exception as e:
-            self.config.hasBuildingPos = False
-
     def start(self, curr_task=TaskName.COLLECTING):
+
+        if self.building_pos is None:
+            curr_task=TaskName.INIT_BUILDING_POS
 
         while True:
             # 0 break
@@ -260,11 +254,8 @@ class Bot:
                     # bot_print("{}/{}".format((row * x_times) + (col + 1), total))
 
             # save building pos to json
-            building_pos_json = json.dumps(self.building_pos)
-            with open(resource_path(
-                    "{}{}.json".format(FilePaths.BUILDING_POS_FOLDER_PATH.value, self.device.serial.replace(':', "_"))
-            ), 'w') as f:
-                f.write(building_pos_json)
+            self.building_pos_update_event(building_pos=self.building_pos, prefix=self.device.serial.replace(':', "_"))
+
         except Exception as e:
             return TaskName.INIT_BUILDING_POS
         return next_task
@@ -332,6 +323,7 @@ class Bot:
                 self.tap(x, y, 0.5)
 
             self.set_text(insert='Tap all chest')
+            # chest position
             for pos in [(355, 200), (530, 200), (710, 200), (885, 200), (1050, 200)]:
                 self.tap(pos[0], pos[1], 0.3)
         except Exception as e:
@@ -713,7 +705,7 @@ class Bot:
 
     def home_gui_full_view(self):
         self.tap(60, 540, 0.5)
-        self.tap(1105, 200, 0.5)
+        self.tap(1105, 200, 1)
         self.tap(1220, 35, 2)
 
         # self.swipe(300, 360, 980, 360, 5)

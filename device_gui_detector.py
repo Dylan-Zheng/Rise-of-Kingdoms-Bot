@@ -163,29 +163,6 @@ class GuiDetector:
         return [False if result is None else result['confidence'] >= threshold,
                 gui,
                 None if result is None else result['result']]
-        # check for Home and Map Gui
-        # if gui == GuiName.HOME.name or gui == GuiName.MAP.name:
-        #     diff_perc = cal_similarity(
-        #         cv2.resize(
-        #             cv2.imdecode(np.asarray(self.get_curr_device_screen_img_byte_array(), dtype=np.uint8),
-        #                          cv2.IMREAD_COLOR), size
-        #         )[y0:y1, x0:x1],
-        #         cv2.imread(resource_path(path)))
-        #     return [diff_perc <= least_diff, gui, ((x0 + ((x1 - x0) / 2)), (y0 + ((y1 - y0) / 2)))]
-        # # check for Windows Gui
-        # else:
-        #     imsch = cv2.resize(
-        #         cv2.imdecode(np.asarray(self.get_curr_device_screen_img_byte_array(), dtype=np.uint8),
-        #                      cv2.IMREAD_COLOR),
-        #         size
-        #     )
-        #     imsrc = cv2.imread(resource_path(path))
-        #
-        #     result = aircv.find_template(imsrc, imsch, threshold, True)
-        #
-        #     return [False if result is None else result['confidence'] >= threshold,
-        #             gui,
-        #             None if result is None else result['result']]
 
 
     def has_image(self, props):

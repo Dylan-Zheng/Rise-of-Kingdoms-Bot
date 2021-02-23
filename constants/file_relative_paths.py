@@ -11,14 +11,14 @@ class FilePaths(Enum):
     ADB_EXE_PATH = 'adb\\adb.exe'
     TESSERACT_EXE_PATH = 'tesseract\\tesseract.exe'
     TESSDATA_CHI_SIM_PATH = 'tessdata\\chi_sim.traineddata'
-    BUILDING_POS_FOLDER_PATH = 'building_pos\\'
+    SAVE_FOLDER_PATH = 'save\\'
 
 
 class ImagePathAndProps(Enum):
     MAP_BUTTON_IMG_PATH = ['resource\\map_button.png',
-                           (1280, 720), (10, 602, 113, 709), 0.70, 25, 'HOME']
+                           (1280, 720), (10, 602, 113, 709), 0.98, 25, 'HOME']
     HOME_BUTTON_IMG_PATH = ['resource\\home_button.png',
-                            (1280, 720), (10, 602, 113, 709), 0.70, 25, 'MAP']
+                            (1280, 720), (10, 602, 113, 709), 0.98, 25, 'MAP']
     GREEN_HOME_BUTTON_IMG_PATH = ['resource\\green_home_button.png',
                                   (1280, 720), (0, 0, 0, 0), 0.70, 25, 'GREEN_HOME']
     WINDOW_IMG_PATH = ['resource\\window.png',
@@ -96,8 +96,8 @@ class GuiCheckImagePathAndProps(Enum):
     # VERIFICATION_CHEST_BUTTON_IMAGE_PATH = ['resource\\verification_chest_button.png',
     #                                         (1280, 720), (0, 0, 0, 0), 0.90, 25, 'VERIFICATION_CHEST']
     MAP_BUTTON_IMG_PATH = ['resource\\map_button_0.png',
-                           (1280, 720), (10, 602, 113, 709), 0.90, 25, 'HOME']
+                           (1280, 720), (10, 602, 113, 709), 0.98, 25, 'HOME']
     HOME_BUTTON_IMG_PATH = ['resource\\home_button_0.png',
-                            (1280, 720), (10, 602, 113, 709), 0.90, 25, 'MAP']
+                            (1280, 720), (10, 602, 113, 709), 0.98, 25, 'MAP']
     WINDOW_IMG_PATH = ['resource\\window.png',
                        (1280, 720), (0, 0, 0, 0), 0.70, 25, 'WINDOW']

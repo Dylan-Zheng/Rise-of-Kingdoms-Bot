@@ -31,6 +31,7 @@ Self using bot for Rise of Kingdom.
 
 | Name                                                   | Status          |
 | ------------------------------------------------------ | --------------- |
+| Automatically start the game when game is not running  |                 |
 | Automatically locating building                        | **<u>Done</u>** |
 | Collecting resource, troops, and help alliance         | **<u>Done</u>** |
 | Produce material                                       | **<u>Done</u>** |
