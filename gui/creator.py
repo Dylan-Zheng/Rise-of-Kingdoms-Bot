@@ -1,6 +1,6 @@
 from tkinter import *
 from utils import resource_path
-from bot_related import BotConfig
+from bot_related.bot import BotConfig
 from constants.file_relative_paths import FilePaths
 
 import json
@@ -16,14 +16,14 @@ def button(frame, on_click=lambda v: v, **kwargs):
     return btn
 
 
-def title_checkbox_creator(name, text):
+def checkbox_fn_creator(name, text):
     def title_checkbox(app, parent, on_click=lambda v: v):
         variable = BooleanVar()
         variable.set(TRUE if getattr(app.bot_config, name) else FALSE)
 
         def command():
             setattr(app.bot_config, name, variable.get())
-            write_config_json(app.bot_config)
+            write_bot_config(app.bot_config, app.device.serial.replace(':', "_"))
             on_click(variable.get())
 
         checkbox = Checkbutton(
@@ -54,7 +54,7 @@ def train_fn_creator(name, train_attr_name, upgrade_attr_name):
 
         def update_command(v):
             setattr(app.bot_config, upgrade_attr_name, option_value_to_num(v))
-            write_bot_config(app.bot_config)
+            write_bot_config(app.bot_config, app.device.serial.replace(':', "_"))
 
         upgrade_label = Label(frame, text='Upgrade Lv.')
         upgrade_variable = StringVar()
@@ -68,7 +68,7 @@ def train_fn_creator(name, train_attr_name, upgrade_attr_name):
 
         def train_command(v):
             setattr(app.bot_config, train_attr_name, option_value_to_num(v))
-            write_bot_config(app.bot_config)
+            write_bot_config(app.bot_config, app.device.serial.replace(':', "_"))
 
         train_label = Label(frame, text='Training Lv.')
         train_variable = StringVar()

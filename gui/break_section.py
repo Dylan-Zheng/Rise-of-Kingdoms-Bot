@@ -1,7 +1,7 @@
 from gui.creator import *
 
 
-break_checkbox = title_checkbox_creator('enableBreak', 'Take break at every end of round')
+break_checkbox = checkbox_fn_creator('enableBreak', 'Take break at every end of round')
 
 
 def time_drop_down(app, parent):

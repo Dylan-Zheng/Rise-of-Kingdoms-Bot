@@ -103,7 +103,7 @@ class Bot:
     def start(self, curr_task=TaskName.COLLECTING):
 
         if self.building_pos is None:
-            curr_task=TaskName.INIT_BUILDING_POS
+            curr_task = TaskName.INIT_BUILDING_POS
 
         while True:
             # 0 break
@@ -239,12 +239,12 @@ class Bot:
                                 level, name = name.replace('level ', '').split(' ', 1)
                             self.building_pos[name.replace(' ', '_')] = (x, y)
                             # bot_print("Building <{}> on position ({}, {}) ".format(name, x, y))
-                            self.set_text(insert='Building <{}> on position ({}, {})'.format(name, x, y),index=1)
+                            self.set_text(insert='Building <{}> on position ({}, {})'.format(name, x, y), index=1)
                             self.back()
 
                     self.tap(x_start, y_start)
                     self.set_text(
-                        replace='progress: {}%'.format( int(((row * x_times) + (col + 1)) / total * 100)),
+                        replace='progress: {}%'.format(int(((row * x_times) + (col + 1)) / total * 100)),
                         index=0)
 
                     # bot_print("{}/{}".format((row * x_times) + (col + 1), total))
@@ -530,7 +530,7 @@ class Bot:
                             else:
                                 continue
                         x, y = result['result']
-                        self.set_text(insert='Upgrade T{}({})'.format(i+1, config[4]))
+                        self.set_text(insert='Upgrade T{}({})'.format(i + 1, config[4]))
                         self.tap(x, y, 0.5)
 
                         # check has train button if has then tap it
@@ -559,7 +559,6 @@ class Bot:
         self.set_text(title='Gather Resource', remove=True)
 
         last_resource_pos = []
-        resource_type = ''
         should_decreasing_lv = False
         resource_icon_pos = [
             (450, 640),
@@ -576,23 +575,18 @@ class Bot:
             if resourse_code == Resource.FOOD.value:
                 chose_icon_pos = resource_icon_pos[0]
                 self.set_text(insert="Search food")
-                resource_type = 'food'
 
             elif resourse_code == Resource.WOOD.value:
                 chose_icon_pos = resource_icon_pos[1]
                 self.set_text(insert="Search wood")
-                resource_type = 'wood'
 
             elif resourse_code == Resource.STONE.value:
                 chose_icon_pos = resource_icon_pos[2]
                 self.set_text(insert="Search stone")
-                resource_type = 'stone'
 
             elif resourse_code == Resource.GOLD.value:
                 chose_icon_pos = resource_icon_pos[3]
                 self.set_text(insert="Search gold")
-                resource_type = 'gold'
-
 
             self.tap(60, 540, 1)
             self.tap(chose_icon_pos[0], chose_icon_pos[1], 1)
@@ -648,7 +642,7 @@ class Bot:
                     return next_task
                 new_troops_button_pos = result['result']
                 self.tap(new_troops_button_pos[0], new_troops_button_pos[1], 2)
-                if not self.config.gatherResourceNoSecondaryCommander:
+                if self.config.gatherResourceNoSecondaryCommander:
                     self.set_text(insert="Remove secondary commander")
                     self.tap(473, 501, 0.5)
                 match_button_pos = self.gui.has_image(ImagePathAndProps.TROOPS_MATCH_BUTTON_IMAGE_PATH.value)['result']
@@ -664,12 +658,28 @@ class Bot:
     def get_min_resource(self):
         self.tap(725, 20, 1)
         result = self.gui.resource_amount_image_to_string()
-        self.set_text(insert="\nFood: {}\nWood: {}\nStone: {}\nGold: {}\n".format(result[0], result[1], result[2], result[3]))
-        min = 0
+        self.set_text(
+            insert="\nFood: {}\nWood: {}\nStone: {}\nGold: {}\n".format(result[0], result[1], result[2], result[3]))
+
+        ratio = [
+            self.config.gatherResourceRatioFood,
+            self.config.gatherResourceRatioWood,
+            self.config.gatherResourceRatioStone,
+            self.config.gatherResourceRatioGold
+        ]
+
+        ras = sum(ratio)
+        res = sum(result)
+
+        diff = []
+        for i in range(4):
+            diff.append((ratio[i] / ras) - ((result[i] if result[i] > -1 else 0) / res))
+
+        m = 0
         for i in range(len(result)):
-            if result[min] > result[i]:
-                min = i
-        return min
+            if diff[m] < diff[i]:
+                m = i
+        return m
 
     # Home
     def back_to_home_gui(self):
@@ -838,7 +848,7 @@ class Bot:
             self.text[text_list][kwargs[index]] = dt_string + " " + kwargs[replace].lower()
 
         if insert in kwargs:
-            self.text[text_list].insert(kwargs.get('index', 0), dt_string + " "+ kwargs[insert].lower())
+            self.text[text_list].insert(kwargs.get('index', 0), dt_string + " " + kwargs[insert].lower())
 
         if remove in kwargs and kwargs.get(remove, False):
             self.text[text_list].clear()
@@ -848,8 +858,11 @@ class Bot:
 
 class BotConfig:
     def __init__(self, config={}):
+        self.action_wait_time = config.get('action_wait_time', 1)
         self.enableBreak = config.get('enableBreak', True)
         self.breakTime = config.get('breakTime', 60 * 3)
+
+        self.hasBuildingPos = config.get('hasBuildingPos', False)
 
         # Collecting
         self.enableCollecting = config.get('enableCollecting', True)
@@ -862,10 +875,6 @@ class BotConfig:
 
         # Training
         self.enableTraining = config.get('enableTraining', True)
-
-        self.action_wait_time = config.get('action_wait_time', 1)
-        self.hasBuildingPos = config.get('hasBuildingPos', False)
-        self.gatherResourceNoSecondaryCommander = config.get('gatherResourceNoSecondaryCommander', True)
 
         self.trainBarracksTrainingLevel = config.get('trainBarracksTrainingLevel',
                                                      TrainingAndUpgradeLevel.T1.value)
@@ -895,6 +904,11 @@ class BotConfig:
 
         # Gather resource
         self.gatherResource = config.get('gatherResource', True)
+        self.gatherResourceNoSecondaryCommander = config.get('gatherResourceNoSecondaryCommander', True)
+        self.gatherResourceRatioFood = config.get('gatherResourceRatioFood', 1)
+        self.gatherResourceRatioWood = config.get('gatherResourceRatioWood', 1)
+        self.gatherResourceRatioStone = config.get('gatherResourceRatioStone', 1)
+        self.gatherResourceRatioGold = config.get('gatherResourceRatioGold', 1)
 
         self.haoiUser = config.get('haoiUser', None)
         self.haoiRebate = config.get('haoiRebate', None)

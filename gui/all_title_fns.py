@@ -1,7 +1,7 @@
 from gui.creator import *
 
 # break
-break_checkbox = title_checkbox_creator('enableBreak', 'Take break at every end of round')
+break_checkbox = checkbox_fn_creator('enableBreak', 'Take break at every end of round')
 
 
 def time_drop_down(app, parent):
@@ -18,13 +18,13 @@ def time_drop_down(app, parent):
 
 
 # In city
-collecting_checkbox = title_checkbox_creator('enableCollecting', 'Collecting resource, troops, and help alliance')
+collecting_checkbox = checkbox_fn_creator('enableCollecting', 'Collecting resource, troops, and help alliance')
 
-produce_material = title_checkbox_creator('enableMaterialProduce', 'Produce material')
+produce_material = checkbox_fn_creator('enableMaterialProduce', 'Produce material')
 
-open_free_chest_in_tavern = title_checkbox_creator('enableTavern', 'Open free chest in tavern')
+open_free_chest_in_tavern = checkbox_fn_creator('enableTavern', 'Open free chest in tavern')
 
-training = title_checkbox_creator('enableTraining', 'Auto upgrade and train troops')
+training = checkbox_fn_creator('enableTraining', 'Auto upgrade and train troops')
 
 train_barracks = train_fn_creator(
     'Barracks:',
@@ -47,12 +47,54 @@ train_siege = train_fn_creator(
     'trainSiegeWorkshopUpgradeLevel')
 
 # other
-claim_quest_checkbox = title_checkbox_creator('claimQuests', 'Claim quests and daily objectives')
+claim_quest_checkbox = checkbox_fn_creator('claimQuests', 'Claim quests and daily objectives')
 
-alliance_action_checkbox = title_checkbox_creator('allianceAction', 'Collecting allied resource, gifts, and donate technology')
+alliance_action_checkbox = checkbox_fn_creator('allianceAction',
+                                               'Collecting allied resource, gifts, and donate technology')
 
 # Outside
-gather_resource_checkbox = title_checkbox_creator('gatherResource', 'Gather resource')
+gather_resource_checkbox = checkbox_fn_creator('gatherResource', 'Gather resource')
+resource_no_secondery_commander = checkbox_fn_creator('gatherResourceNoSecondaryCommander', 'Not secondary commader')
+
+
+def resource_ratio(app, parent):
+    label_texts = ['Food:', 'Wood:', 'Stone:', 'Gold:']
+    attr_names = ['gatherResourceRatioFood',
+                  'gatherResourceRatioWood',
+                  'gatherResourceRatioStone',
+                  'gatherResourceRatioGold']
+
+    frame = Frame(parent)
+    label_1 = Label(frame, text='Type:')
+    label_2 = Label(frame, text='Ratio:')
+    label_1.grid(row=0, column=0, sticky=N + W, padx=(0, 5))
+    label_2.grid(row=1, column=0, sticky=N + W, padx=(0, 5))
+    for col in range(4):
+        str_value = StringVar()
+        str_value.set(str(getattr(app.bot_config, attr_names[col])))
+
+        label = Label(frame, text=label_texts[col])
+        entry = Entry(frame, textvariable=str_value)
+
+        def creator(attr_name):
+            def validate_cmd(value, action_type):
+                if action_type == '1':
+                    if not value.isdigit():
+                        return False
+                    if len(value) > 1 and value[0] == '0':
+                        return False
+                setattr(app.bot_config, attr_name, int(value if value != '' else '0'))
+                write_bot_config(app.bot_config, app.device.serial.replace(':', "_"))
+                return True
+            return validate_cmd
+
+        entry.config(validate='key', validatecommand=(frame.register(creator(attr_names[col])), '%P', '%d'))
+        label.grid(row=0, column=col + 1, sticky=N + W, padx=5)
+        entry.grid(row=1, column=col + 1, sticky=N + W, padx=5)
+
+        entry.config(width=10)
+    return frame, None
+
 
 
 title_fns = [
@@ -60,14 +102,8 @@ title_fns = [
     [collecting_checkbox, []],
     [produce_material, []],
     [open_free_chest_in_tavern, []],
-    [training, [train_barracks, train_archery_range, train_stable, train_siege]],
     [claim_quest_checkbox, []],
     [alliance_action_checkbox, []],
-    [gather_resource_checkbox, []]
-
+    [training, [train_barracks, train_archery_range, train_stable, train_siege]],
+    [gather_resource_checkbox, [resource_ratio, resource_no_secondery_commander]]
 ]
-
-
-
-
-
