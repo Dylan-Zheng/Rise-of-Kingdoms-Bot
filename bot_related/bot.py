@@ -65,6 +65,7 @@ class TaskName(Enum):
     ALLIANCE = 6
     METARIALS = 7
     TAVERN = 8
+    VIP_CHEST = 9
 
 
 class Resource(Enum):
@@ -129,9 +130,14 @@ class Bot:
 
             # 2.collecting resource
             if curr_task == TaskName.COLLECTING and self.config.enableCollecting:
-                curr_task = self.collecting_soldiers_resources_and_help(TaskName.CLAIM_QUEST)
+                curr_task = self.collecting_soldiers_resources_and_help(TaskName.VIP_CHEST)
             elif curr_task == TaskName.COLLECTING:
-                curr_task = TaskName.CLAIM_QUEST
+                curr_task = TaskName.VIP_CHEST
+
+            if curr_task == TaskName.VIP_CHEST and self.config.enableVipClaimChest:
+                curr_task = self.claim_vip(TaskName.CLAIM_QUEST)
+            elif curr_task == TaskName.VIP_CHEST:
+                curr_task = TaskName.VIP_CHEST
 
             # 3.claim quests
             if curr_task == TaskName.CLAIM_QUEST and self.config.claimQuests:
@@ -300,7 +306,7 @@ class Bot:
 
             self.set_text(insert='Claim quest')
             self.tap(quests_tap_pos[0], quests_tap_pos[1], 1)
-            while True:
+            for i in range(20):
                 result = self.gui.has_image(ImagePathAndProps.QUEST_CLAIM_BUTTON_IMAGE_PATH.value)
                 if result is None:
                     break
@@ -310,7 +316,7 @@ class Bot:
 
             self.set_text(insert='Claim Daily Objective')
             self.tap(daily_objectives_tap_pos[0], daily_objectives_tap_pos[1], 1)
-            while True:
+            for i in range(20):
                 result = self.gui.has_image(ImagePathAndProps.QUEST_CLAIM_BUTTON_IMAGE_PATH.value)
                 if result is None:
                     break
@@ -326,7 +332,29 @@ class Bot:
             return TaskName.CLAIM_QUEST
         return next_task
 
-    def alliance(self, next_tast=TaskName.METARIALS):
+    def claim_vip(self, next_task=TaskName.CLAIM_QUEST):
+        vip_pos = (150, 65)
+        vip_point_chest = (1010, 180)
+        vip_free_chest = (920, 400)
+        self.set_text(title='Claim VIP Chest', remove=True)
+        self.back_to_home_gui()
+        # tap on vip
+        self.set_text(insert='Open VIP')
+        x, y = vip_pos
+        self.tap(x, y, 2)
+        # tap on vip point chest
+        self.set_text(insert='Claim daily vip point')
+        x, y = vip_point_chest
+        self.tap(x, y, 1)
+        self.tap(x, y, 1)
+        # tap on free chest
+        self.set_text(insert='Claim daily free vip chest')
+        x, y = vip_free_chest
+        self.tap(x, y, 1)
+        return next_task
+        
+
+    def alliance(self, next_task=TaskName.METARIALS):
         self.set_text(title='Alliance', remove=True)
         allince_button_pos = (1030, 670)
         try:
@@ -349,7 +377,7 @@ class Bot:
                     self.set_text(insert='Claim rate gift')
                     x, y = rate_pos
                     self.tap(x, y, 1)
-                    while True:
+                    for i in range(20):
                         result = self.gui.has_image(ImagePathAndProps.GIFTS_CLAIM_BUTTON_IMAGE_PATH.value)
                         if result is None:
                             break
@@ -391,7 +419,7 @@ class Bot:
 
         except Exception as e:
             return TaskName.ALLIANCE
-        return next_tast
+        return next_task
 
     def materials(self, next_task=TaskName.TAVERN):
         self.set_text(title='Materials Production', remove=True)
@@ -444,7 +472,7 @@ class Bot:
             return next_task
         x, y = result['result']
         self.tap(x, y, 4)
-        while True:
+        for i in range(20):
             result = self.gui.has_image(ImagePathAndProps.CHEST_OPEN_BUTTON_IMAGE_PATH.value)
             if result is None:
                 return next_task
@@ -596,7 +624,7 @@ class Bot:
             self.tap(inc_pos[0] - 33, inc_pos[1], 0.3)
 
             repeat_count = 0
-            while True:
+            for i in range(20):
 
                 # open search resource
                 if len(last_resource_pos) > 0:
@@ -609,10 +637,10 @@ class Bot:
                     self.set_text(insert="Decreasing search level by 1")
                     self.tap(dec_pos[0], dec_pos[1], 0.3)
 
-                while True:
+                for j in range(20):
                     self.tap(search_pos[0], search_pos[1], 2)
                     result = self.gui.has_image(ImagePathAndProps.RESOURCE_SEARCH_BUTTON_IMAGE_PATH.value)
-                    if (result is None):
+                    if result is None:
                         break
                     self.set_text(insert="Not found in current Level, decreasing search level by 1")
                     self.tap(dec_pos[0], dec_pos[1], 0.3)
@@ -895,6 +923,9 @@ class BotConfig:
                                                           TrainingAndUpgradeLevel.T1.value)
         self.trainSiegeWorkshopUpgradeLevel = config.get('trainSiegeWorkshopUpgradeLevel',
                                                          TrainingAndUpgradeLevel.T1.value)
+
+        # Vip Chest
+        self.enableVipClaimChest = config.get('enableVipClaimChest', True)
 
         # Quest
         self.claimQuests = config.get('claimQuests', True)

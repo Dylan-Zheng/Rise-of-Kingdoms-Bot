@@ -47,6 +47,8 @@ train_siege = train_fn_creator(
     'trainSiegeWorkshopUpgradeLevel')
 
 # other
+daily_vip_point_and_chest = checkbox_fn_creator('enableVipClaimChest', 'Claim daily vip point and chest')
+
 claim_quest_checkbox = checkbox_fn_creator('claimQuests', 'Claim quests and daily objectives')
 
 alliance_action_checkbox = checkbox_fn_creator('allianceAction',
@@ -102,6 +104,7 @@ title_fns = [
     [collecting_checkbox, []],
     [produce_material, []],
     [open_free_chest_in_tavern, []],
+    [daily_vip_point_and_chest, []],
     [claim_quest_checkbox, []],
     [alliance_action_checkbox, []],
     [training, [train_barracks, train_archery_range, train_stable, train_siege]],

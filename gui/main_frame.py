@@ -9,6 +9,7 @@ from bot_related.bot import Bot
 class MainFrame:
 
     def __init__(self, windows, size, device):
+        self.bot = None
         self.device = device
         self.bot_config = load_bot_config(device.serial.replace(':', "_"))
         self.bot_building_pos = load_building_pos(device.serial.replace(':', "_"))
@@ -61,6 +62,7 @@ class MainFrame:
             if self.bot_thread is None:
 
                 bot = Bot(self.device)
+                self.bot = bot
                 bot.config = self.bot_config
                 bot.building_pos = self.bot_building_pos
 
@@ -75,6 +77,7 @@ class MainFrame:
                 self.bot_thread = None
                 self.task_title.config(text='Task: None')
                 self.task_text.delete(1.0, END)
+                self.bot == None
                 btn.config(text='START')
             return
 

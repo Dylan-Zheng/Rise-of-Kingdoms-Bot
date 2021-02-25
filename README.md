@@ -31,7 +31,7 @@ Self using bot for Rise of Kingdom.
 
 | Name                                                   | Status          |
 | ------------------------------------------------------ | --------------- |
-| Automatically start the game when game is not running  |                 |
+| Automatically start the game when game is not running  | **<u>Done</u>** |
 | Automatically locating building                        | **<u>Done</u>** |
 | Collecting resource, troops, and help alliance         | **<u>Done</u>** |
 | Produce material                                       | **<u>Done</u>** |
@@ -57,11 +57,11 @@ Self using bot for Rise of Kingdom.
 
 - Game language must be <u>**English**</u> 
 
-- place adb under project directory: **<u>*.\adb*</u>** 
+- Place adb under project directory: **<u>*.\adb*</u>** 
 
   (so that **adb.exe** will at: **project name\adb\adb.exe**)
 
-- place tesseract  under project directory:  ***<u>.\tesseract\</u>*** 
+- Place tesseract  under project directory:  ***<u>.\tesseract\</u>*** 
 
   (so that **tesseract.exe** will at: **project name\tesseract\tesseract.exe**)
 
