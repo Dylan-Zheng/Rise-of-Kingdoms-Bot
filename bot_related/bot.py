@@ -346,7 +346,6 @@ class Bot:
         self.set_text(insert='Claim daily vip point')
         x, y = vip_point_chest
         self.tap(x, y, 1)
-        self.tap(x, y, 1)
         # tap on free chest
         self.set_text(insert='Claim daily free vip chest')
         x, y = vip_free_chest
@@ -370,6 +369,7 @@ class Bot:
                     rate_pos = (930, 205)
                     normal_pos = (670, 205)
                     claim_all_pos = (1110, 205)
+                    treasure = (330, 410)
                     x, y = gifts_pos
                     self.tap(x, y, 2)
 
@@ -389,6 +389,10 @@ class Bot:
                     x, y = normal_pos
                     self.tap(x, y, 1)
                     x, y = claim_all_pos
+                    self.tap(x, y, 1)
+
+                    # collecting treasure of white crystal
+                    x, y = treasure
                     self.tap(x, y, 1)
 
                 elif name == 'TERRITORY':
@@ -624,7 +628,7 @@ class Bot:
             self.tap(inc_pos[0] - 33, inc_pos[1], 0.3)
 
             repeat_count = 0
-            for i in range(20):
+            for i in range(10):
 
                 # open search resource
                 if len(last_resource_pos) > 0:
@@ -634,15 +638,15 @@ class Bot:
 
                 # decreasing level
                 if should_decreasing_lv:
-                    self.set_text(insert="Decreasing search level by 1")
+                    self.set_text(insert="Decreasing level by 1")
                     self.tap(dec_pos[0], dec_pos[1], 0.3)
 
-                for j in range(20):
+                for j in range(i):
                     self.tap(search_pos[0], search_pos[1], 2)
                     result = self.gui.has_image(ImagePathAndProps.RESOURCE_SEARCH_BUTTON_IMAGE_PATH.value)
                     if result is None:
                         break
-                    self.set_text(insert="Not found in current Level, decreasing search level by 1")
+                    self.set_text(insert="Not found, decreasing level by 1 {[]}".format(j))
                     self.tap(dec_pos[0], dec_pos[1], 0.3)
 
                 self.set_text(insert="Resource found")
@@ -770,7 +774,7 @@ class Bot:
         loop_count = 0
         gui_name = None
         while True:
-            result = self.get_curr_gui_name();
+            result = self.get_curr_gui_name()
             gui_name, pos = ['UNKNOW', None] if result is None else result
             if gui_name == GuiName.MAP.name:
                 break
