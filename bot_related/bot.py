@@ -5,6 +5,7 @@ from datetime import datetime
 from utils import aircv_rectangle_to_box
 from enum import Enum
 
+import traceback
 import math
 import time
 from bot_related import haoi
@@ -137,7 +138,7 @@ class Bot:
             if curr_task == TaskName.VIP_CHEST and self.config.enableVipClaimChest:
                 curr_task = self.claim_vip(TaskName.CLAIM_QUEST)
             elif curr_task == TaskName.VIP_CHEST:
-                curr_task = TaskName.VIP_CHEST
+                curr_task = TaskName.CLAIM_QUEST
 
             # 3.claim quests
             if curr_task == TaskName.CLAIM_QUEST and self.config.claimQuests:
@@ -351,7 +352,6 @@ class Bot:
         x, y = vip_free_chest
         self.tap(x, y, 1)
         return next_task
-        
 
     def alliance(self, next_task=TaskName.METARIALS):
         self.set_text(title='Alliance', remove=True)
@@ -587,6 +587,15 @@ class Bot:
             return TaskName.TRAINING
         return next_task
 
+    # def attack_barbarians(self, next_task=TaskName.GATHER):
+    #     self.set_text(title='Attack Barbarians', remove=True)
+    #
+    #     icon_pos = (255, 640)
+    #     max_point = (375, 405)
+    #
+    #     self.set_text(insert="Search barbarians")
+    #     self.tap(60, 540, 1)
+
     def gather_resource(self, next_task=TaskName.BREAK):
         self.set_text(title='Gather Resource', remove=True)
 
@@ -641,12 +650,12 @@ class Bot:
                     self.set_text(insert="Decreasing level by 1")
                     self.tap(dec_pos[0], dec_pos[1], 0.3)
 
-                for j in range(i):
+                for j in range(5):
                     self.tap(search_pos[0], search_pos[1], 2)
                     result = self.gui.has_image(ImagePathAndProps.RESOURCE_SEARCH_BUTTON_IMAGE_PATH.value)
                     if result is None:
                         break
-                    self.set_text(insert="Not found, decreasing level by 1 {[]}".format(j))
+                    self.set_text(insert="Not found, decreasing level by 1 [{}]".format(j))
                     self.tap(dec_pos[0], dec_pos[1], 0.3)
 
                 self.set_text(insert="Resource found")
@@ -681,9 +690,10 @@ class Bot:
                 self.set_text(insert="March")
                 self.tap(match_button_pos[0], match_button_pos[1], 2)
                 repeat_count = 0
-                self.swipe(300, 360, 400, 360, 1)
+                self.swipe(300, 720, 400, 360, 1)
 
         except Exception as e:
+            traceback.print_exc()
             return TaskName.GATHER
         return next_task
 
