@@ -37,13 +37,14 @@ Self using bot for Rise of Kingdom.
 | Produce material                                       | **<u>Done</u>** |
 | Open free chest in tavern                              | **<u>Done</u>** |
 | Claim quest and daily objectives                       | **<u>Done</u>** |
-| Claim VIP chest                                        | no yet          |
+| Claim VIP chest                                        | **<u>Done</u>** |
 | Collecting allied resource, gifs and donate technology | **<u>Done</u>** |
 | Upgrade and train troops                               | <u>**Done**</u> |
 | Attack barbarians                                      | no yet          |
 | Heal troops                                            | no yet          |
 | Gather resource                                        | **<u>Done</u>** |
 | A simple GUI                                           | **<u>Done</u>** |
+| Allow bot control multi-devices/emulator               | no yet          |
 | Pass verification with haoi API                        | **<u>Done</u>** |
 | Pass verification with 2captcha API                    | no yet          |
 
