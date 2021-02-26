@@ -88,6 +88,7 @@ def resource_ratio(app, parent):
                 setattr(app.bot_config, attr_name, int(value if value != '' else '0'))
                 write_bot_config(app.bot_config, app.device.serial.replace(':', "_"))
                 return True
+
             return validate_cmd
 
         entry.config(validate='key', validatecommand=(frame.register(creator(attr_names[col])), '%P', '%d'))
@@ -96,7 +97,6 @@ def resource_ratio(app, parent):
 
         entry.config(width=10)
     return frame, None
-
 
 
 title_fns = [
