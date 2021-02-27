@@ -1,17 +1,24 @@
 from bot_related.device_gui_detector import GuiName
 from bot_related.device_gui_detector import GuiDetector
+from bot_related.bot_config import TrainingAndUpgradeLevel
+from bot_related.bot_config import BotConfig
+from bot_related import haoi
+from bot_related import twocaptcha
+from config import HAO_I
+from config import TWO_CAPTCHA
 from constants.file_relative_paths import ImagePathAndProps
 from datetime import datetime
 from utils import aircv_rectangle_to_box
 from enum import Enum
 
+import config
 import traceback
 import math
 import time
-from bot_related import haoi
 
 DEFAULT_RESOLUTION = {'height': 720, 'width': 1280}
 
+verification_method = None
 
 class BuildingNames(Enum):
     CITY_HALL = 'city_hall'
@@ -45,14 +52,7 @@ class TrainingType(Enum):
     NO_ACTION = 'no_action'
 
 
-class TrainingAndUpgradeLevel(Enum):
-    T1 = 0
-    T2 = 1
-    T3 = 2
-    T4 = 3
-    T5 = 4
-    UPGRADE_ALL = 5
-    DISABLED = -1
+
 
 
 class TaskName(Enum):
@@ -768,15 +768,15 @@ class Bot:
         return x0, y0, x1, y1
 
     # Menu
-    def menu_should_open(self, shouldOpen=False):
+    def menu_should_open(self, should_open=False):
         # close menu if open
         path, size, box, threshold, least_diff, gui = ImagePathAndProps.MENU_BUTTON_IMAGE_PATH.value
         x0, y0, x1, y1 = box
         c_x, c_y = x0 + (x1 - x0) / 2, y0 + (y1 - y0) / 2
-        open, _, _ = self.gui.check(ImagePathAndProps.MENU_OPENED_IMAGE_PATH.value);
-        if shouldOpen and not open:
+        is_open, _, _ = self.gui.check(ImagePathAndProps.MENU_OPENED_IMAGE_PATH.value);
+        if should_open and not is_open:
             self.tap(c_x, c_y, 0.5)
-        elif not shouldOpen and open:
+        elif not should_open and is_open:
             self.tap(c_x, c_y, 0.5)
 
     # Map
@@ -825,19 +825,29 @@ class Bot:
                 return result
 
     def pass_verification(self):
-        self.set_text(insert='pass verification')
-        box = (400, 0, 880, 720)
-        ok = [780, 680]
-        img = self.gui.get_curr_device_screen_img()
-        img = img.crop(box)
-        pos_list = haoi.solve_verification(self.config.haoiUser, self.config.haoiRebate, img)
-        if pos_list is None:
-            self.set_text(insert='fail to pass verification')
-            return None
+        try:
+            self.set_text(insert='pass verification')
+            box = (400, 0, 880, 720)
+            ok = [780, 680]
+            img = self.gui.get_curr_device_screen_img()
+            img = img.crop(box)
+            pos_list = None
+            if config.global_config.method == HAO_I:
+                pos_list = haoi.solve_verification(img)
+            elif config.global_config.method == TWO_CAPTCHA:
+                pos_list = twocaptcha.solve_verification(img)
 
-        for pos in pos_list:
-            self.tap(400 + pos[0], pos[1], 1)
-        self.tap(780, 680, 5)
+            if pos_list is None:
+                self.set_text(insert='fail to pass verification')
+                return None
+
+            for pos in pos_list:
+                self.tap(400 + pos[0], pos[1], 1)
+            self.tap(780, 680, 5)
+
+        except Exception as e:
+            traceback.print_exc()
+
         return pos_list
 
     # Action
@@ -897,63 +907,64 @@ class Bot:
 
         self.text_update_event(self.text)
 
-
-class BotConfig:
-    def __init__(self, config={}):
-        self.action_wait_time = config.get('action_wait_time', 1)
-        self.enableBreak = config.get('enableBreak', True)
-        self.breakTime = config.get('breakTime', 60 * 3)
-
-        self.hasBuildingPos = config.get('hasBuildingPos', False)
-
-        # Collecting
-        self.enableCollecting = config.get('enableCollecting', True)
-
-        # Producing
-        self.enableMaterialProduce = config.get('enableMaterialProduce', True)
-
-        # Tavern
-        self.enableTavern = config.get('enableTavern', True)
-
-        # Training
-        self.enableTraining = config.get('enableTraining', True)
-
-        self.trainBarracksTrainingLevel = config.get('trainBarracksTrainingLevel',
-                                                     TrainingAndUpgradeLevel.T1.value)
-        self.trainBarracksUpgradeLevel = config.get('trainBarracksUpgradeLevel',
-                                                    TrainingAndUpgradeLevel.T1.value)
-
-        self.trainArcheryRangeTrainingLevel = config.get('trainArcheryRangeTrainingLevel',
-                                                         TrainingAndUpgradeLevel.T1.value)
-        self.trainArcheryRangeUpgradeLevel = config.get('trainArcheryRangeUpgradeLevel',
-                                                        TrainingAndUpgradeLevel.T1.value)
-
-        self.trainStableTrainingLevel = config.get('trainStableTrainingLevel',
-                                                   TrainingAndUpgradeLevel.T1.value)
-        self.trainStableUpgradeLevel = config.get('trainArcheryRangeUpgradeLevel',
-                                                  TrainingAndUpgradeLevel.T1.value)
-
-        self.trainSiegeWorkshopTrainingLevel = config.get('trainSiegeWorkshopTrainingLevel',
-                                                          TrainingAndUpgradeLevel.T1.value)
-        self.trainSiegeWorkshopUpgradeLevel = config.get('trainSiegeWorkshopUpgradeLevel',
-                                                         TrainingAndUpgradeLevel.T1.value)
-
-        # Vip Chest
-        self.enableVipClaimChest = config.get('enableVipClaimChest', True)
-
-        # Quest
-        self.claimQuests = config.get('claimQuests', True)
-
-        # Alliance
-        self.allianceAction = config.get('allianceAction', True)
-
-        # Gather resource
-        self.gatherResource = config.get('gatherResource', True)
-        self.gatherResourceNoSecondaryCommander = config.get('gatherResourceNoSecondaryCommander', True)
-        self.gatherResourceRatioFood = config.get('gatherResourceRatioFood', 1)
-        self.gatherResourceRatioWood = config.get('gatherResourceRatioWood', 1)
-        self.gatherResourceRatioStone = config.get('gatherResourceRatioStone', 1)
-        self.gatherResourceRatioGold = config.get('gatherResourceRatioGold', 1)
-
-        self.haoiUser = config.get('haoiUser', None)
-        self.haoiRebate = config.get('haoiRebate', None)
+#
+# class BotConfig:
+#     def __init__(self, config={}):
+#         self.action_wait_time = config.get('action_wait_time', 1)
+#         self.enableBreak = config.get('enableBreak', True)
+#         self.breakTime = config.get('breakTime', 60 * 3)
+#
+#         self.hasBuildingPos = config.get('hasBuildingPos', False)
+#
+#         # Collecting
+#         self.enableCollecting = config.get('enableCollecting', True)
+#
+#         # Producing
+#         self.enableMaterialProduce = config.get('enableMaterialProduce', True)
+#
+#         # Tavern
+#         self.enableTavern = config.get('enableTavern', True)
+#
+#         # Training
+#         self.enableTraining = config.get('enableTraining', True)
+#
+#         self.trainBarracksTrainingLevel = config.get('trainBarracksTrainingLevel',
+#                                                      TrainingAndUpgradeLevel.T1.value)
+#         self.trainBarracksUpgradeLevel = config.get('trainBarracksUpgradeLevel',
+#                                                     TrainingAndUpgradeLevel.T1.value)
+#
+#         self.trainArcheryRangeTrainingLevel = config.get('trainArcheryRangeTrainingLevel',
+#                                                          TrainingAndUpgradeLevel.T1.value)
+#         self.trainArcheryRangeUpgradeLevel = config.get('trainArcheryRangeUpgradeLevel',
+#                                                         TrainingAndUpgradeLevel.T1.value)
+#
+#         self.trainStableTrainingLevel = config.get('trainStableTrainingLevel',
+#                                                    TrainingAndUpgradeLevel.T1.value)
+#         self.trainStableUpgradeLevel = config.get('trainArcheryRangeUpgradeLevel',
+#                                                   TrainingAndUpgradeLevel.T1.value)
+#
+#         self.trainSiegeWorkshopTrainingLevel = config.get('trainSiegeWorkshopTrainingLevel',
+#                                                           TrainingAndUpgradeLevel.T1.value)
+#         self.trainSiegeWorkshopUpgradeLevel = config.get('trainSiegeWorkshopUpgradeLevel',
+#                                                          TrainingAndUpgradeLevel.T1.value)
+#
+#         # Vip Chest
+#         self.enableVipClaimChest = config.get('enableVipClaimChest', True)
+#
+#         # Quest
+#         self.claimQuests = config.get('claimQuests', True)
+#
+#         # Alliance
+#         self.allianceAction = config.get('allianceAction', True)
+#
+#         # Gather resource
+#         self.gatherResource = config.get('gatherResource', True)
+#         self.gatherResourceNoSecondaryCommander = config.get('gatherResourceNoSecondaryCommander', True)
+#         self.gatherResourceRatioFood = config.get('gatherResourceRatioFood', 1)
+#         self.gatherResourceRatioWood = config.get('gatherResourceRatioWood', 1)
+#         self.gatherResourceRatioStone = config.get('gatherResourceRatioStone', 1)
+#         self.gatherResourceRatioGold = config.get('gatherResourceRatioGold', 1)
+#
+#         self.haoiUser = config.get('haoiUser', None)
+#         self.haoiRebate = config.get('haoiRebate', None)
+#         self.twocaptchaKey = config.get('twocaptchaKey', None)

@@ -7,6 +7,8 @@ import time
 from io import BytesIO
 from requests_toolbelt import MultipartEncoder
 
+userstr = None
+rebate = None
 
 def get_server():
     url = 'http://0.haoi23.net/svlist.html'
@@ -14,11 +16,11 @@ def get_server():
     return resp_text.replace('===', '').replace('+++', '').split('--')[0]
 
 
-def get_point(server_url, user):
+def get_point(server_url):
     url = 'http://{}/GetPoint.aspx'.format(server_url)
     mp_encoder = MultipartEncoder(
         fields={
-            'user': user,
+            'user': userstr,
             'r': generate_random_hex(10)
         }
     )
@@ -30,7 +32,7 @@ def get_point(server_url, user):
     return resp_text
 
 
-def send_base64_image(server_url, userstr, rebate, img):
+def send_base64_image(server_url, img):
     url = 'http://{}/UploadBase64.aspx'.format(server_url)
     mp_encoder = MultipartEncoder(
         fields={
@@ -68,17 +70,18 @@ def get_answer(server_url, tid):
     return resp_text
 
 
-def solve_verification(user, rebate, img):
-    if user is None or rebate is None:
+def solve_verification(img):
+    if userstr is None or rebate is None:
         return None
+    img = img.quantize(colors=128, method=2)
     buffered = BytesIO()
     img.save(buffered, format="PNG", optimize=True, quality=5)
     img_base64 = base64.b64encode(buffered.getvalue())
 
     server_url = get_server()
-    tid = send_base64_image(server_url, user, rebate, img_base64)
+    tid = send_base64_image(server_url, img_base64)
     ans = None
-    while (ans == '' or ans is None) and tid[0] != '#':
+    while (ans is None or ans == '') and tid[0] != '#':
         ans = get_answer(server_url, tid)
         time.sleep(2)
     if tid[0] != '#':

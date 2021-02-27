@@ -1,6 +1,9 @@
-from tkinter import *
+from tkinter import Button, BooleanVar, Checkbutton, Label, StringVar, Frame, OptionMenu
+
+from tkinter import TRUE, FALSE, N, W, LEFT
+
 from utils import resource_path
-from bot_related.bot import BotConfig
+from bot_related.bot_config import BotConfig
 from constants.file_relative_paths import FilePaths
 
 import json

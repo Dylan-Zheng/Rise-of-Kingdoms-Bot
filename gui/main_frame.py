@@ -1,23 +1,31 @@
-from gui.creator import *
-import threading
-from utils import stop_thread
+from gui.creator import load_bot_config
+from gui.creator import load_building_pos
+from gui.creator import write_building_pos
+from gui.creator import button
 
+from tkinter import Label, Frame, Text
+from tkinter import N, W, END, INSERT, LEFT
+
+from utils import stop_thread
 from gui import all_title_fns as atf
 from bot_related.bot import Bot
 
+import threading
 
-class MainFrame:
 
-    def __init__(self, windows, size, device):
+verification_method = None
+
+class MainFrame(Frame):
+
+    def __init__(self, windows, device, cnf={}, **kwargs):
+        Frame.__init__(self, windows, kwargs)
+
         self.bot = None
         self.device = device
         self.bot_config = load_bot_config(device.serial.replace(':', "_"))
         self.bot_building_pos = load_building_pos(device.serial.replace(':', "_"))
         self.bot_thread = None
-
-        self.main_frame = Frame(windows, width=size[0], height=size[1])
-        self.main_frame.grid(row=0, column=0, sticky=N + W)
-        self.main_frame.grid_propagate(False)
+        self.windows_size = [kwargs['width'], kwargs['height']]
 
         display_frame, self.task_title, self.task_text = self.task_display_frame()
         config_frame = self.config_frame()
@@ -28,14 +36,16 @@ class MainFrame:
         config_frame.grid(row=2, column=0, padx=10, pady=10, sticky=N + W)
 
     def task_display_frame(self):
-        frame = Frame(self.main_frame, width=430, height=200)
+        width = self.windows_size[0] - 20
+        height = 130
+        frame = Frame(self, width=width, height=height)
         frame.grid_propagate(False)
-        frame.columnconfigure(0, weight=430)
+        frame.columnconfigure(0, weight=width)
         frame.rowconfigure(0, weight=5)
-        frame.rowconfigure(1, weight=180)
+        frame.rowconfigure(1, weight=height - 20)
 
-        title = Label(frame, text="Task: None", width=430, height=5)
-        text = Text(frame, width=430, height=170)
+        title = Label(frame, text="Task: None", width=width, height=5)
+        text = Text(frame, width=width, height=height-30)
         title.config(bg='white', anchor=W, justify=LEFT)
 
         title.grid(row=0, column=0, pady=10, sticky=N + W)
@@ -43,9 +53,9 @@ class MainFrame:
         return frame, title, text
 
     def config_frame(self):
-        frame = Frame(self.main_frame)
-        for i in range(len(atf.title_fns)):
-            title_fns, sub_fns = atf.title_fns[i]
+        frame = Frame(self)
+        for i in range(len(atf.bot_config_title_fns)):
+            title_fns, sub_fns = atf.bot_config_title_fns[i]
             check = section_frame(
                 self,
                 frame,
@@ -56,7 +66,7 @@ class MainFrame:
         return frame
 
     def bottom_frame(self):
-        frame = Frame(self.main_frame)
+        frame = Frame(self)
 
         def on_click(btn):
             if self.bot_thread is None:
@@ -77,7 +87,7 @@ class MainFrame:
                 self.bot_thread = None
                 self.task_title.config(text='Task: None')
                 self.task_text.delete(1.0, END)
-                self.bot == None
+                self.bot = None
                 btn.config(text='START')
             return
 

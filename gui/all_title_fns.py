@@ -1,4 +1,8 @@
-from gui.creator import *
+from gui.creator import checkbox_fn_creator, train_fn_creator, write_bot_config
+
+from tkinter import StringVar, OptionMenu, Frame, Label, Entry, N, W
+
+
 
 # break
 break_checkbox = checkbox_fn_creator('enableBreak', 'Take break at every end of round')
@@ -99,7 +103,7 @@ def resource_ratio(app, parent):
     return frame, None
 
 
-title_fns = [
+bot_config_title_fns = [
     [break_checkbox, [time_drop_down]],
     [collecting_checkbox, []],
     [produce_material, []],
@@ -109,4 +113,13 @@ title_fns = [
     [alliance_action_checkbox, []],
     [training, [train_barracks, train_archery_range, train_stable, train_siege]],
     [gather_resource_checkbox, [resource_ratio, resource_no_secondery_commander]]
+]
+
+
+
+
+
+
+global_config_title_fns = [
+
 ]
