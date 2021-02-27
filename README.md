@@ -46,7 +46,7 @@ Self using bot for Rise of Kingdom.
 | A simple GUI                                           | **<u>Done</u>** |
 | Allow bot control multi-devices/emulator               | no yet          |
 | Pass verification with haoi API                        | **<u>Done</u>** |
-| Pass verification with 2captcha API                    | no yet          |
+| Pass verification with 2captcha API                    | **<u>Done</u>** |
 
 
 
@@ -62,7 +62,7 @@ Self using bot for Rise of Kingdom.
 
   (so that **adb.exe** will at: **project name\adb\adb.exe**)
 
-- Place tesseract  under project directory:  ***<u>.\tesseract\</u>*** 
+- Place tesseract  under project directory: **<u>*.\tesseract*</u>**  
 
   (so that **tesseract.exe** will at: **project name\tesseract\tesseract.exe**)
 
