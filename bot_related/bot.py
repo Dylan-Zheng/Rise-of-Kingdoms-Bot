@@ -6,10 +6,13 @@ from bot_related import haoi
 from bot_related import twocaptcha
 from config import HAO_I
 from config import TWO_CAPTCHA
-from constants.file_relative_paths import ImagePathAndProps
+from filepath.file_relative_paths import ImagePathAndProps
+from filepath.file_relative_paths import BuffsImageAndProps
+from filepath.file_relative_paths import ItemsImageAndProps
 from datetime import datetime
 from utils import aircv_rectangle_to_box
 from enum import Enum
+from filepath.constants import RESOURCES, SPEEDUPS, BOOSTS, EQUIPMENT, OTHER, MAP, HOME
 
 import config
 import traceback
@@ -599,6 +602,19 @@ class Bot:
     def gather_resource(self, next_task=TaskName.BREAK):
         self.set_text(title='Gather Resource', remove=True)
 
+        if self.config.useGatheringBoosts:
+            b_buff_props = BuffsImageAndProps.ENHANCED_GATHER_BLUE.value
+            p_buff_props = BuffsImageAndProps.ENHANCED_GATHER_PURPLE.value
+            b_item_props = ItemsImageAndProps.ENHANCED_GATHER_BLUE.value
+            p_item_props = ItemsImageAndProps.ENHANCED_GATHER_PURPLE.value
+            has_blue = self.has_buff(MAP, b_buff_props)
+            has_purple = self.has_buff(MAP, p_buff_props)
+            if not has_blue and not has_purple:
+                self.set_text(insert='use gathering boosts')
+                self.use_item(MAP, [b_item_props, p_item_props])
+            else:
+                self.set_text(insert="gathering boosts buff is already on")
+
         last_resource_pos = []
         should_decreasing_lv = False
         resource_icon_pos = [
@@ -756,9 +772,6 @@ class Bot:
         self.tap(1105, 200, 1)
         self.tap(1220, 35, 2)
 
-        # self.swipe(300, 360, 980, 360, 5)
-        # self.find_home()
-
     # Building Position
     def find_building_title(self):
         result = self.gui.has_image(ImagePathAndProps.BUILDING_TITLE_MARK_IMG_PATH.value)
@@ -849,6 +862,65 @@ class Bot:
             traceback.print_exc()
 
         return pos_list
+
+    def has_buff(self, checking_location, buff_img_props):
+        # Where to check
+        if checking_location == HOME:
+            self.back_to_home_gui()
+        elif checking_location == MAP:
+            self.back_to_map_gui()
+        else:
+            return False
+        # Start Checking
+        result = self.gui.has_image(buff_img_props)
+        if result is None:
+            return False
+        return True
+
+    def use_item(self, using_location, item_img_props_list):
+
+        # Where to use the item
+        if using_location == HOME:
+            self.back_to_home_gui()
+        elif using_location == MAP:
+            self.back_to_map_gui()
+        else:
+            return False
+
+        items_icon_pos = (930, 675)
+        use_btn_pos = (980, 600)
+
+        for item_img_props in item_img_props_list:
+            path, size, box, threshold, least_diff, tab_name = item_img_props
+
+            tabs_pos = {
+                RESOURCES: (250, 80),
+                SPEEDUPS: (435, 80),
+                BOOSTS: (610, 80),
+                EQUIPMENT: (790, 80),
+                OTHER: (970, 80),
+            }
+            # open menu
+            self.menu_should_open(True)
+            # open items window
+            x, y = items_icon_pos
+            self.tap(x, y, 2)
+            # tap on tab
+            x, y = tabs_pos[tab_name]
+            self.tap(x, y, 1)
+            # find item, and tap it
+            result = self.gui.has_image(item_img_props)
+            if result is None:
+                continue
+            x, y = result['result']
+            self.tap(x, y, 0.5)
+            # tap on use Item
+            x, y = use_btn_pos
+            self.tap(x, y)
+            return True
+        return False
+
+
 
     # Action
     def back(self, sleep_time=0.5):

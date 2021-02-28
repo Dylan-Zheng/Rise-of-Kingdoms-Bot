@@ -61,6 +61,7 @@ class BotConfig:
         self.allianceAction = config.get('allianceAction', True)
 
         # Gather resource
+        self.useGatheringBoosts = config.get('useGatheringBoosts', False)
         self.gatherResource = config.get('gatherResource', True)
         self.gatherResourceNoSecondaryCommander = config.get('gatherResourceNoSecondaryCommander', True)
         self.gatherResourceRatioFood = config.get('gatherResourceRatioFood', 1)

@@ -61,6 +61,7 @@ alliance_action_checkbox = checkbox_fn_creator('allianceAction',
 # Outside
 gather_resource_checkbox = checkbox_fn_creator('gatherResource', 'Gather resource')
 resource_no_secondery_commander = checkbox_fn_creator('gatherResourceNoSecondaryCommander', 'Not secondary commader')
+use_gathering_boosts = checkbox_fn_creator('useGatheringBoosts', 'Use gathering boosts')
 
 
 def resource_ratio(app, parent):
@@ -112,14 +113,8 @@ bot_config_title_fns = [
     [claim_quest_checkbox, []],
     [alliance_action_checkbox, []],
     [training, [train_barracks, train_archery_range, train_stable, train_siege]],
-    [gather_resource_checkbox, [resource_ratio, resource_no_secondery_commander]]
+    [gather_resource_checkbox, [use_gathering_boosts, resource_ratio, resource_no_secondery_commander]]
 ]
 
 
 
-
-
-
-global_config_title_fns = [
-
-]

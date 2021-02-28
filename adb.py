@@ -1,7 +1,7 @@
 from ppadb.client import Client as PPADBClient
 from utils import resource_path
 from utils import build_command
-from constants.file_relative_paths import FilePaths
+from filepath.file_relative_paths import FilePaths
 import subprocess
 
 

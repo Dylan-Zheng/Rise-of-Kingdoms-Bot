@@ -1,4 +1,4 @@
-from constants.file_relative_paths import FilePaths
+from filepath.file_relative_paths import FilePaths
 
 import cv2
 import pytesseract as tess

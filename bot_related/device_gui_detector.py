@@ -1,7 +1,7 @@
 from PIL import Image
-from constants.file_relative_paths import ImagePathAndProps
-from constants.file_relative_paths import GuiCheckImagePathAndProps
-from constants.file_relative_paths import FilePaths
+from filepath.file_relative_paths import ImagePathAndProps
+from filepath.file_relative_paths import GuiCheckImagePathAndProps
+from filepath.file_relative_paths import FilePaths
 from utils import resource_path
 from utils import img_to_string
 from utils import img_remove_background_and_enhance_word
@@ -129,7 +129,6 @@ class GuiDetector:
         return result_list
 
     def resource_location_image_to_string(self):
-        result_list = []
         x0, y0, x1, y1 = (885, 190, 1035, 207)
 
         imsch = cv2.imdecode(np.asarray(self.get_curr_device_screen_img_byte_array(), dtype=np.uint8),
