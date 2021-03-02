@@ -17,3 +17,4 @@ class BottomFrame(Frame):
 
         label.grid(row=0, column=0, sticky = N + W)
         link.grid(row=0, column=1, sticky = N + W)
+

@@ -137,7 +137,7 @@ If you like this project, give me a star or feedback , that is great help for me
 
 - Gather Resource
 
-  ![](https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/blob/main/docs/gather.gif?raw=true)
+  ![](https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/blob/main/docs/gather_edit.gif?raw=true)
 
 - Pass verification
 
