@@ -1,14 +1,8 @@
-from bot_related.device_gui_detector import GuiName
-from bot_related.device_gui_detector import GuiDetector
-from bot_related.bot_config import TrainingAndUpgradeLevel
-from bot_related.bot_config import BotConfig
-from bot_related import haoi
-from bot_related import twocaptcha
-from config import HAO_I
-from config import TWO_CAPTCHA
-from filepath.file_relative_paths import ImagePathAndProps
-from filepath.file_relative_paths import BuffsImageAndProps
-from filepath.file_relative_paths import ItemsImageAndProps
+from bot_related.device_gui_detector import GuiName, GuiDetector
+from bot_related.bot_config import TrainingAndUpgradeLevel, BotConfig
+from bot_related import haoi, twocaptcha
+from config import HAO_I, TWO_CAPTCHA
+from filepath.file_relative_paths import ImagePathAndProps, BuffsImageAndProps, ItemsImageAndProps
 from datetime import datetime
 from utils import aircv_rectangle_to_box
 from enum import Enum
@@ -22,6 +16,7 @@ import time
 DEFAULT_RESOLUTION = {'height': 720, 'width': 1280}
 
 verification_method = None
+
 
 class BuildingNames(Enum):
     CITY_HALL = 'city_hall'
@@ -55,9 +50,6 @@ class TrainingType(Enum):
     NO_ACTION = 'no_action'
 
 
-
-
-
 class TaskName(Enum):
     BREAK = -1
     NEXT_TASK = 0
@@ -70,6 +62,7 @@ class TaskName(Enum):
     METARIALS = 7
     TAVERN = 8
     VIP_CHEST = 9
+    BARBARIANS = 10
 
 
 class Resource(Enum):
@@ -128,11 +121,11 @@ class Bot:
             elif curr_task == TaskName.BREAK:
                 curr_task = TaskName.COLLECTING
 
-            # 1. init building position if need
+            # init building position if need
             if not self.config.hasBuildingPos or curr_task == TaskName.INIT_BUILDING_POS:
                 curr_task = self.init_building_pos()
 
-            # 2.collecting resource
+            # collecting resource
             if curr_task == TaskName.COLLECTING and self.config.enableCollecting:
                 curr_task = self.collecting_soldiers_resources_and_help(TaskName.VIP_CHEST)
             elif curr_task == TaskName.COLLECTING:
@@ -143,37 +136,43 @@ class Bot:
             elif curr_task == TaskName.VIP_CHEST:
                 curr_task = TaskName.CLAIM_QUEST
 
-            # 3.claim quests
+            # claim quests
             if curr_task == TaskName.CLAIM_QUEST and self.config.claimQuests:
                 curr_task = self.claim_quests(TaskName.ALLIANCE)
             elif curr_task == TaskName.CLAIM_QUEST:
                 curr_task = TaskName.ALLIANCE
 
-            # 4.alliance
+            # alliance
             if curr_task == TaskName.ALLIANCE and self.config.allianceAction:
                 curr_task = self.alliance(TaskName.METARIALS)
             elif curr_task == TaskName.ALLIANCE:
                 curr_task = TaskName.METARIALS
 
-            # 5.material
+            # material
             if curr_task == TaskName.METARIALS and self.config.enableMaterialProduce:
                 curr_task = self.materials(TaskName.TAVERN)
             elif curr_task == TaskName.METARIALS:
                 curr_task = TaskName.TAVERN
 
-            # 6.tavern
+            # tavern
             if curr_task == TaskName.TAVERN and self.config.enableTavern:
                 curr_task = self.tavern(TaskName.TRAINING)
             elif curr_task == TaskName.TAVERN:
                 curr_task = TaskName.TRAINING
 
-            # 7.train soldiers
+            # train soldiers
             if curr_task == TaskName.TRAINING and self.config.enableTraining:
-                curr_task = self.training_and_upgrade(TaskName.GATHER)
+                curr_task = self.training_and_upgrade(TaskName.BARBARIANS)
             elif curr_task == TaskName.TRAINING:
+                curr_task = TaskName.BARBARIANS
+
+            # Attack Barbarians
+            if curr_task == TaskName.BARBARIANS and self.config.attackBarbarians:
+                curr_task = self.attack_barbarians(next_task=TaskName.GATHER)
+            elif curr_task == TaskName.BARBARIANS:
                 curr_task = TaskName.GATHER
 
-            # 8.gather resource
+            # gather resource
             if curr_task == TaskName.GATHER and self.config.gatherResource:
                 curr_task = self.gather_resource(TaskName.BREAK)
             elif curr_task == TaskName.GATHER:
@@ -590,14 +589,59 @@ class Bot:
             return TaskName.TRAINING
         return next_task
 
-    # def attack_barbarians(self, next_task=TaskName.GATHER):
-    #     self.set_text(title='Attack Barbarians', remove=True)
-    #
-    #     icon_pos = (255, 640)
-    #     max_point = (375, 405)
-    #
-    #     self.set_text(insert="Search barbarians")
-    #     self.tap(60, 540, 1)
+    def set_barbarians_level(self, level):
+        max_pos = (375, 405)
+        min_pos = (168, 405)
+
+        dec_pos = self.gui.has_image(ImagePathAndProps.DECREASING_BUTTON_IMAGE_PATH.value)['result']
+        inc_pos = self.gui.has_image(ImagePathAndProps.INCREASING_BUTTON_IMAGE_PATH.value)['result']
+
+        # set to max level
+        x, y = max_pos
+        self.tap(x, y)
+        # try to get max lv. in integer
+        max_lv = self.gui.barbarians_level_image_to_string()
+        self.set_text(insert="Max level is {}".format(max_lv))
+        if max_lv != -1:
+            x = max_pos[0] if level > max_pos[0] or level >= 99 else (level / max_lv) * (max_pos[0] - min_pos[0]) + min_pos[0]
+            y = max_pos[1]
+            self.tap(x, y)
+            curr_lv = self.gui.barbarians_level_image_to_string()
+            if curr_lv == -1:
+                self.set_text(insert="Fail to read current level, set to lv.1".format(curr_lv))
+            else:
+                self.set_text(insert="current level is {}".format(curr_lv))
+            btn_pos = inc_pos if curr_lv < level else dec_pos
+            for i in range(int(abs(level - curr_lv))):
+                x, y = btn_pos
+                self.tap(x, y)
+
+    def attack_barbarians(self, next_task=TaskName.GATHER):
+        icon_pos = (255, 640)
+        center_pos = (640, 320)
+
+
+        self.set_text(title='Attack Barbarians', remove=True)
+        self.set_text(insert="Search barbarians")
+        self.back_to_map_gui()
+
+        # tap on magnifier
+        self.tap(60, 540, 1)
+        # tap on barbarians icon
+        x, y = icon_pos
+        self.tap(x, y, 1)
+
+        # set barbarians level
+        self.set_barbarians_level(self.config.barbariansLevel)
+
+        # tap search button
+        search_pos = self.gui.has_image(ImagePathAndProps.RESOURCE_SEARCH_BUTTON_IMAGE_PATH.value)['result']
+        x, y = search_pos
+        self.tap(x, y, 2)
+        x, y = center_pos
+        self.tap(x, y, 1)
+
+        return next_task
 
     def gather_resource(self, next_task=TaskName.BREAK):
         self.set_text(title='Gather Resource', remove=True)
@@ -645,6 +689,7 @@ class Bot:
                 chose_icon_pos = resource_icon_pos[3]
                 self.set_text(insert="Search gold")
 
+            # tap on magnifier
             self.tap(60, 540, 1)
             self.tap(chose_icon_pos[0], chose_icon_pos[1], 1)
             search_pos = self.gui.has_image(ImagePathAndProps.RESOURCE_SEARCH_BUTTON_IMAGE_PATH.value)['result']
@@ -920,8 +965,6 @@ class Bot:
             return True
         return False
 
-
-
     # Action
     def back(self, sleep_time=0.5):
         cmd = 'input keyevent 4'
@@ -978,65 +1021,3 @@ class Bot:
             self.text[text_list].clear()
 
         self.text_update_event(self.text)
-
-#
-# class BotConfig:
-#     def __init__(self, config={}):
-#         self.action_wait_time = config.get('action_wait_time', 1)
-#         self.enableBreak = config.get('enableBreak', True)
-#         self.breakTime = config.get('breakTime', 60 * 3)
-#
-#         self.hasBuildingPos = config.get('hasBuildingPos', False)
-#
-#         # Collecting
-#         self.enableCollecting = config.get('enableCollecting', True)
-#
-#         # Producing
-#         self.enableMaterialProduce = config.get('enableMaterialProduce', True)
-#
-#         # Tavern
-#         self.enableTavern = config.get('enableTavern', True)
-#
-#         # Training
-#         self.enableTraining = config.get('enableTraining', True)
-#
-#         self.trainBarracksTrainingLevel = config.get('trainBarracksTrainingLevel',
-#                                                      TrainingAndUpgradeLevel.T1.value)
-#         self.trainBarracksUpgradeLevel = config.get('trainBarracksUpgradeLevel',
-#                                                     TrainingAndUpgradeLevel.T1.value)
-#
-#         self.trainArcheryRangeTrainingLevel = config.get('trainArcheryRangeTrainingLevel',
-#                                                          TrainingAndUpgradeLevel.T1.value)
-#         self.trainArcheryRangeUpgradeLevel = config.get('trainArcheryRangeUpgradeLevel',
-#                                                         TrainingAndUpgradeLevel.T1.value)
-#
-#         self.trainStableTrainingLevel = config.get('trainStableTrainingLevel',
-#                                                    TrainingAndUpgradeLevel.T1.value)
-#         self.trainStableUpgradeLevel = config.get('trainArcheryRangeUpgradeLevel',
-#                                                   TrainingAndUpgradeLevel.T1.value)
-#
-#         self.trainSiegeWorkshopTrainingLevel = config.get('trainSiegeWorkshopTrainingLevel',
-#                                                           TrainingAndUpgradeLevel.T1.value)
-#         self.trainSiegeWorkshopUpgradeLevel = config.get('trainSiegeWorkshopUpgradeLevel',
-#                                                          TrainingAndUpgradeLevel.T1.value)
-#
-#         # Vip Chest
-#         self.enableVipClaimChest = config.get('enableVipClaimChest', True)
-#
-#         # Quest
-#         self.claimQuests = config.get('claimQuests', True)
-#
-#         # Alliance
-#         self.allianceAction = config.get('allianceAction', True)
-#
-#         # Gather resource
-#         self.gatherResource = config.get('gatherResource', True)
-#         self.gatherResourceNoSecondaryCommander = config.get('gatherResourceNoSecondaryCommander', True)
-#         self.gatherResourceRatioFood = config.get('gatherResourceRatioFood', 1)
-#         self.gatherResourceRatioWood = config.get('gatherResourceRatioWood', 1)
-#         self.gatherResourceRatioStone = config.get('gatherResourceRatioStone', 1)
-#         self.gatherResourceRatioGold = config.get('gatherResourceRatioGold', 1)
-#
-#         self.haoiUser = config.get('haoiUser', None)
-#         self.haoiRebate = config.get('haoiRebate', None)
-#         self.twocaptchaKey = config.get('twocaptchaKey', None)

@@ -3,6 +3,19 @@ from gui.creator import checkbox_fn_creator, train_fn_creator, write_bot_config
 from tkinter import StringVar, OptionMenu, Frame, Label, Entry, N, W
 
 
+def integer_entry_validate_cmd_creator(app, attr_name, def_value=0):
+    def validate_cmd(value, action_type):
+        if action_type == '1':
+            if not value.isdigit():
+                return False
+            if len(value) > 1 and value[0] == '0':
+                return False
+        setattr(app.bot_config, attr_name, int(value if value != '' else str(def_value)))
+        write_bot_config(app.bot_config, app.device.serial.replace(':', "_"))
+        return True
+
+    return validate_cmd
+
 
 # break
 break_checkbox = checkbox_fn_creator('enableBreak', 'Take break at every end of round')
@@ -59,6 +72,40 @@ alliance_action_checkbox = checkbox_fn_creator('allianceAction',
                                                'Collecting allied resource, gifts, and donate technology')
 
 # Outside
+
+attack_barbarians_checkbox = checkbox_fn_creator('attackBarbarians', 'Attack Barbarians (developing)')
+
+
+def barbarians_level(app, parent):
+    str_value = StringVar()
+    str_value.set(str(getattr(app.bot_config, 'barbariansLevel')))
+
+    frame = Frame(parent)
+    label = Label(frame, text='Level:')
+    entry = Entry(frame, textvariable=str_value)
+
+    def creator(attr_name):
+        def validate_cmd(value, action_type):
+            if action_type == '1':
+                if not value.isdigit():
+                    return False
+                if value[0] == '0':
+                    return False
+            setattr(app.bot_config, attr_name, int(value if value != '' else '1'))
+            write_bot_config(app.bot_config, app.device.serial.replace(':', "_"))
+            return True
+
+        return validate_cmd
+
+    entry.config(width=10, validate='key', validatecommand=(
+        frame.register(creator('barbariansLevel')), '%P', '%d'
+    ))
+
+    label.grid(row=0, column=0, sticky=N + W, padx=5)
+    entry.grid(row=0, column=1, sticky=N + W, padx=5)
+    return frame, None
+
+
 gather_resource_checkbox = checkbox_fn_creator('gatherResource', 'Gather resource')
 resource_no_secondery_commander = checkbox_fn_creator('gatherResourceNoSecondaryCommander', 'Not secondary commader')
 use_gathering_boosts = checkbox_fn_creator('useGatheringBoosts', 'Use gathering boosts')
@@ -96,7 +143,9 @@ def resource_ratio(app, parent):
 
             return validate_cmd
 
-        entry.config(validate='key', validatecommand=(frame.register(creator(attr_names[col])), '%P', '%d'))
+        entry.config(validate='key', validatecommand=(
+            frame.register(creator(attr_names[col])), '%P', '%d'
+        ))
         label.grid(row=0, column=col + 1, sticky=N + W, padx=5)
         entry.grid(row=1, column=col + 1, sticky=N + W, padx=5)
 
@@ -113,8 +162,6 @@ bot_config_title_fns = [
     [claim_quest_checkbox, []],
     [alliance_action_checkbox, []],
     [training, [train_barracks, train_archery_range, train_stable, train_siege]],
+    [attack_barbarians_checkbox, [barbarians_level]],
     [gather_resource_checkbox, [use_gathering_boosts, resource_ratio, resource_no_secondery_commander]]
 ]
-
-
-

@@ -8,6 +8,7 @@ from utils import img_remove_background_and_enhance_word
 from utils import bot_print
 
 from enum import Enum
+import traceback
 import numpy as np
 import cv2
 from bot_related import aircve as aircv
@@ -95,12 +96,12 @@ class GuiDetector:
             imsch = imsch[y0:y1, x0:x1]
             resource_image = Image.fromarray(imsch)
             try:
-                result_list.append(int(img_to_string(resource_image)
+                result_list.append(abs(int(img_to_string(resource_image)
                                        .replace('.', '')
                                        .replace('B', '00000000')
                                        .replace('M', '00000')
                                        .replace('K', '00')
-                                       )
+                                       ))
                                    )
             except Exception as e:
                 result_list.append(-1)
@@ -138,6 +139,23 @@ class GuiDetector:
         ret, imsch = cv2.threshold(imsch, 215, 255, cv2.THRESH_BINARY)
         resource_image = Image.fromarray(imsch)
         result = ''.join(c for c in img_to_string(resource_image) if c.isdigit())
+        return result
+
+    def barbarians_level_image_to_string(self):
+        try:
+            x0, y0, x1, y1 = (106, 370, 436, 384)
+            imsch = cv2.imdecode(np.asarray(self.get_curr_device_screen_img_byte_array(), dtype=np.uint8),
+                                 cv2.IMREAD_COLOR)
+            imsch = cv2.cvtColor(imsch, cv2.COLOR_BGR2GRAY)
+            imsch = imsch[y0:y1, x0:x1]
+            ret, imsch = cv2.threshold(imsch, 150, 255, cv2.THRESH_BINARY)
+            resource_image = Image.fromarray(imsch)
+            result = int(''.join(c for c in img_to_string(resource_image) if c.isdigit()))
+        except Exception as e:
+            traceback.print_exc()
+            return -1
+        if result > 99:
+            return -1
         return result
 
     def get_building_name(self, box):

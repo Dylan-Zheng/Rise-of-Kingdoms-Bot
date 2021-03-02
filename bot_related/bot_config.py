@@ -60,6 +60,10 @@ class BotConfig:
         # Alliance
         self.allianceAction = config.get('allianceAction', True)
 
+        # Barbarians
+        self.attackBarbarians = config.get('attackBarbarians', False)
+        self.barbariansLevel = config.get('barbariansLevel', 99)
+
         # Gather resource
         self.useGatheringBoosts = config.get('useGatheringBoosts', False)
         self.gatherResource = config.get('gatherResource', True)
