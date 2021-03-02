@@ -70,7 +70,7 @@ If you like this project, give me a star or feedback , that is great help for me
 
 ### Set Up
 
-- Use following command to install package into you **python** / **python virtual environment** (version 3.7)
+- Use following commands to install package into you **python** / **python virtual environment** (version 3.7)
 
   ```
   pip install opencv-python
