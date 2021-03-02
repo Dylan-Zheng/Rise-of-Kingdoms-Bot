@@ -2,6 +2,7 @@ from gui.creator import checkbox_fn_creator, train_fn_creator, write_bot_config
 
 from tkinter import StringVar, OptionMenu, Frame, Label, Entry, N, W
 
+import webbrowser
 
 def integer_entry_validate_cmd_creator(app, attr_name, def_value=0):
     def validate_cmd(value, action_type):
@@ -165,5 +166,9 @@ bot_config_title_fns = [
     [attack_barbarians_checkbox, [barbarians_level]],
     [gather_resource_checkbox, [use_gathering_boosts, resource_ratio, resource_no_secondery_commander]]
 ]
+
+
+def callback(url):
+    webbrowser.open_new(url)
 
 

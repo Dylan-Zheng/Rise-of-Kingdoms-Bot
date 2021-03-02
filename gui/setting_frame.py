@@ -8,19 +8,6 @@ from config import HAO_I, TWO_CAPTCHA, NONE
 import config
 
 
-class TopFrame(Frame):
-
-    def __init__(self, windows, cnf={}, **kwargs):
-        Frame.__init__(self, windows, kwargs)
-        self.windows_size = [kwargs['width'], kwargs['height']]
-        self.setting_btn = None
-
-    def buttons_setup(self, **kwargs):
-        setting_btn = button(self, kwargs.get('on_setting_click', lambda v: v), text='Setting')
-        setting_btn.grid(row=0, column=0, sticky=N + E)
-        self.setting_btn = setting_btn
-
-
 class SettingFrame(Frame):
     def __init__(self, windows, cnf={}, **kwargs):
         Frame.__init__(self, windows, kwargs)

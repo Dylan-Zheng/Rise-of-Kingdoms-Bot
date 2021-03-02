@@ -31,9 +31,10 @@ class MainFrame(Frame):
         config_frame = self.config_frame()
         bottom_frame = self.bottom_frame()
 
-        display_frame.grid(row=0, column=0, padx=10, pady=10, sticky=N + W)
-        bottom_frame.grid(row=1, column=0, padx=10, pady=10, sticky=N + W)
-        config_frame.grid(row=2, column=0, padx=10, pady=10, sticky=N + W)
+        display_frame.grid(row=0, column=0, padx=10, pady=(10, 0), sticky=N + W)
+        config_frame.grid(row=1, column=0, padx=10, pady=(10, 0), sticky=N + W)
+        bottom_frame.grid(row=2, column=0, padx=10, pady=(10, 0), sticky=N + W)
+
 
     def task_display_frame(self):
         width = self.windows_size[0] - 20
