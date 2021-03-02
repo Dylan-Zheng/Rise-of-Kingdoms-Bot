@@ -165,3 +165,5 @@ bot_config_title_fns = [
     [attack_barbarians_checkbox, [barbarians_level]],
     [gather_resource_checkbox, [use_gathering_boosts, resource_ratio, resource_no_secondery_commander]]
 ]
+
+

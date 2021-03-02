@@ -8,9 +8,13 @@ Self using bot for Rise of Kingdom.
 
 ### Requirements
 
+- python
+
+  version 3.7
+  
 - software
 
-  - ADB 
+  - ADB  version 29.0.5-5949299 (1.0.41)
   - tesseract 
 
 - libraries
@@ -25,6 +29,10 @@ Self using bot for Rise of Kingdom.
 
   - pure-python-adb
 
+  - requests
+  
+  - requests-toolbelt
+  
     
 
 ### Functions
@@ -50,21 +58,43 @@ Self using bot for Rise of Kingdom.
 
 
 
+### Set Up
+
+- Use follow in command to install package into you **python** / **python virtual environment** (version 3.7)
+
+  ```
+  pip install opencv-python
+  pip install pytesseract
+  pip install numpy
+  pip install pillow
+  pip install pure-python-adb
+  pip install requests
+  pip install requests-toolbelt
+  ```
+
+- Download **ADB** version 29.0.5-5949299 (1.0.41) (require for same version or you can change version in adb.py)
+
+  - move all **adb** files under: **project folder/adb/** 
+
+- Download **tesseract** version v5.0.0-alpha.20201127 (no require for same version)
+
+  - move all **tesseract** files under: **project folder/tesseract/** 
+
+- Use following command to run project
+
+  ```
+  python main.py
+  ```
+
+- Directory Structure Image:
+
+  ![](https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/blob/main/docs/structure.png?raw=true)
+
 ### Configurations
 
 - Emulator resolution must be <u>**720x1280**</u> or <u>**1280x720**</u>
-
 - Emulator must **Enable** Android Debug Bridge (ADB)
-
 - Game language must be <u>**English**</u> 
-
-- Place adb under project directory: **<u>*.\adb*</u>** 
-
-  (so that **adb.exe** will at: **project name\adb\adb.exe**)
-
-- Place tesseract  under project directory: **<u>*.\tesseract*</u>**  
-
-  (so that **tesseract.exe** will at: **project name\tesseract\tesseract.exe**)
 
 
 
