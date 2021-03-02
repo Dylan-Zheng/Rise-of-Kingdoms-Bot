@@ -2,7 +2,17 @@
 
 ### **Introduction**
 
-Self using bot for Rise of Kingdom. 
+Rise of Kingdom Bot can do following job: claim quests/vip/gifts, collecting resource, gathering resource, donate techology, train troops and pass verification.
+
+This tool is developed using python, and the source code has been open sourced on GitHub.
+
+Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot
+
+If you have any problem, suggestions or new features,  please feel free to submit issues directly on GitHub
+
+Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/issues
+
+If you like this project, give me a star or feedback , that is great help for me.
 
 
 
@@ -89,6 +99,8 @@ Self using bot for Rise of Kingdom.
 - Directory Structure Image:
 
   ![](https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/blob/main/docs/structure.png?raw=true)
+
+
 
 ### Configurations
 
