@@ -2,7 +2,7 @@ from tkinter import Tk, N, W
 from tkinter.ttk import Notebook
 from gui.setting_frame import SettingFrame
 from gui.bottom_frame import BottomFrame
-from gui.main_frame import MainFrame
+from gui.selected_device_frame import SelectedDeviceFrame
 from config import load_config
 from bot_related import twocaptcha, haoi
 
@@ -32,7 +32,8 @@ class MainWindow:
 
         tab = Notebook(self.window, height=size[1] - 80)
 
-        mf = MainFrame(self.window, self.adb.get_device(), width=size[0], height=size[1])
+        device = self.adb.get_device()
+        mf = SelectedDeviceFrame(self.window, self.adb.get_device(), width=size[0], height=size[1])
         self.curr_frame = mf
         self.main_frame_list.append(mf)
         mf.grid(row=0, column=0, sticky=N + W)

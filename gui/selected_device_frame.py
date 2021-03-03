@@ -12,10 +12,10 @@ from bot_related.bot import Bot
 
 import threading
 
-
 verification_method = None
 
-class MainFrame(Frame):
+
+class SelectedDeviceFrame(Frame):
 
     def __init__(self, windows, device, cnf={}, **kwargs):
         Frame.__init__(self, windows, kwargs)
@@ -35,7 +35,6 @@ class MainFrame(Frame):
         config_frame.grid(row=1, column=0, padx=10, pady=(10, 0), sticky=N + W)
         bottom_frame.grid(row=2, column=0, padx=10, pady=(10, 0), sticky=N + W)
 
-
     def task_display_frame(self):
         width = self.windows_size[0] - 20
         height = 130
@@ -46,7 +45,7 @@ class MainFrame(Frame):
         frame.rowconfigure(1, weight=height - 20)
 
         title = Label(frame, text="Task: None", width=width, height=5)
-        text = Text(frame, width=width, height=height-30)
+        text = Text(frame, width=width, height=height - 30)
         title.config(bg='white', anchor=W, justify=LEFT)
 
         title.grid(row=0, column=0, pady=10, sticky=N + W)
