@@ -6,6 +6,8 @@ from utils import resource_path
 from bot_related.bot_config import BotConfig
 from filepath.file_relative_paths import FilePaths
 
+import traceback
+
 import json
 
 
@@ -105,6 +107,7 @@ def load_bot_config(prefix):
             config_dict = json.load(f)
             config = BotConfig(config_dict)
     except Exception as e:
+        traceback.print_exc()
         config = BotConfig()
     return config
 
@@ -121,11 +124,27 @@ def load_building_pos(prefix):
                                 )) as f:
             building_pos = json.load(f)
     except Exception as e:
+        traceback.print_exc()
         building_pos = None
     return building_pos
 
 
 def write_building_pos(building_pos, prefix):
     building_pos_json = json.dumps(building_pos)
-    with open(resource_path(FilePaths.SAVE_FOLDER_PATH.value + "{}_config.json".format(prefix)), 'w') as f:
+    with open(resource_path(FilePaths.SAVE_FOLDER_PATH.value + "{}_building_pos.json".format(prefix)), 'w') as f:
         f.write(building_pos_json)
+
+
+def load_device_config():
+    try:
+        with open(resource_path('devices_config.json')) as f:
+            config = json.load(f)
+    except Exception as e:
+        config = []
+    return config
+
+
+def write_device_config(config):
+    config_json = json.dumps(config)
+    with open(resource_path("devices_config.json"), 'w') as f:
+        f.write(config_json)
