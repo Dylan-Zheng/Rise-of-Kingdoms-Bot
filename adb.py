@@ -3,6 +3,10 @@ from utils import resource_path
 from utils import build_command
 from filepath.file_relative_paths import FilePaths
 import subprocess
+import traceback
+
+
+bridge = None
 
 
 class Adb:
@@ -13,15 +17,22 @@ class Adb:
     def connect_to_device(self, host='127.0.0.1', port=5555):
         adb_path = resource_path(FilePaths.ADB_EXE_PATH.value)
         cmd = build_command(adb_path, 'connect', "{}:{}".format(host, port))
-        ret = subprocess.run(cmd, shell=True,
-                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="utf-8")
+        ret = subprocess.check_output(cmd, shell=True, stderr=subprocess.PIPE, encoding="utf-8", timeout=2)
         return self.get_device(host, port)
 
     def get_client_devices(self):
         return self.client.devices()
 
-    def get_device(self, host = '127.0.0.1', port = 5555):
-        return self.client.device('{}:{}'.format(host, port))
+    def get_device(self, host='127.0.0.1', port=5555):
+        device = self.client.device('{}:{}'.format(host, port))
+        try:
+            if device is None:
+                self.connect_to_device(host, port)
+                device = self.client.device('{}:{}'.format(host, port))
+        except Exception as e:
+            traceback.print_exc()
+            return None
+        return device
 
 
 def enable_adb(host='127.0.0.1', port=5037):
@@ -48,4 +59,3 @@ def enable_adb(host='127.0.0.1', port=5037):
             raise RuntimeError('Error: fail to start adb server. \n({})'.format(ret))
 
     return adb
-
