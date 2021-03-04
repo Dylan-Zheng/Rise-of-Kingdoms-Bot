@@ -6,13 +6,17 @@ Rise of Kingdom Bot can do following job: claim quests/vip/gifts, collecting res
 
 This tool is developed using python, and the source code has been open sourced on GitHub.
 
-Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot
+​	Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot
 
 If you have any problem, suggestions or new features,  please feel free to submit issues directly on GitHub
 
-Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/issues
+​	Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/issues
 
-If you like this project, give me a star or feedback , that is great help for me.
+If you don't want to set up by yourself, there is executable version for windows
+
+​	Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/releases/tag/v1.1.1.030321_beta
+
+If you like this project, give me a star or feedback , that is great help for me. **:smile:**
 
 
 
