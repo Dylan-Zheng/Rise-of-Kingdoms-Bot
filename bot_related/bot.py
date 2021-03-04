@@ -84,6 +84,7 @@ class Bot:
         }
 
         self.building_pos_update_event = lambda **kw: kw
+        self.config_update_event = lambda **kw: kw
 
         # get screen resolution
         str = device.shell('wm size').replace('\n', '')
@@ -185,8 +186,8 @@ class Bot:
 
         try:
             self.set_text(title='Init Building Position', remove=True)
-            self.set_text(insert='init view')
             self.set_text(insert='progress: 0%', index=0)
+            self.set_text(append='init view')
 
             self.back_to_home_gui()
             self.home_gui_full_view()
@@ -225,6 +226,7 @@ class Bot:
                 for col in range(0, x_times):
                     x, y = x_start + x_interval * col, y_start + y_interval * row
                     self.tap(x, y, 1)
+                    self.set_text(insert='tap at ({}, {})'.format(x, y), index=1)
                     num_of_back = self.back_to_home_gui()
                     if num_of_back == 0:
                         self.tap(x_start, y_start)
@@ -248,7 +250,7 @@ class Bot:
                                 level, name = name.replace('level ', '').split(' ', 1)
                             self.building_pos[name.replace(' ', '_')] = (x, y)
                             # bot_print("Building <{}> on position ({}, {}) ".format(name, x, y))
-                            self.set_text(insert='Building <{}> on position ({}, {})'.format(name, x, y), index=1)
+                            self.set_text(insert='<{}> on position ({}, {})'.format(name, x, y), index=1)
                             self.back()
 
                     self.tap(x_start, y_start)
@@ -259,9 +261,12 @@ class Bot:
                     # bot_print("{}/{}".format((row * x_times) + (col + 1), total))
 
             # save building pos to json
+            self.config.hasBuildingPos = True
             self.building_pos_update_event(building_pos=self.building_pos, prefix=self.device.serial.replace(':', "_"))
-
+            self.config_update_event(config=self.config, prefix=self.device.serial.replace(':', "_"))
         except Exception as e:
+            traceback.print_exc()
+            self.config.hasBuildingPos = False
             return TaskName.INIT_BUILDING_POS
         return next_task
 
@@ -290,11 +295,12 @@ class Bot:
                 BuildingNames.ALLIANCE_CENTER.value
             ]:
                 x, y = self.building_pos[name]
-                self.set_text(insert='tap building {} at position ({},{})'.format(name, x, y))
+                self.set_text(insert='tap {} at position ({},{})'.format(name, x, y))
                 self.tap(x, y)
                 self.tap(x_e, y_e)
 
         except Exception as e:
+            traceback.print_exc()
             return TaskName.COLLECTING
         return next_task
 
@@ -332,6 +338,7 @@ class Bot:
             for pos in [(355, 200), (530, 200), (710, 200), (885, 200), (1050, 200)]:
                 self.tap(pos[0], pos[1], 0.3)
         except Exception as e:
+            traceback.print_exc()
             return TaskName.CLAIM_QUEST
         return next_task
 
@@ -424,6 +431,7 @@ class Bot:
                         self.set_text(insert="Cannot found Officer's Recommendation")
 
         except Exception as e:
+            traceback.print_exc()
             return TaskName.ALLIANCE
         return next_task
 
@@ -586,6 +594,7 @@ class Bot:
                         self.tap(x, y, 0.5)
                         break
         except Exception as e:
+            traceback.print_exc()
             return TaskName.TRAINING
         return next_task
 
@@ -1007,6 +1016,7 @@ class Bot:
         remove = 'remove'
         replace = 'replace'
         index = 'index'
+        append = 'append'
 
         if title in kwargs:
             self.text[title] = kwargs[title]
@@ -1015,7 +1025,10 @@ class Bot:
             self.text[text_list][kwargs[index]] = dt_string + " " + kwargs[replace].lower()
 
         if insert in kwargs:
-            self.text[text_list].insert(kwargs.get('index', 0), dt_string + " " + kwargs[insert].lower())
+            self.text[text_list].insert(kwargs.get(index, 0), dt_string + " " + kwargs[insert].lower())
+
+        if append in kwargs:
+            self.text[text_list].append(dt_string + " " + kwargs[append].lower())
 
         if remove in kwargs and kwargs.get(remove, False):
             self.text[text_list].clear()
