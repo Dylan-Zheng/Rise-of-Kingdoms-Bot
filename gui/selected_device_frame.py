@@ -7,7 +7,7 @@ from tkinter import Label, Frame, Text
 from tkinter import N, W, END, INSERT, LEFT
 
 from utils import stop_thread
-from gui import all_title_fns as atf
+from gui import bot_config_fns as atf
 from bot_related.bot import Bot
 
 import threading
