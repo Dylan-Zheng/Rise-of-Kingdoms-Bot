@@ -1,6 +1,6 @@
 from gui.creator import load_bot_config
 from gui.creator import load_building_pos
-from gui.creator import write_building_pos
+from gui.creator import write_building_pos, write_bot_config
 from gui.creator import button
 
 from tkinter import Label, Frame, Text
@@ -26,14 +26,13 @@ class SelectedDeviceFrame(Frame):
         self.bot_building_pos = load_building_pos(device.serial.replace(':', "_"))
         self.bot_thread = None
         self.windows_size = [kwargs['width'], kwargs['height']]
-
         display_frame, self.task_title, self.task_text = self.task_display_frame()
         config_frame = self.config_frame()
         bottom_frame = self.bottom_frame()
 
-        display_frame.grid(row=0, column=0, padx=10, pady=(10, 0), sticky=N + W)
-        config_frame.grid(row=1, column=0, padx=10, pady=(10, 0), sticky=N + W)
-        bottom_frame.grid(row=2, column=0, padx=10, pady=(10, 0), sticky=N + W)
+        display_frame.grid(row=1, column=0, padx=10, sticky=N + W)
+        config_frame.grid(row=2, column=0, padx=10, pady=(10, 0), sticky=N + W)
+        bottom_frame.grid(row=3, column=0, padx=10, pady=(10, 0), sticky=N + W)
 
     def task_display_frame(self):
         width = self.windows_size[0] - 20
@@ -42,14 +41,17 @@ class SelectedDeviceFrame(Frame):
         frame.grid_propagate(False)
         frame.columnconfigure(0, weight=width)
         frame.rowconfigure(0, weight=5)
-        frame.rowconfigure(1, weight=height - 20)
+        frame.rowconfigure(1, weight=5)
+        frame.rowconfigure(2, weight=height - 20)
 
+        dl = Label(frame, text=self.device.serial, width=width, height=5, bg='white')
         title = Label(frame, text="Task: None", width=width, height=5)
         text = Text(frame, width=width, height=height - 30)
         title.config(bg='white', anchor=W, justify=LEFT)
 
-        title.grid(row=0, column=0, pady=10, sticky=N + W)
-        text.grid(row=1, column=0, sticky=N + W)
+        dl.grid(row=0, column=0, pady=(10, 0), sticky=N + W)
+        title.grid(row=1, column=0, pady=10, sticky=N + W)
+        text.grid(row=2, column=0, sticky=N + W)
         return frame, title, text
 
     def config_frame(self):
@@ -65,29 +67,40 @@ class SelectedDeviceFrame(Frame):
             check.grid(row=i, column=0, sticky=N + W)
         return frame
 
+    def start(self):
+        bot = Bot(self.device)
+        self.bot = bot
+        if self.bot_building_pos is None:
+            self.bot_config.hasBuildingPos = False
+            self.bot_building_pos = {}
+
+        bot.config = self.bot_config
+        bot.building_pos = self.bot_building_pos
+
+        bot.text_update_event = self.on_task_update
+        bot.building_pos_update_event = lambda **kw: write_building_pos(kw['building_pos'], kw['prefix'])
+        bot.config_update_event = lambda **kw: write_bot_config(kw['config'], kw['prefix'])
+
+        self.bot_thread = threading.Thread(target=bot.start)
+        self.bot_thread.start()
+
+    def stop(self):
+        if(self.bot_thread is not None):
+            stop_thread(self.bot_thread)
+            self.bot_thread = None
+            self.task_title.config(text='Task: None')
+            self.task_text.delete(1.0, END)
+            self.bot = None
+
     def bottom_frame(self):
         frame = Frame(self)
 
         def on_click(btn):
             if self.bot_thread is None:
-
-                bot = Bot(self.device)
-                self.bot = bot
-                bot.config = self.bot_config
-                bot.building_pos = self.bot_building_pos
-
-                bot.text_update_event = self.on_task_update
-                bot.building_pos_update_event = lambda **kw: write_building_pos(kw['building_pos'], kw['prefix'])
-
-                self.bot_thread = threading.Thread(target=bot.start)
-                self.bot_thread.start()
+                self.start()
                 btn.config(text='STOP')
             elif self.bot_thread is not None:
-                stop_thread(self.bot_thread)
-                self.bot_thread = None
-                self.task_title.config(text='Task: None')
-                self.task_text.delete(1.0, END)
-                self.bot = None
+                self.stop()
                 btn.config(text='START')
             return
 
@@ -102,7 +115,6 @@ class SelectedDeviceFrame(Frame):
         for t in text_list:
             self.task_text.insert(INSERT, t + '\n')
 
-            # for component in sub_components:
 
 
 def section_frame(app, parent, title_component_fn, sub_component_fns=[], start_row=0, start_column=0):
