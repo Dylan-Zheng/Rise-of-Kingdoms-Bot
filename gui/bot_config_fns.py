@@ -30,6 +30,7 @@ def time_drop_down(app, parent):
 
     def command(value):
         app.bot_config.breakTime = int(value.replace(' Minute', '')) * 60
+        write_bot_config(app.bot_config, app.device.serial.replace(':', "_"))
 
     option = OptionMenu(parent, variable, *options, command=command)
     return option, variable
