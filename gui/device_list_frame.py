@@ -26,7 +26,7 @@ class DeviceListFrame(Frame):
         for config in self.devices_config:
             dlt.add_row(config['ip'], config['port'])
 
-        adf.on_add_click(dlt.add_row)
+        adf.set_on_add_click(dlt.add_row)
         adf.grid(row=0, column=0, pady=(10, 0), sticky=N + W)
         dlt.grid(row=1, column=0, pady=(10, 0), sticky=N + W)
 
@@ -41,11 +41,6 @@ class DeviceListTable(Frame):
 
     def add_row(self, ip, port):
         try:
-            if re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", ip) is None:
-                return
-            if not (1 <= int(port) <= 65535):
-                return
-
             new_row = DeviceRow(self, self.main_frame, ip, port)
             new_row.set_on_display_click(self.on_display_click)
             new_row.set_on_del_click(self.on_delete_click)
@@ -59,9 +54,10 @@ class DeviceListTable(Frame):
     def remove_row(self, row):
         try:
             idx = self.device_rows.index(row)
+            if row.device_frame is not None:
+                row.device_frame.stop()
+                row.device_frame.destroy()
             self.device_rows.remove(row)
-            row.device_frame.stop()
-            row.device_frame.destroy()
             row.destroy()
         except Exception as e:
             traceback.print_exc()
@@ -174,9 +170,15 @@ class AddDeviceFrame(Frame):
         self.port_entry.grid(row=0, column=3, sticky=W, padx=5)
         self.add_btn.grid(row=0, column=4, sticky=W, padx=5)
 
-    def on_add_click(self, on_click=lambda ip, port: None):
+    def set_on_add_click(self, on_click=lambda ip, port: None):
         def callback():
-            on_click(self.ip_entry.get(), self.port_entry.get())
+            ip = self.ip_entry.get()
+            port = self.port_entry.get()
+            if re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", ip) is None:
+                return
+            if not (1 <= int(port) <= 65535):
+                return
+            on_click(ip, port)
             self.master.devices_config.append({'ip': self.ip_entry.get(), 'port': self.port_entry.get()})
             write_device_config(self.master.devices_config)
 
