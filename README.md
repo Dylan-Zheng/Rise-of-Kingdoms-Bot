@@ -62,7 +62,7 @@ If you like this project, give me a star or feedback , that is great help for me
 | Heal troops                                            | no yet          |
 | Gather resource                                        | **<u>Done</u>** |
 | A simple GUI                                           | **<u>Done</u>** |
-| Allow bot control multi-devices/emulator               | no yet          |
+| Allow bot control multi-devices/emulator               | **<u>Done</u>** |
 | Pass verification with haoi API                        | **<u>Done</u>** |
 | Pass verification with 2captcha API                    | **<u>Done</u>** |
 
