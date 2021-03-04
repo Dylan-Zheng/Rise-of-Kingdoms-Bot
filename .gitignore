@@ -39,6 +39,7 @@ tesseract
 venv
 _pycache_
 config.json
+devices_config.json
 save
 test_code
 test_screen_caps
