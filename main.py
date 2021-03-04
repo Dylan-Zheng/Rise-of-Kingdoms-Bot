@@ -1,10 +1,11 @@
-from adb import enable_adb
+import adb
+
 from gui.main_window import MainWindow
 
 
 def main():
-    adb = enable_adb()
-    window = MainWindow(adb)
+    adb.bridge = adb.enable_adb()
+    window = MainWindow()
     window.run()
 
 
