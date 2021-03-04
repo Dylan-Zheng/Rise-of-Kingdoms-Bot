@@ -7,7 +7,7 @@ from gui.selected_device_frame import SelectedDeviceFrame
 from config import load_config
 from bot_related import twocaptcha, haoi
 import adb
-
+from version import version
 import config
 
 
@@ -23,7 +23,7 @@ class MainWindow:
         self.window = Tk()
         self.size = size
 
-        self.window.title('Rise Of Kingdom Bot')
+        self.window.title('Rise Of Kingdom Bot (v{})'.format(version))
         self.window.geometry('{}x{}'.format(size[0], size[1]))
         self.window.resizable(0, 0)
 
