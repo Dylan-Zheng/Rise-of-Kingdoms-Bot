@@ -650,6 +650,9 @@ class Bot:
         x, y = center_pos
         self.tap(x, y, 1)
 
+
+
+
         return next_task
 
     def gather_resource(self, next_task=TaskName.BREAK):
@@ -764,7 +767,7 @@ class Bot:
 
         except Exception as e:
             traceback.print_exc()
-            return TaskName.GATHER
+            return next_task
         return next_task
 
     def get_min_resource(self):
