@@ -901,11 +901,11 @@ class Bot:
                 should_decreasing_lv = False
                 gather_button_pos = self.gui.check_any(ImagePathAndProps.RESOURCE_GATHER_BUTTON_IMAGE_PATH.value)[2]
                 self.tap(gather_button_pos[0], gather_button_pos[1], 2)
-                result = self.gui.check_any(ImagePathAndProps.NEW_TROOPS_BUTTON_IMAGE_PATH.value)[2]
-                if result is None:
+                pos = self.gui.check_any(ImagePathAndProps.NEW_TROOPS_BUTTON_IMAGE_PATH.value)[2]
+                if pos is None:
                     self.set_text(insert="Not more space for march")
                     return next_task
-                new_troops_button_pos = result['result']
+                new_troops_button_pos = pos
                 self.tap(new_troops_button_pos[0], new_troops_button_pos[1], 2)
                 if self.config.gatherResourceNoSecondaryCommander:
                     self.set_text(insert="Remove secondary commander")
