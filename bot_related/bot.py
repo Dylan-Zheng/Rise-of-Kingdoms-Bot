@@ -6,12 +6,14 @@ from filepath.file_relative_paths import ImagePathAndProps, BuffsImageAndProps, 
 from datetime import datetime
 from utils import aircv_rectangle_to_box
 from enum import Enum
-from filepath.constants import RESOURCES, SPEEDUPS, BOOSTS, EQUIPMENT, OTHER, MAP, HOME
 
 import config
 import traceback
 import math
 import time
+
+from filepath.constants import \
+    RESOURCES, SPEEDUPS, BOOSTS, EQUIPMENT, OTHER, MAP, HOME, VICTORY_MAIL, DEFEAT_MAIL
 
 DEFAULT_RESOLUTION = {'height': 720, 'width': 1280}
 
@@ -235,11 +237,13 @@ class Bot:
                     # sleep 0.5 sec just for a case if screen print before button display
                     time.sleep(0.5)
                     # check is tap on building
-                    result = self.gui.has_image(ImagePathAndProps.BUILDING_INFO_BUTTON_IMG_PATH.value)
+                    has_info_btn, _, info_btn_pos = self.gui.check_any(
+                        ImagePathAndProps.BUILDING_INFO_BUTTON_IMG_PATH.value)
 
                     # if tap on the building, then try to tap on building infomation button to get building name
-                    if result is not None:
-                        self.tap(result['result'][0], result['result'][1], 1)
+                    if has_info_btn:
+                        x, y = info_btn_pos
+                        self.tap(x, y, 1)
                         name = self.gui.get_windows_name()
                         if name is None:
                             self.back_to_home_gui()
@@ -280,8 +284,6 @@ class Bot:
 
             self.menu_should_open(False)
 
-            width = DEFAULT_RESOLUTION['width']
-            height = DEFAULT_RESOLUTION['height']
             x_e, y_e = 105, 125
             for name in [
                 BuildingNames.BARRACKS.value,
@@ -316,20 +318,20 @@ class Bot:
             self.set_text(insert='Claim quest')
             self.tap(quests_tap_pos[0], quests_tap_pos[1], 1)
             for i in range(20):
-                result = self.gui.has_image(ImagePathAndProps.QUEST_CLAIM_BUTTON_IMAGE_PATH.value)
-                if result is None:
+                _, _, claim_btn_pos = self.gui.check_any(ImagePathAndProps.QUEST_CLAIM_BUTTON_IMAGE_PATH.value)
+                if claim_btn_pos is None:
                     break
-                x, y = result["result"]
+                x, y = claim_btn_pos
                 self.set_text(insert='Tap claim button at ({}, {})'.format(x, y))
                 self.tap(x, y, 0.5)
 
             self.set_text(insert='Claim Daily Objective')
             self.tap(daily_objectives_tap_pos[0], daily_objectives_tap_pos[1], 1)
             for i in range(20):
-                result = self.gui.has_image(ImagePathAndProps.QUEST_CLAIM_BUTTON_IMAGE_PATH.value)
-                if result is None:
+                _, _, claim_btn_pos = self.gui.check_any(ImagePathAndProps.QUEST_CLAIM_BUTTON_IMAGE_PATH.value)
+                if claim_btn_pos is None:
                     break
-                x, y = result["result"]
+                x, y = claim_btn_pos
                 self.set_text(insert='Tap claim button at ({}, {})'.format(x, y))
                 self.tap(x, y, 0.5)
 
@@ -387,10 +389,10 @@ class Bot:
                     x, y = rate_pos
                     self.tap(x, y, 1)
                     for i in range(20):
-                        result = self.gui.has_image(ImagePathAndProps.GIFTS_CLAIM_BUTTON_IMAGE_PATH.value)
-                        if result is None:
+                        _, _, pos = self.gui.check_any(ImagePathAndProps.GIFTS_CLAIM_BUTTON_IMAGE_PATH.value)
+                        if pos is None:
                             break
-                        x, y = result['result']
+                        x, y = pos
                         self.tap(x, y, 0.5)
 
                     # collecting normal gifts
@@ -415,16 +417,16 @@ class Bot:
 
                 elif name == 'TECHNOLOGY':
                     self.set_text(insert='Donate technology')
-                    technologe_pos = (760, 560)
-                    x, y = technologe_pos
+                    technology_pos = (760, 560)
+                    x, y = technology_pos
                     self.tap(x, y, 5)
-                    result = self.gui.has_image(ImagePathAndProps.TECH_RECOMMEND_IMAGE_PATH.value)
-                    if result is not None:
-                        x, y = result['result']
+                    _, _, recommend_image_pos = self.gui.check_any(ImagePathAndProps.TECH_RECOMMEND_IMAGE_PATH.value)
+                    if recommend_image_pos is not None:
+                        x, y = recommend_image_pos
                         self.tap(x, y + 60, 1)
-                        result = self.gui.has_image(ImagePathAndProps.TECH_DONATE_BUTTON_IMAGE_PATH.value)
-                        if result is not None:
-                            x, y = result['result']
+                        _, _, donate_btn_pos = self.gui.check_any(ImagePathAndProps.TECH_DONATE_BUTTON_IMAGE_PATH.value)
+                        if donate_btn_pos is not None:
+                            x, y = donate_btn_pos
                             for i in range(20):
                                 self.tap(x, y, 0.03)
                     else:
@@ -450,10 +452,10 @@ class Bot:
         blacksmith_pos = self.building_pos[BuildingNames.BLACKSMITH.value]
         x, y = blacksmith_pos
         self.tap(x, y, 2)
-        result = self.gui.has_image(ImagePathAndProps.MATERIALS_PRODUCTION_BUTTON_IMAGE_PATH.value)
-        if result is None:
+        _, _, product_btn_pos = self.gui.check_any(ImagePathAndProps.MATERIALS_PRODUCTION_BUTTON_IMAGE_PATH.value)
+        if product_btn_pos is None:
             return next_task
-        x, y = result['result']
+        x, y = product_btn_pos
         self.tap(x, y, 5)
         list_amount = self.gui.materilal_amount_image_to_string()
         self.set_text(insert='\nLeather: {}\nIton: {}\nEboy: {}\nBone: {}'.format(
@@ -481,22 +483,22 @@ class Bot:
         x, y = tavern_pos
         self.set_text(insert='Tap tavern at position ({}, {})'.format(x, y))
         self.tap(x, y, 1)
-        result = self.gui.has_image(ImagePathAndProps.TAVERN_BUTTON_BUTTON_IMAGE_PATH.value)
-        if result is None:
+        _, _, tavern_btn_pos = self.gui.check_any(ImagePathAndProps.TAVERN_BUTTON_BUTTON_IMAGE_PATH.value)
+        if tavern_btn_pos is None:
             return next_task
-        x, y = result['result']
+        x, y = tavern_btn_pos
         self.tap(x, y, 4)
         for i in range(20):
-            result = self.gui.has_image(ImagePathAndProps.CHEST_OPEN_BUTTON_IMAGE_PATH.value)
-            if result is None:
+            _, _, open_btn_pos = self.gui.check_any(ImagePathAndProps.CHEST_OPEN_BUTTON_IMAGE_PATH.value)
+            if open_btn_pos is None:
                 return next_task
-            x, y = result['result']
+            x, y = open_btn_pos
             self.set_text(insert="Tap open button at ({}, {})".format(x, y))
             self.tap(x, y, 4)
-            result = self.gui.has_image(ImagePathAndProps.CHEST_CONFIRM_BUTTON_IMAGE_PATH.value)
-            if result is None:
+            _, _, confirm_btn_pos = self.gui.check_any(ImagePathAndProps.CHEST_CONFIRM_BUTTON_IMAGE_PATH.value)
+            if confirm_btn_pos is None:
                 return next_task
-            x, y = result['result']
+            x, y = confirm_btn_pos
             self.tap(x, y, 4)
 
     def training_and_upgrade(self, next_task=TaskName.GATHER):
@@ -549,13 +551,13 @@ class Bot:
                 upgraded = False
                 x, y = config[3]
                 self.tap(x, y, 1)
-                result = self.gui.has_image(config[0])
-                if result is None:
+                _, _, pos = self.gui.check_any(config[0])
+                if pos is None:
                     continue
-                x, y = result['result']
+                x, y = pos
                 self.tap(x, y, 1)
-                result = self.gui.has_image(ImagePathAndProps.SPEED_UP_BUTTON_IMAGE_PATH.value)
-                if result is not None:
+                _, _, pos = self.gui.check_any(ImagePathAndProps.SPEED_UP_BUTTON_IMAGE_PATH.value)
+                if pos is not None:
                     continue
                 if config[2] != TrainingAndUpgradeLevel.DISABLED.value:
                     max = config[2] if config[2] != TrainingAndUpgradeLevel.UPGRADE_ALL.value \
@@ -565,19 +567,19 @@ class Bot:
                         x, y = soldier_icon_pos[i]
                         self.tap(x, y, 0.5)
                         # check has upgrade button, if has then tap it
-                        result = self.gui.has_image(ImagePathAndProps.TRAINING_UPGRADE_BUTTON_IMAGE_PATH.value)
-                        if result is None:
+                        _, _, pos = self.gui.check_any(ImagePathAndProps.TRAINING_UPGRADE_BUTTON_IMAGE_PATH.value)
+                        if pos is None:
                             if config[2] != TrainingAndUpgradeLevel.UPGRADE_ALL.value:
                                 break
                             else:
                                 continue
-                        x, y = result['result']
+                        x, y = pos
                         self.set_text(insert='Upgrade T{}({})'.format(i + 1, config[4]))
                         self.tap(x, y, 0.5)
 
                         # check has train button if has then tap it
-                        result = self.gui.has_image(ImagePathAndProps.UPGRADE_BUTTON_IMAGE_PATH.value)
-                        x, y = result['result']
+                        _, _, pos = self.gui.check_any(ImagePathAndProps.UPGRADE_BUTTON_IMAGE_PATH.value)
+                        x, y = pos
                         self.tap(x, y, 0.5)
                         upgraded = True
 
@@ -586,11 +588,11 @@ class Bot:
                     for i in range(config[1], -1, -1):
                         x, y = soldier_icon_pos[i]
                         self.tap(x, y, 0.5)
-                        result = self.gui.has_image(ImagePathAndProps.TRAIN_BUTTON_IMAGE_PATH.value)
-                        if result is None:
+                        _, _, pos = self.gui.check_any(ImagePathAndProps.TRAIN_BUTTON_IMAGE_PATH.value)
+                        if pos is None:
                             continue
                         self.set_text(insert='Train T{}({})'.format(i + 1, config[4]))
-                        x, y = result['result']
+                        x, y = pos
                         self.tap(x, y, 0.5)
                         break
         except Exception as e:
@@ -602,8 +604,12 @@ class Bot:
         max_pos = (375, 405)
         min_pos = (168, 405)
 
-        dec_pos = self.gui.has_image(ImagePathAndProps.DECREASING_BUTTON_IMAGE_PATH.value)['result']
-        inc_pos = self.gui.has_image(ImagePathAndProps.INCREASING_BUTTON_IMAGE_PATH.value)['result']
+        _, _, dec_pos = self.gui.check_any(ImagePathAndProps.DECREASING_BUTTON_IMAGE_PATH.value)
+        has_inc_btn, _, inc_pos = self.gui.check_any(ImagePathAndProps.INCREASING_BUTTON_IMAGE_PATH.value)
+        _, _, lock_pos = self.gui.check_any(ImagePathAndProps.LOCK_BUTTON_IMAGE_PATH.value)
+
+        if not has_inc_btn:
+            inc_pos = lock_pos
 
         # set to max level
         x, y = max_pos
@@ -612,7 +618,8 @@ class Bot:
         max_lv = self.gui.barbarians_level_image_to_string()
         self.set_text(insert="Max level is {}".format(max_lv))
         if max_lv != -1:
-            x = max_pos[0] if level > max_pos[0] or level >= 99 else (level / max_lv) * (max_pos[0] - min_pos[0]) + min_pos[0]
+            x = max_pos[0] if level > max_pos[0] or level >= 99 else (level / max_lv) * (max_pos[0] - min_pos[0]) + \
+                                                                     min_pos[0]
             y = max_pos[1]
             self.tap(x, y)
             curr_lv = self.gui.barbarians_level_image_to_string()
@@ -625,33 +632,178 @@ class Bot:
                 x, y = btn_pos
                 self.tap(x, y)
 
+    # attack barbarians
+    def hold_pos_after_attack(self, should_hold):
+        is_check, _, pos = self.gui.check_any(ImagePathAndProps.HOLD_POS_CHECKED_IMAGE_PATH.value)
+        if should_hold and not is_check:
+            _, _, pos = self.gui.check_any(ImagePathAndProps.HOLD_POS_UNCHECK_IMAGE_PATH.value)
+            x, y = pos
+            self.tap(x, y)
+        elif not should_hold and is_check:
+            x, y = pos
+            self.tap(x, y)
+
+    def select_save_blue_one(self):
+
+        def tap_on_save_btn(pos):
+            _x, _y = pos
+            self.tap(_x, _y, 1)
+            is_save_unselect, _, _ = self.gui.check_any(
+                ImagePathAndProps.UNSELECT_BLUE_ONE_SAVE_BUTTON_IMAGE_PATH.value)
+            if is_save_unselect:
+                self.set_text(insert='Commander not in city, stop current task')
+                raise RuntimeError('Commander not in city, stop current task')
+
+        # if blue save one not exist, try to find switch button
+        has_save_btn, _, save_btn_pos = self.gui.check_any(
+            ImagePathAndProps.UNSELECT_BLUE_ONE_SAVE_BUTTON_IMAGE_PATH.value)
+
+        if not has_save_btn:
+            has_switch_btn, _, switch_btn_pos = self.gui.check_any(
+                ImagePathAndProps.SAVE_SWITCH_BUTTON_IMAGE_PATH.value)
+            # if switch button found tap it to find blue one
+            if has_switch_btn:
+                for times in range(3):
+                    # tap switch button
+                    x, y = switch_btn_pos
+                    self.tap(x, y)
+                    # check is save one exists
+                    has_save_btn, _, save_btn_pos = self.gui.check_any(
+                        ImagePathAndProps.UNSELECT_BLUE_ONE_SAVE_BUTTON_IMAGE_PATH.value)
+                    # if exists tap it else continue
+        if has_save_btn:
+            tap_on_save_btn(save_btn_pos)
+        else:
+            self.set_text(insert='Save not found')
+            raise RuntimeError('Save not found')
+
+    def battle_result_detector(self):
+
+        start = time.time()
+        while True:
+            found, name, pos = self.gui.check_any(
+                ImagePathAndProps.VICTORY_MAIL_IMAGE_PATH.value,
+                ImagePathAndProps.DEFEAT_MAIL_IMAGE_PATH.value
+            )
+            if found:
+                return name
+            elif time.time() - start >= self.config.timeout:
+                return None
+
+    def wait_for_commander_back_to_city(self, commander_cv_img):
+        start = time.time()
+        while True:
+            result = self.gui.has_image_cv_img(commander_cv_img)
+            if result is None:
+                return True
+            elif time.time() - start >= self.config.timeout:
+                return False
+
     def attack_barbarians(self, next_task=TaskName.GATHER):
         icon_pos = (255, 640)
         center_pos = (640, 320)
+        queue_one_pos = (1205, 205, 1235, 230)
 
+        try:
 
-        self.set_text(title='Attack Barbarians', remove=True)
-        self.set_text(insert="Search barbarians")
-        self.back_to_map_gui()
+            self.set_text(title='Attack Barbarians', remove=True)
 
-        # tap on magnifier
-        self.tap(60, 540, 1)
-        # tap on barbarians icon
-        x, y = icon_pos
-        self.tap(x, y, 1)
+            commander_cv_img = None
 
-        # set barbarians level
-        self.set_barbarians_level(self.config.barbariansLevel)
+            is_in_city = True
 
-        # tap search button
-        search_pos = self.gui.has_image(ImagePathAndProps.RESOURCE_SEARCH_BUTTON_IMAGE_PATH.value)['result']
-        x, y = search_pos
-        self.tap(x, y, 2)
-        x, y = center_pos
-        self.tap(x, y, 1)
+            for r in range(self.config.numberOfAttack):
+                self.set_text(insert="Search barbarians")
+                self.back_to_map_gui()
 
+                # tap on magnifier
+                self.tap(60, 540, 1)
+                # tap on barbarians icon
+                x, y = icon_pos
+                self.tap(x, y, 1)
 
+                # set barbarians level
+                self.set_barbarians_level(self.config.barbariansLevel)
 
+                # tap search button
+                _, _, search_pos = self.gui.check_any(ImagePathAndProps.RESOURCE_SEARCH_BUTTON_IMAGE_PATH.value)
+                x, y = search_pos
+                self.tap(x, y, 2)
+                x, y = center_pos
+                self.tap(x, y, 1)
+
+                # hold position
+                self.hold_pos_after_attack(self.config.holdPosition)
+
+                # tap attack button
+                _, _, atk_btn_pos = self.gui.check_any(ImagePathAndProps.ATTACK_BUTTON_POS_IMAGE_PATH.value)
+                x, y = atk_btn_pos
+                self.tap(x, y, 1)
+
+                if not self.config.holdPosition or is_in_city:
+                    # tap on new troop
+                    has_new_troops_btn, _, new_troop_btn_pos = self.gui.check_any(
+                        ImagePathAndProps.NEW_TROOPS_BUTTON_IMAGE_PATH.value)
+                    if not has_new_troops_btn:
+                        self.set_text(insert="Not more space for march")
+                        return next_task
+                    x, y = new_troop_btn_pos
+                    self.tap(x, y, 1)
+
+                    # select saves
+                    self.select_save_blue_one()
+
+                    # start attack
+                    _, _, match_button_pos = self.gui.check_any(ImagePathAndProps.TROOPS_MATCH_BUTTON_IMAGE_PATH.value)
+                    self.set_text(insert="March")
+                    x, y = match_button_pos
+                    self.tap(x, y, 1)
+                    commander_cv_img = self.gui.get_image_in_box(queue_one_pos)
+
+                else:
+                    # find commander and tap it
+                    result = self.gui.has_image_cv_img(commander_cv_img)
+                    if result is None:
+                        break;
+                    x, y = result['result']
+                    self.tap(x, y, 1)
+
+                    # tap on match button
+                    _, _, pos = self.gui.check_any(ImagePathAndProps.TROOPS_MATCH_BUTTON_IMAGE_PATH.value)
+                    x, y = pos
+                    self.tap(x, y, 1)
+
+                # block and try to catch battle result
+                battle_result = self.battle_result_detector()
+                if battle_result is None:
+                    break
+                elif battle_result == DEFEAT_MAIL:
+                    self.wait_for_commander_back_to_city(commander_cv_img)
+                    is_in_city = True
+                    continue
+                elif battle_result == VICTORY_MAIL:
+                    if not self.config.holdPosition:
+                        self.wait_for_commander_back_to_city(commander_cv_img)
+                        is_in_city = True
+                    continue
+
+            # call commander return
+            result = self.gui.has_image_cv_img(commander_cv_img)
+            if result is not None:
+                x, y = result['result']
+                self.tap(x, y, 1)
+                x, y = center_pos
+                self.tap(x, y, 1)
+                _, _, pos = self.gui.check_any(ImagePathAndProps.RETURN_BUTTON_IMAGE_PATH.value)
+                if pos is not None:
+                    x, y = pos
+                    self.tap(x, y, 1)
+                    self.wait_for_commander_back_to_city()
+                    is_in_city = True
+
+        except Exception as e:
+            traceback.print_exc()
+            return next_task
 
         return next_task
 
@@ -704,9 +856,9 @@ class Bot:
             # tap on magnifier
             self.tap(60, 540, 1)
             self.tap(chose_icon_pos[0], chose_icon_pos[1], 1)
-            search_pos = self.gui.has_image(ImagePathAndProps.RESOURCE_SEARCH_BUTTON_IMAGE_PATH.value)['result']
-            dec_pos = self.gui.has_image(ImagePathAndProps.DECREASING_BUTTON_IMAGE_PATH.value)['result']
-            inc_pos = self.gui.has_image(ImagePathAndProps.INCREASING_BUTTON_IMAGE_PATH.value)['result']
+            search_pos = self.gui.check_any(ImagePathAndProps.RESOURCE_SEARCH_BUTTON_IMAGE_PATH.value)[2]
+            dec_pos = self.gui.check_any(ImagePathAndProps.DECREASING_BUTTON_IMAGE_PATH.value)[2]
+            inc_pos = self.gui.check_any(ImagePathAndProps.INCREASING_BUTTON_IMAGE_PATH.value)[2]
             self.tap(inc_pos[0] - 33, inc_pos[1], 0.3)
 
             repeat_count = 0
@@ -725,8 +877,8 @@ class Bot:
 
                 for j in range(5):
                     self.tap(search_pos[0], search_pos[1], 2)
-                    result = self.gui.has_image(ImagePathAndProps.RESOURCE_SEARCH_BUTTON_IMAGE_PATH.value)
-                    if result is None:
+                    is_found, _, _ = self.gui.check_any(ImagePathAndProps.RESOURCE_SEARCH_BUTTON_IMAGE_PATH.value)
+                    if not is_found:
                         break
                     self.set_text(insert="Not found, decreasing level by 1 [{}]".format(j))
                     self.tap(dec_pos[0], dec_pos[1], 0.3)
@@ -747,10 +899,9 @@ class Bot:
                         continue
                 last_resource_pos.append(new_resource_pos)
                 should_decreasing_lv = False
-                gather_button_pos = self.gui.has_image(ImagePathAndProps.RESOURCE_GATHER_BUTTON_IMAGE_PATH.value)[
-                    'result']
+                gather_button_pos = self.gui.check_any(ImagePathAndProps.RESOURCE_GATHER_BUTTON_IMAGE_PATH.value)[2]
                 self.tap(gather_button_pos[0], gather_button_pos[1], 2)
-                result = self.gui.has_image(ImagePathAndProps.NEW_TROOPS_BUTTON_IMAGE_PATH.value)
+                result = self.gui.check_any(ImagePathAndProps.NEW_TROOPS_BUTTON_IMAGE_PATH.value)[2]
                 if result is None:
                     self.set_text(insert="Not more space for march")
                     return next_task
@@ -759,7 +910,7 @@ class Bot:
                 if self.config.gatherResourceNoSecondaryCommander:
                     self.set_text(insert="Remove secondary commander")
                     self.tap(473, 501, 0.5)
-                match_button_pos = self.gui.has_image(ImagePathAndProps.TROOPS_MATCH_BUTTON_IMAGE_PATH.value)['result']
+                match_button_pos = self.gui.check_any(ImagePathAndProps.TROOPS_MATCH_BUTTON_IMAGE_PATH.value)[2]
                 self.set_text(insert="March")
                 self.tap(match_button_pos[0], match_button_pos[1], 2)
                 repeat_count = 0
@@ -817,12 +968,11 @@ class Bot:
         return loop_count
 
     def find_home(self):
-        result = self.gui.has_image(ImagePathAndProps.GREEN_HOME_BUTTON_IMG_PATH.value)
-        if result is None:
+        has_green_home, _, pos = self.gui.check_any(ImagePathAndProps.GREEN_HOME_BUTTON_IMG_PATH.value)
+        if not has_green_home:
             return None
-        info = result['result']
-        x_pos, y_pos = info[0], info[1]
-        self.tap(x_pos, y_pos, 2)
+        x, y = pos
+        self.tap(x, y, 2)
 
     def home_gui_full_view(self):
         self.tap(60, 540, 0.5)
@@ -831,7 +981,7 @@ class Bot:
 
     # Building Position
     def find_building_title(self):
-        result = self.gui.has_image(ImagePathAndProps.BUILDING_TITLE_MARK_IMG_PATH.value)
+        result = self.gui.has_image_props(ImagePathAndProps.BUILDING_TITLE_MARK_IMG_PATH.value)
         if result is None:
             return None
         x0, y0, x1, y1 = aircv_rectangle_to_box(result["rectangle"])
@@ -843,7 +993,7 @@ class Bot:
         path, size, box, threshold, least_diff, gui = ImagePathAndProps.MENU_BUTTON_IMAGE_PATH.value
         x0, y0, x1, y1 = box
         c_x, c_y = x0 + (x1 - x0) / 2, y0 + (y1 - y0) / 2
-        is_open, _, _ = self.gui.check(ImagePathAndProps.MENU_OPENED_IMAGE_PATH.value);
+        is_open, _, _ = self.gui.check_any(ImagePathAndProps.MENU_OPENED_IMAGE_PATH.value);
         if should_open and not is_open:
             self.tap(c_x, c_y, 0.5)
         elif not should_open and is_open:
@@ -929,10 +1079,8 @@ class Bot:
         else:
             return False
         # Start Checking
-        result = self.gui.has_image(buff_img_props)
-        if result is None:
-            return False
-        return True
+        has, _, _ = self.gui.check_any(buff_img_props)
+        return has
 
     def use_item(self, using_location, item_img_props_list):
 
@@ -966,10 +1114,10 @@ class Bot:
             x, y = tabs_pos[tab_name]
             self.tap(x, y, 1)
             # find item, and tap it
-            result = self.gui.has_image(item_img_props)
-            if result is None:
+            _, _, item_pos = self.gui.check_any(item_img_props)
+            if item_pos is None:
                 continue
-            x, y = result['result']
+            x, y = item_pos
             self.tap(x, y, 0.5)
             # tap on use Item
             x, y = use_btn_pos
