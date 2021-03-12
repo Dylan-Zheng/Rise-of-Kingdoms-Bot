@@ -164,7 +164,7 @@ bot_config_title_fns = [
     [claim_quest_checkbox, []],
     [alliance_action_checkbox, []],
     [training, [train_barracks, train_archery_range, train_stable, train_siege]],
-    # [attack_barbarians_checkbox, [barbarians_level]],
+    [attack_barbarians_checkbox, [barbarians_level]],
     [gather_resource_checkbox, [use_gathering_boosts, resource_ratio, resource_no_secondery_commander]]
 ]
 
