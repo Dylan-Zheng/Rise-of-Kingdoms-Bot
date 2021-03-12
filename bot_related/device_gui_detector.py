@@ -25,6 +25,7 @@ def cal_similarity(image1, image2):
 
     return percentage
 
+
 class GuiName(Enum):
     HOME = 0
     MAP = 1
@@ -52,7 +53,7 @@ class GuiDetector:
 
     def get_curr_gui_name(self):
         for image_path_and_props in GuiCheckImagePathAndProps:
-            result = self.check(image_path_and_props.value)
+            result = self.check_any(image_path_and_props.value)
             if result[0]:
                 return [result[1], result[2]]
         return None
@@ -80,7 +81,8 @@ class GuiDetector:
             return None
         # crop image for ocr
         title_image = imsch[y0:y1, x0:x1]
-        title_image = img_remove_background_and_enhance_word(title_image, np.array([0, 0, 160]), np.array([255, 255, 255]))
+        title_image = img_remove_background_and_enhance_word(title_image, np.array([0, 0, 160]),
+                                                             np.array([255, 255, 255]))
         title_image = Image.fromarray(title_image)
         return img_to_string(title_image)
 
@@ -97,11 +99,11 @@ class GuiDetector:
             resource_image = Image.fromarray(imsch)
             try:
                 result_list.append(abs(int(img_to_string(resource_image)
-                                       .replace('.', '')
-                                       .replace('B', '00000000')
-                                       .replace('M', '00000')
-                                       .replace('K', '00')
-                                       ))
+                                           .replace('.', '')
+                                           .replace('B', '00000000')
+                                           .replace('M', '00000')
+                                           .replace('K', '00')
+                                           ))
                                    )
             except Exception as e:
                 result_list.append(-1)
@@ -163,32 +165,45 @@ class GuiDetector:
         title_image = self.get_curr_device_screen_img().crop(box)
         s = img_to_string(title_image)
         title_image.save(resource_path('{}title_x_{}_y_{}.png'.format(FilePaths.TEST_SRC_FOLDER_PATH.value, x0, y0)))
-        bot_print("Building <{}> on position [({}, {}), ({}, {})] ".format(s, x0, y0, x1, y1 ))
+        bot_print("Building <{}> on position [({}, {}), ({}, {})] ".format(s, x0, y0, x1, y1))
 
-    def check(self, props):
+    def check_any(self, *props_list):
+        imsch = cv2.imdecode(np.asarray(self.get_curr_device_screen_img_byte_array(), dtype=np.uint8),
+                             cv2.IMREAD_COLOR)
+
+        for props in props_list:
+            path, size, box, threshold, least_diff, gui = props
+            # x0, y0, x1, y1 = box
+
+            imsrc = cv2.imread(resource_path(path))
+
+            result = aircv.find_template(imsrc, imsch, threshold, True)
+
+            if result is not None:
+                return True, gui, result['result']
+
+        return False, None, None
+
+    def has_image_props(self, props):
         path, size, box, threshold, least_diff, gui = props
-        # x0, y0, x1, y1 = box
-        imsch = cv2.resize(
-            cv2.imdecode(np.asarray(self.get_curr_device_screen_img_byte_array(), dtype=np.uint8),
-                         cv2.IMREAD_COLOR),
-            size
-        )
-        imsrc = cv2.imread(resource_path(path))
-
-        result = aircv.find_template(imsrc, imsch, threshold, True)
-
-        return [False if result is None else result['confidence'] >= threshold,
-                gui,
-                None if result is None else result['result']]
-
-
-    def has_image(self, props):
-        path, size, box, threshold, least_diff, gui = props
-        imsch = cv2.resize(
-            cv2.imdecode(np.asarray(self.get_curr_device_screen_img_byte_array(), dtype=np.uint8),
-                         cv2.IMREAD_COLOR),
-            size
-        )
+        imsch = cv2.imdecode(np.asarray(self.get_curr_device_screen_img_byte_array(), dtype=np.uint8),
+                             cv2.IMREAD_COLOR)
         imsrc = cv2.imread(resource_path(path))
         result = aircv.find_template(imsrc, imsch, threshold, True)
         return result
+
+    def has_image_cv_img(self, cv_img, threshold=0.90):
+        imsch = cv2.imdecode(np.asarray(self.get_curr_device_screen_img_byte_array(), dtype=np.uint8),
+                             cv2.IMREAD_COLOR)
+        result = aircv.find_template(cv_img, imsch, threshold, True)
+
+        return result
+
+    def get_image_in_box(self, box=(0, 0, 1280, 720)):
+        """
+        :param box: The crop rectangle, as a (left, upper, right, lower)-tuple.
+        """
+        x0, y0, x1, y1 = box
+        img = cv2.imdecode(np.asarray(self.get_curr_device_screen_img_byte_array(), dtype=np.uint8),
+                           cv2.IMREAD_COLOR)
+        return img[y0:y1, x0:x1]
