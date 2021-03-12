@@ -748,7 +748,7 @@ class Bot:
                         self.set_text(insert="Not more space for march")
                         return next_task
                     x, y = new_troop_btn_pos
-                    self.tap(x, y, 1)
+                    self.tap(x, y, 2)
 
                     # select saves
                     self.select_save_blue_one()
