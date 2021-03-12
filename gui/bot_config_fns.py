@@ -1,4 +1,4 @@
-from gui.creator import checkbox_fn_creator, train_fn_creator, write_bot_config
+from gui.creator import checkbox_fn_creator, train_fn_creator, write_bot_config, entry_int_fn_creator
 
 from tkinter import StringVar, OptionMenu, Frame, Label, Entry, N, W
 
@@ -76,36 +76,12 @@ alliance_action_checkbox = checkbox_fn_creator('allianceAction',
 # Outside
 
 attack_barbarians_checkbox = checkbox_fn_creator('attackBarbarians', 'Attack Barbarians (developing)')
+hold_position_checkbox = checkbox_fn_creator('holdPosition', 'Hold position after attack:')
+barbarians_level_entry = entry_int_fn_creator('barbariansLevel', 'Level:')
+number_of_attack_entry = entry_int_fn_creator('numberOfAttack', 'Number of Attack:')
+timeout_entry = entry_int_fn_creator('timeout', 'Timeout:')
 
 
-def barbarians_level(app, parent):
-    str_value = StringVar()
-    str_value.set(str(getattr(app.bot_config, 'barbariansLevel')))
-
-    frame = Frame(parent)
-    label = Label(frame, text='Level:')
-    entry = Entry(frame, textvariable=str_value)
-
-    def creator(attr_name):
-        def validate_cmd(value, action_type):
-            if action_type == '1':
-                if not value.isdigit():
-                    return False
-                if value[0] == '0':
-                    return False
-            setattr(app.bot_config, attr_name, int(value if value != '' else '1'))
-            write_bot_config(app.bot_config, app.device.serial.replace(':', "_"))
-            return True
-
-        return validate_cmd
-
-    entry.config(width=10, validate='key', validatecommand=(
-        frame.register(creator('barbariansLevel')), '%P', '%d'
-    ))
-
-    label.grid(row=0, column=0, sticky=N + W, padx=5)
-    entry.grid(row=0, column=1, sticky=N + W, padx=5)
-    return frame, None
 
 
 gather_resource_checkbox = checkbox_fn_creator('gatherResource', 'Gather resource')
@@ -164,7 +140,7 @@ bot_config_title_fns = [
     [claim_quest_checkbox, []],
     [alliance_action_checkbox, []],
     [training, [train_barracks, train_archery_range, train_stable, train_siege]],
-    [attack_barbarians_checkbox, [barbarians_level]],
+    [attack_barbarians_checkbox, [hold_position_checkbox, barbarians_level_entry, number_of_attack_entry, timeout_entry]],
     [gather_resource_checkbox, [use_gathering_boosts, resource_ratio, resource_no_secondery_commander]]
 ]
 
