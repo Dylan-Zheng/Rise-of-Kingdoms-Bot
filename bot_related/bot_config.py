@@ -62,7 +62,10 @@ class BotConfig:
 
         # Barbarians
         self.attackBarbarians = config.get('attackBarbarians', False)
+        self.numberOfAttack = config.get('numberOfAttack', 1)
         self.barbariansLevel = config.get('barbariansLevel', 99)
+        self.holdPosition = config.get('holdPosition', True)
+        self.timeout = config.get('timeout', 300)
 
         # Gather resource
         self.useGatheringBoosts = config.get('useGatheringBoosts', False)
