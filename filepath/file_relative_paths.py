@@ -70,6 +70,8 @@ class ImagePathAndProps(Enum):
                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, DECREASING]
     INCREASING_BUTTON_IMAGE_PATH = ['resource\\increasing_button.png',
                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, INCREASING]
+    LOCK_BUTTON_IMAGE_PATH = ['resource\\lock_button.png',
+                                    (1280, 720), (0, 0, 0, 0), 0.90, 25, LOCK]
     RESOURCE_SEARCH_BUTTON_IMAGE_PATH = ['resource\\resource_search_button.png',
                                          (1280, 720), (0, 0, 0, 0), 0.90, 25, RESOURCE_SEARCH]
     RESOURCE_GATHER_BUTTON_IMAGE_PATH = ['resource\\resource_gather_button.png',
@@ -99,6 +101,25 @@ class ImagePathAndProps(Enum):
                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, CHEST_OPEN]
     CHEST_CONFIRM_BUTTON_IMAGE_PATH = ['resource\\chest_confirm_button.png',
                                        (1280, 720), (0, 0, 0, 0), 0.90, 25, CHEST_CONFIRM]
+    ATTACK_BUTTON_POS_IMAGE_PATH = ['resource\\attack_button.png',
+                                       (1280, 720), (0, 0, 0, 0), 0.90, 25, ATTACK_BUTTON]
+    HOLD_POS_CHECKED_IMAGE_PATH = ['resource\\attack_button.png',
+                                    (1280, 720), (0, 0, 0, 0), 0.90, 25, HOLD_POS_CHECKED]
+    HOLD_POS_UNCHECK_IMAGE_PATH = ['resource\\attack_button.png',
+                                   (1280, 720), (0, 0, 0, 0), 0.90, 25, HOLD_POS_UNCHECK]
+    UNSELECT_BLUE_ONE_SAVE_BUTTON_IMAGE_PATH = ['resource\\unselect_save_blue_one.png',
+                                   (1280, 720), (0, 0, 0, 0), 0.90, 25,  UNSELECT_BLUE_ONE]
+    SELECTED_BLUE_ONE_SAVE_BUTTON_IMAGE_PATH = ['resource\\selected_save_blue_one.png',
+                                                (1280, 720), (0, 0, 0, 0), 0.70, 25, SELECTED_BLUE_ONE]
+    SAVE_SWITCH_BUTTON_IMAGE_PATH = ['resource\\switch_save.png',
+                                                (1280, 720), (0, 0, 0, 0), 0.90, 25, SAVE_SWITCH]
+    VICTORY_MAIL_IMAGE_PATH = ['resource\\victory_mail.png',
+                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, VICTORY_MAIL]
+    DEFEAT_MAIL_IMAGE_PATH = ['resource\\defeat_mail.png',
+                               (1280, 720), (0, 0, 0, 0), 0.90, 25, DEFEAT_MAIL]
+    RETURN_BUTTON_IMAGE_PATH = ['resource\\return_button.png',
+                              (1280, 720), (0, 0, 0, 0), 0.90, 25, RETURN_BUTTON]
+
 
 
 class GuiCheckImagePathAndProps(Enum):
