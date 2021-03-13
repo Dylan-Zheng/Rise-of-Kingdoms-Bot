@@ -3,7 +3,7 @@ from gui.creator import load_building_pos
 from gui.creator import write_building_pos, write_bot_config
 from gui.creator import button
 
-from tkinter import Label, Frame, Text, Scrollbar, Canvas
+from tkinter import Label, Frame, Text, Scrollbar, Canvas, LabelFrame
 from tkinter import N, W, END, INSERT, LEFT, RIGHT
 
 from utils import stop_thread
@@ -56,7 +56,11 @@ class SelectedDeviceFrame(Frame):
         return frame, title, text
 
     def config_frame(self):
-        frame_canvas = Frame(self, width = self.windows_size[0], height=self.windows_size[1] - 200)
+        frame_canvas = LabelFrame(self,
+                                  text='Config',
+                                  width=self.windows_size[0],
+                                  height=self.windows_size[1] - 200
+                                  )
         frame_canvas.grid_rowconfigure(0, weight=1)
         frame_canvas.grid_columnconfigure(0, weight=1)
         frame_canvas.grid_propagate(False)
