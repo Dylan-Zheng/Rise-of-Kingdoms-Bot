@@ -3,8 +3,8 @@ from gui.creator import load_building_pos
 from gui.creator import write_building_pos, write_bot_config
 from gui.creator import button
 
-from tkinter import Label, Frame, Text
-from tkinter import N, W, END, INSERT, LEFT
+from tkinter import Label, Frame, Text, Scrollbar, Canvas
+from tkinter import N, W, END, INSERT, LEFT, RIGHT
 
 from utils import stop_thread
 from gui import bot_config_fns as atf
@@ -26,6 +26,7 @@ class SelectedDeviceFrame(Frame):
         self.bot_building_pos = load_building_pos(device.serial.replace(':', "_"))
         self.bot_thread = None
         self.windows_size = [kwargs['width'], kwargs['height']]
+
         display_frame, self.task_title, self.task_text = self.task_display_frame()
         config_frame = self.config_frame()
         bottom_frame = self.bottom_frame()
@@ -36,7 +37,7 @@ class SelectedDeviceFrame(Frame):
 
     def task_display_frame(self):
         width = self.windows_size[0] - 20
-        height = 130
+        height = 210
         frame = Frame(self, width=width, height=height)
         frame.grid_propagate(False)
         frame.columnconfigure(0, weight=width)
@@ -55,17 +56,52 @@ class SelectedDeviceFrame(Frame):
         return frame, title, text
 
     def config_frame(self):
-        frame = Frame(self)
+        frame_canvas = Frame(self, width = self.windows_size[0], height=self.windows_size[1] - 200)
+        frame_canvas.grid_rowconfigure(0, weight=1)
+        frame_canvas.grid_columnconfigure(0, weight=1)
+        frame_canvas.grid_propagate(False)
+
+        # Add a canvas in that frame
+        canvas = Canvas(frame_canvas)
+        canvas.grid(row=0, column=0, sticky=N+W)
+
+        # Link a scrollbar to the canvas
+
+        def on_mousewheel(event):
+            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+
+        def bound_to_mousewheel(event):
+            canvas.bind_all("<MouseWheel>", on_mousewheel)
+
+        def unbound_to_mousewheel(event):
+            canvas.unbind_all("<MouseWheel>")
+
+        y_scrollbar = Scrollbar(frame_canvas, orient="vertical", command=canvas.yview)
+        y_scrollbar.grid(row=0, column=1, sticky='ns')
+        canvas.configure(yscrollcommand=y_scrollbar.set)
+
+        inner_frame = Frame(canvas)
+        inner_frame.bind('<Enter>', bound_to_mousewheel)
+        inner_frame.bind('<Leave>', unbound_to_mousewheel)
+
+        canvas.create_window((0, 0), window=inner_frame, anchor='nw')
+
         for i in range(len(atf.bot_config_title_fns)):
             title_fns, sub_fns = atf.bot_config_title_fns[i]
             check = section_frame(
                 self,
-                frame,
+                inner_frame,
                 title_fns,
                 sub_fns
             )
             check.grid(row=i, column=0, sticky=N + W)
-        return frame
+
+        inner_frame.update_idletasks()
+
+        frame_canvas.config(width=self.windows_size[0] - 20, height=self.windows_size[1] - 350)
+        canvas.config(width=self.windows_size[0] - 20, height=self.windows_size[1] - 350, scrollregion=canvas.bbox("all"))
+
+        return frame_canvas
 
     def start(self):
         bot = Bot(self.device)

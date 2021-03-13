@@ -13,7 +13,7 @@ import config
 
 class MainWindow:
 
-    def __init__(self, size=(450, 850)):
+    def __init__(self, size=(470, 850)):
         self.adb = adb.bridge
         config.global_config = load_config()
         twocaptcha.key = config.global_config.twocaptchaKey

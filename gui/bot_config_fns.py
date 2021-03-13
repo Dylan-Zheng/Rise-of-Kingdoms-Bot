@@ -83,7 +83,6 @@ timeout_entry = entry_int_fn_creator('timeout', 'Timeout:')
 
 
 
-
 gather_resource_checkbox = checkbox_fn_creator('gatherResource', 'Gather resource')
 resource_no_secondery_commander = checkbox_fn_creator('gatherResourceNoSecondaryCommander', 'Not secondary commader')
 use_gathering_boosts = checkbox_fn_creator('useGatheringBoosts', 'Use gathering boosts')
