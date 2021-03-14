@@ -7,6 +7,9 @@ import os
 
 import inspect
 import ctypes
+import requests
+import json
+import traceback
 
 
 def _async_raise(tid, exctype):
@@ -19,6 +22,7 @@ def _async_raise(tid, exctype):
     elif res != 1:
         ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, None)
         raise SystemError("PyThreadState_SetAsyncExc failed")
+
 
 def stop_thread(thread):
     _async_raise(thread.ident, SystemExit)
@@ -53,4 +57,15 @@ def aircv_rectangle_to_box(rectangle):
 
 def bot_print(msg):
     print(msg)
+
+
+def get_last_version_number():
+    try:
+        url = 'https://raw.githubusercontent.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/main/docs/version.json'
+        resp_text = requests.get(url).text
+        json_obj = json.loads(resp_text)
+        return json_obj['version']
+    except Exception as e:
+        traceback.print_exc()
+        return ''
 
