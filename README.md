@@ -18,6 +18,18 @@ If you like this project, give me a star or feedback , that is great help for me
 
 
 
+**New Version v1.2.1.031421_beta is out (3/14/2021):**
+
+- Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/releases/tag/v1.2.1.031421_beta
+- Add heal troops
+- Add attack barbarians (Bot will using **blue 1st save** to attack barbarians)
+- Improve UI
+- Fixed some bugs
+
+Note: Don't forget to move your **'save'**, **'config.json'** and **'devices_config.json'** to new version folder
+
+
+
 ### Requirements
 
 - python
