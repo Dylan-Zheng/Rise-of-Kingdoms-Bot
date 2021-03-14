@@ -16,7 +16,7 @@ If you don't want to set up by yourself, there is executable version for windows
 
 If you like this project, give me a star or feedback , that is great help for me. **:smile:**
 
-
+------
 
 **New Version v1.2.1.031421_beta is out (3/14/2021):**
 
