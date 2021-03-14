@@ -103,14 +103,14 @@ class ImagePathAndProps(Enum):
                                        (1280, 720), (0, 0, 0, 0), 0.90, 25, CHEST_CONFIRM]
     ATTACK_BUTTON_POS_IMAGE_PATH = ['resource\\attack_button.png',
                                        (1280, 720), (0, 0, 0, 0), 0.90, 25, ATTACK_BUTTON]
-    HOLD_POS_CHECKED_IMAGE_PATH = ['resource\\attack_button.png',
+    HOLD_POS_CHECKED_IMAGE_PATH = ['resource\\hold_posistion_checked.png',
                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, HOLD_POS_CHECKED]
-    HOLD_POS_UNCHECK_IMAGE_PATH = ['resource\\attack_button.png',
+    HOLD_POS_UNCHECK_IMAGE_PATH = ['resource\\hold_position_unchecked.png',
                                    (1280, 720), (0, 0, 0, 0), 0.90, 25, HOLD_POS_UNCHECK]
     UNSELECT_BLUE_ONE_SAVE_BUTTON_IMAGE_PATH = ['resource\\unselect_save_blue_one.png',
-                                   (1280, 720), (0, 0, 0, 0), 0.90, 25,  UNSELECT_BLUE_ONE]
+                                   (1280, 720), (0, 0, 0, 0), 0.95, 25,  UNSELECT_BLUE_ONE]
     SELECTED_BLUE_ONE_SAVE_BUTTON_IMAGE_PATH = ['resource\\selected_save_blue_one.png',
-                                                (1280, 720), (0, 0, 0, 0), 0.70, 25, SELECTED_BLUE_ONE]
+                                                (1280, 720), (0, 0, 0, 0), 0.95, 25, SELECTED_BLUE_ONE]
     SAVE_SWITCH_BUTTON_IMAGE_PATH = ['resource\\switch_save.png',
                                                 (1280, 720), (0, 0, 0, 0), 0.90, 25, SAVE_SWITCH]
     VICTORY_MAIL_IMAGE_PATH = ['resource\\victory_mail.png',
@@ -119,6 +119,18 @@ class ImagePathAndProps(Enum):
                                (1280, 720), (0, 0, 0, 0), 0.90, 25, DEFEAT_MAIL]
     RETURN_BUTTON_IMAGE_PATH = ['resource\\return_button.png',
                               (1280, 720), (0, 0, 0, 0), 0.90, 25, RETURN_BUTTON]
+    HOLD_ICON_IMAGE_PATH = ['resource\\hold_icon.png',
+                              (1280, 720), (0, 0, 0, 0), 0.95, 25, HOLD_ICON]
+    HOLD_ICON_SMALL_IMAGE_PATH = ['resource\\hold_icon_small.png',
+                              (1280, 720), (0, 0, 0, 0), 0.95, 25, HOLD_ICON_SMALL]
+    MARCH_BAR_IMAGE_PATH = ['resource\\march_bar.png',
+                              (1280, 720), (0, 0, 0, 0), 0.95, 25, MARCH_BAR]
+    HEAL_ICON_IMAGE_PATH = ['resource\\heal_icon.png',
+                              (1280, 720), (0, 0, 0, 0), 0.80, 25, HEAL_ICON]
+    DAILY_AP_CLAIM_BUTTON_IMAGE_PATH = ['resource\\daily_ap_claim.png',
+                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, DAILY_AP_CLAIM]
+    USE_AP_BUTTON_IMAGE_PATH = ['resource\\use_ap.png',
+                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, USE_AP]
 
 
 
