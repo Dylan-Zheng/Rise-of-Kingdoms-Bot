@@ -150,9 +150,7 @@ class GuiDetector:
                                  cv2.IMREAD_COLOR)
             imsch = cv2.cvtColor(imsch, cv2.COLOR_BGR2GRAY)
             imsch = imsch[y0:y1, x0:x1]
-            ret, imsch = cv2.threshold(imsch, 170, 255, cv2.THRESH_BINARY)
-            cv2.imshow('level', imsch)
-            cv2.waitKey(0)
+            ret, imsch = cv2.threshold(imsch, 165, 255, cv2.THRESH_BINARY)
             resource_image = Image.fromarray(imsch)
             result = int(''.join(c for c in img_to_string(resource_image) if c.isdigit()))
         except Exception as e:
