@@ -13,7 +13,7 @@ import math
 import time
 
 from filepath.constants import \
-    RESOURCES, SPEEDUPS, BOOSTS, EQUIPMENT, OTHER, MAP, HOME, VICTORY_MAIL, DEFEAT_MAIL
+    RESOURCES, SPEEDUPS, BOOSTS, EQUIPMENT, OTHER, MAP, HOME, VICTORY_MAIL, DEFEAT_MAIL, WINDOW
 
 DEFAULT_RESOLUTION = {'height': 720, 'width': 1280}
 
@@ -600,6 +600,23 @@ class Bot:
             return TaskName.TRAINING
         return next_task
 
+    def call_idle_back(self):
+        self.set_text(insert='call back idle commander')
+        self.back_to_map_gui()
+        while True:
+            _, _, commander_pos = self.gui.check_any(ImagePathAndProps.HOLD_ICON_SMALL_IMAGE_PATH.value)
+            if commander_pos is not None:
+                x, y = commander_pos
+                self.tap(x - 10, y - 10, 1)
+            else:
+                return
+            _, _, return_btn_pos = self.gui.check_any(ImagePathAndProps.RETURN_BUTTON_IMAGE_PATH.value)
+            if return_btn_pos is not None:
+                x, y = return_btn_pos
+                self.tap(x, y, 1)
+            else:
+                return
+
     def set_barbarians_level(self, level):
         max_pos = (375, 405)
         min_pos = (168, 405)
@@ -608,12 +625,16 @@ class Bot:
         has_inc_btn, _, inc_pos = self.gui.check_any(ImagePathAndProps.INCREASING_BUTTON_IMAGE_PATH.value)
         _, _, lock_pos = self.gui.check_any(ImagePathAndProps.LOCK_BUTTON_IMAGE_PATH.value)
 
+        curr_lv = self.gui.barbarians_level_image_to_string()
+        if curr_lv == self.config.barbariansLevel:
+            return
+
         if not has_inc_btn:
             inc_pos = lock_pos
 
         # set to max level
         x, y = max_pos
-        self.tap(x, y)
+        self.swipe(x, y, x + 100, y)
         # try to get max lv. in integer
         max_lv = self.gui.barbarians_level_image_to_string()
         self.set_text(insert="Max level is {}".format(max_lv))
@@ -625,8 +646,11 @@ class Bot:
             curr_lv = self.gui.barbarians_level_image_to_string()
             if curr_lv == -1:
                 self.set_text(insert="Fail to read current level, set to lv.1".format(curr_lv))
+                x, y = min_pos
+                self.tap(x, y)
             else:
                 self.set_text(insert="current level is {}".format(curr_lv))
+
             btn_pos = inc_pos if curr_lv < level else dec_pos
             for i in range(int(abs(level - curr_lv))):
                 x, y = btn_pos
@@ -638,10 +662,10 @@ class Bot:
         if should_hold and not is_check:
             _, _, pos = self.gui.check_any(ImagePathAndProps.HOLD_POS_UNCHECK_IMAGE_PATH.value)
             x, y = pos
-            self.tap(x, y)
+            self.tap(x-3, y)
         elif not should_hold and is_check:
             x, y = pos
-            self.tap(x, y)
+            self.tap(x-3, y)
 
     def select_save_blue_one(self):
 
@@ -677,27 +701,74 @@ class Bot:
             self.set_text(insert='Save not found')
             raise RuntimeError('Save not found')
 
-    def battle_result_detector(self):
-
+    def battle_result_detector(self, commander_cv_img):
         start = time.time()
+        self.set_text(insert='Waiting: 0/{}'.format(self.config.timeout))
         while True:
             found, name, pos = self.gui.check_any(
                 ImagePathAndProps.VICTORY_MAIL_IMAGE_PATH.value,
                 ImagePathAndProps.DEFEAT_MAIL_IMAGE_PATH.value
             )
+            time_eclipsed = time.time() - start
+            self.set_text(replace='Waiting: {}/{}'.format(int(time_eclipsed), self.config.timeout), index=0)
             if found:
+                self.set_text(insert='Victory' if name == VICTORY_MAIL else 'Defeat')
                 return name
-            elif time.time() - start >= self.config.timeout:
+            elif time_eclipsed >= self.config.timeout:
+                self.set_text(insert='Timeout! Stop Task')
                 return None
 
     def wait_for_commander_back_to_city(self, commander_cv_img):
         start = time.time()
         while True:
             result = self.gui.has_image_cv_img(commander_cv_img)
+            time_eclipsed = time.time() - start
+            self.set_text(replace='Wait Commander return to City: {}/{}'.format(int(time_eclipsed), self.config.timeout), index=0)
             if result is None:
                 return True
-            elif time.time() - start >= self.config.timeout:
+            elif time_eclipsed >= self.config.timeout:
+                self.set_text(insert='Timeout! Stop Task')
                 return False
+
+    def heal_troops(self):
+        self.set_text(insert='Heal Troops')
+        heal_button_pos = (960, 590)
+        self.back_to_home_gui()
+        self.home_gui_full_view()
+        self.tap(self.building_pos['hospital'][0], self.building_pos['hospital'][1], 2)
+        self.tap(285, 20, 0.5)
+        _, _, heal_icon_pos = self.gui.check_any(ImagePathAndProps.HEAL_ICON_IMAGE_PATH.value)
+        if heal_icon_pos is None:
+            return
+        self.tap(heal_icon_pos[0], heal_icon_pos[1], 2)
+        self.tap(heal_button_pos[0], heal_button_pos[1], 2)
+        self.tap(self.building_pos['hospital'][0], self.building_pos['hospital'][1], 2)
+        self.tap(self.building_pos['hospital'][0], self.building_pos['hospital'][1], 2)
+
+    def has_ap(self):
+        name = self.gui.get_curr_gui_name()
+        return True if name == WINDOW else False
+
+    def use_ap_recovery(self):
+        name, _ = self.gui.get_curr_gui_name()
+        used = False
+        if name == WINDOW:
+            if self.config.useDailyAPRecovery:
+                _, _, pos = self.gui.check_any(ImagePathAndProps.DAILY_AP_CLAIM_BUTTON_IMAGE_PATH.value)
+                if pos is not None:
+                    self.set_text(insert='Use Daily AP Recovery')
+                    self.tap(pos[0], pos[1], 1)
+                    used = True
+            if self.config.useNormalAPRecovery and not used:
+                _, _, use_btn_pos = self.gui.check_any(ImagePathAndProps.USE_AP_BUTTON_IMAGE_PATH.value)
+                if pos is not None:
+                    self.set_text(insert='Use Normal AP Recovery')
+                    self.tap(pos[0], pos[1], 1)
+                    used = True
+            if not used:
+                self.set_text(insert='Run out of AP')
+                raise RuntimeError('Run out of AP')
+            self.back(1)
 
     def attack_barbarians(self, next_task=TaskName.GATHER):
         icon_pos = (255, 640)
@@ -708,11 +779,16 @@ class Bot:
 
             self.set_text(title='Attack Barbarians', remove=True)
 
+            self.call_idle_back()
+
             commander_cv_img = None
 
             is_in_city = True
 
             for r in range(self.config.numberOfAttack):
+                self.set_text(insert="Attack Round [{}]".format(r + 1))
+                if self.config.healTroopsBeforeAttack or r == 0:
+                    self.heal_troops()
                 self.set_text(insert="Search barbarians")
                 self.back_to_map_gui()
 
@@ -738,7 +814,7 @@ class Bot:
                 # tap attack button
                 _, _, atk_btn_pos = self.gui.check_any(ImagePathAndProps.ATTACK_BUTTON_POS_IMAGE_PATH.value)
                 x, y = atk_btn_pos
-                self.tap(x, y, 1)
+                self.tap(x, y, 2)
 
                 if not self.config.holdPosition or is_in_city:
                     # tap on new troop
@@ -758,34 +834,43 @@ class Bot:
                     self.set_text(insert="March")
                     x, y = match_button_pos
                     self.tap(x, y, 1)
+                    self.use_ap_recovery()
                     commander_cv_img = self.gui.get_image_in_box(queue_one_pos)
+                    is_in_city = False
 
                 else:
                     # find commander and tap it
-                    result = self.gui.has_image_cv_img(commander_cv_img)
-                    if result is None:
+                    _, _, pos = self.gui.check_any(ImagePathAndProps.HOLD_ICON_IMAGE_PATH.value)
+                    if pos is None:
                         break;
-                    x, y = result['result']
-                    self.tap(x, y, 1)
+                    x, y = pos
+                    self.tap(x - 10, y - 10, 1)
 
                     # tap on match button
-                    _, _, pos = self.gui.check_any(ImagePathAndProps.TROOPS_MATCH_BUTTON_IMAGE_PATH.value)
+                    _, _, pos = self.gui.check_any(ImagePathAndProps.MARCH_BAR_IMAGE_PATH.value)
                     x, y = pos
                     self.tap(x, y, 1)
+                    self.use_ap_recovery()
 
                 # block and try to catch battle result
-                battle_result = self.battle_result_detector()
+                battle_result = self.battle_result_detector(commander_cv_img)
                 if battle_result is None:
                     break
                 elif battle_result == DEFEAT_MAIL:
-                    self.wait_for_commander_back_to_city(commander_cv_img)
+                    if not self.wait_for_commander_back_to_city(commander_cv_img):
+                        break
                     is_in_city = True
                     continue
                 elif battle_result == VICTORY_MAIL:
                     if not self.config.holdPosition:
-                        self.wait_for_commander_back_to_city(commander_cv_img)
+                        if not self.wait_for_commander_back_to_city(commander_cv_img):
+                            break
                         is_in_city = True
+                    else:
+                        is_in_city = False
                     continue
+                else:
+                    break
 
             # call commander return
             result = self.gui.has_image_cv_img(commander_cv_img)
@@ -798,7 +883,6 @@ class Bot:
                 if pos is not None:
                     x, y = pos
                     self.tap(x, y, 1)
-                    self.wait_for_commander_back_to_city()
                     is_in_city = True
 
         except Exception as e:
