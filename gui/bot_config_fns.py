@@ -75,12 +75,14 @@ alliance_action_checkbox = checkbox_fn_creator('allianceAction',
 
 # Outside
 
-attack_barbarians_checkbox = checkbox_fn_creator('attackBarbarians', 'Attack Barbarians (developing)')
-hold_position_checkbox = checkbox_fn_creator('holdPosition', 'Hold position after attack:')
+attack_barbarians_checkbox = checkbox_fn_creator('attackBarbarians', 'Attack Barbarians')
+hold_position_checkbox = checkbox_fn_creator('holdPosition', 'Hold Position After Attack')
+heal_troops_checkbox = checkbox_fn_creator('healTroopsBeforeAttack', 'Heal Troops Before Attack')
+use_daily_ap_checkbox = checkbox_fn_creator('useDailyAPRecovery', 'Use Daily AP Recovery')
+use_normal_ap_checkbox = checkbox_fn_creator('useNormalAPRecovery', 'Use Normal AP Recovery')
 barbarians_level_entry = entry_int_fn_creator('barbariansLevel', 'Level:')
 number_of_attack_entry = entry_int_fn_creator('numberOfAttack', 'Number of Attack:')
-timeout_entry = entry_int_fn_creator('timeout', 'Timeout:')
-
+timeout_entry = entry_int_fn_creator('timeout', 'Timeout (Second):')
 
 
 gather_resource_checkbox = checkbox_fn_creator('gatherResource', 'Gather resource')
@@ -139,9 +141,16 @@ bot_config_title_fns = [
     [claim_quest_checkbox, []],
     [alliance_action_checkbox, []],
     [training, [train_barracks, train_archery_range, train_stable, train_siege]],
-    [attack_barbarians_checkbox, [hold_position_checkbox, barbarians_level_entry, number_of_attack_entry, timeout_entry]],
+    [attack_barbarians_checkbox, [hold_position_checkbox,
+                                  heal_troops_checkbox,
+                                  use_daily_ap_checkbox,
+                                  use_normal_ap_checkbox,
+                                  barbarians_level_entry,
+                                  number_of_attack_entry,
+                                  timeout_entry]],
     [gather_resource_checkbox, [use_gathering_boosts, resource_ratio, resource_no_secondery_commander]]
 ]
+
 
 
 def callback(url):
