@@ -10,7 +10,7 @@ If you have any problem, suggestions or new features,  please feel free to submi
 
 If you don't want to set up by yourself, there is executable version for windows
 
-​	Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/releases/tag/v1.1.1.030321_beta
+​	Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/releases/
 
 If you like this project, give me a star or feedback , that is great help for me. **:smile:**
 
