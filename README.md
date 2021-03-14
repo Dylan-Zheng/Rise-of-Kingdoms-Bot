@@ -6,11 +6,13 @@ Rise of Kingdom Bot can do following job: claim quests/vip/gifts, collecting res
 
 If you have any problem, suggestions or new features,  please feel free to submit issues directly on GitHub
 
-​	Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/issues
+- Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/issues
+
 
 If you don't want to set up by yourself, there is executable version for windows
 
-​	Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/releases/
+- Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/releases/
+
 
 If you like this project, give me a star or feedback , that is great help for me. **:smile:**
 
@@ -56,10 +58,11 @@ If you like this project, give me a star or feedback , that is great help for me
 | Open free chest in tavern                              | **<u>Done</u>** |
 | Claim quest and daily objectives                       | **<u>Done</u>** |
 | Claim VIP chest                                        | **<u>Done</u>** |
+| Claim Event                                            | not yet         |
 | Collecting allied resource, gifs and donate technology | **<u>Done</u>** |
 | Upgrade and train troops                               | <u>**Done**</u> |
-| Attack barbarians                                      | no yet          |
-| Heal troops                                            | no yet          |
+| Attack barbarians                                      | <u>**Done**</u> |
+| Heal troops                                            | <u>**Done**</u> |
 | Gather resource                                        | **<u>Done</u>** |
 | A simple GUI                                           | **<u>Done</u>** |
 | Allow bot control multi-devices/emulator               | **<u>Done</u>** |
