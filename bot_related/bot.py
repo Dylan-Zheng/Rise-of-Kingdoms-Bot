@@ -112,6 +112,7 @@ class Bot:
                 self.set_text(title='Break', remove=True)
                 self.set_text(insert='Init View')
                 self.call_idle_back()
+                self.heal_troops()
                 self.set_text(insert='0/{} seconds'.format(self.config.breakTime))
                 self.back_to_home_gui()
                 self.home_gui_full_view()
@@ -124,6 +125,7 @@ class Bot:
 
             elif curr_task == TaskName.BREAK:
                 self.call_idle_back()
+                self.heal_troops()
                 curr_task = TaskName.COLLECTING
 
             # init building position if need
