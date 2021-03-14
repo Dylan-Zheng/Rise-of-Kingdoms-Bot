@@ -111,6 +111,7 @@ class Bot:
             if curr_task == TaskName.BREAK and self.config.enableBreak:
                 self.set_text(title='Break', remove=True)
                 self.set_text(insert='Init View')
+                self.call_idle_back()
                 self.set_text(insert='0/{} seconds'.format(self.config.breakTime))
                 self.back_to_home_gui()
                 self.home_gui_full_view()
@@ -122,6 +123,7 @@ class Bot:
                 curr_task = TaskName.COLLECTING
 
             elif curr_task == TaskName.BREAK:
+                self.call_idle_back()
                 curr_task = TaskName.COLLECTING
 
             # init building position if need
@@ -434,41 +436,45 @@ class Bot:
 
         except Exception as e:
             traceback.print_exc()
-            return TaskName.ALLIANCE
+            return next_task
         return next_task
 
     def materials(self, next_task=TaskName.TAVERN):
-        self.set_text(title='Materials Production', remove=True)
+        try:
+            self.set_text(title='Materials Production', remove=True)
 
-        icon_pos = [
-            (765, 230),
-            (860, 230),
-            (950, 230),
-            (1045, 230)
-        ]
-        self.set_text(insert='Init view')
-        self.back_to_home_gui()
-        self.home_gui_full_view()
-        blacksmith_pos = self.building_pos[BuildingNames.BLACKSMITH.value]
-        x, y = blacksmith_pos
-        self.tap(x, y, 2)
-        _, _, product_btn_pos = self.gui.check_any(ImagePathAndProps.MATERIALS_PRODUCTION_BUTTON_IMAGE_PATH.value)
-        if product_btn_pos is None:
+            icon_pos = [
+                (765, 230),
+                (860, 230),
+                (950, 230),
+                (1045, 230)
+            ]
+            self.set_text(insert='Init view')
+            self.back_to_home_gui()
+            self.home_gui_full_view()
+            blacksmith_pos = self.building_pos[BuildingNames.BLACKSMITH.value]
+            x, y = blacksmith_pos
+            self.tap(x, y, 2)
+            _, _, product_btn_pos = self.gui.check_any(ImagePathAndProps.MATERIALS_PRODUCTION_BUTTON_IMAGE_PATH.value)
+            if product_btn_pos is None:
+                return next_task
+            x, y = product_btn_pos
+            self.tap(x, y, 5)
+            list_amount = self.gui.materilal_amount_image_to_string()
+            self.set_text(insert='\nLeather: {}\nIton: {}\nEboy: {}\nBone: {}'.format(
+                list_amount[0], list_amount[1], list_amount[2], list_amount[3])
+            )
+            min = 0
+            for i in range(len(list_amount)):
+                if list_amount[min] > list_amount[i]:
+                    min = i
+            x, y = icon_pos[min]
+            self.set_text(insert='Produce least material')
+            for i in range(5):
+                self.tap(x, y, 0.5)
+        except Exception as e:
+            traceback.print_exc()
             return next_task
-        x, y = product_btn_pos
-        self.tap(x, y, 5)
-        list_amount = self.gui.materilal_amount_image_to_string()
-        self.set_text(insert='\nLeather: {}\nIton: {}\nEboy: {}\nBone: {}'.format(
-            list_amount[0], list_amount[1], list_amount[2], list_amount[3])
-        )
-        min = 0
-        for i in range(len(list_amount)):
-            if list_amount[min] > list_amount[i]:
-                min = i
-        x, y = icon_pos[min]
-        self.set_text(insert='Produce least material')
-        for i in range(5):
-            self.tap(x, y, 0.5)
         return next_task
 
     def tavern(self, next_task=TaskName.TRAINING):
@@ -642,12 +648,15 @@ class Bot:
             x = max_pos[0] if level > max_pos[0] or level >= 99 else (level / max_lv) * (max_pos[0] - min_pos[0]) + \
                                                                      min_pos[0]
             y = max_pos[1]
-            self.tap(x, y)
+            self.tap(x, y, 1)
+            # self.gui.debug = True
             curr_lv = self.gui.barbarians_level_image_to_string()
+            # self.gui.debug = False
+
             if curr_lv == -1:
                 self.set_text(insert="Fail to read current level, set to lv.1".format(curr_lv))
                 x, y = min_pos
-                self.tap(x, y)
+                self.tap(x, y, 1)
             else:
                 self.set_text(insert="current level is {}".format(curr_lv))
 
@@ -778,9 +787,6 @@ class Bot:
         try:
 
             self.set_text(title='Attack Barbarians', remove=True)
-
-            self.call_idle_back()
-
             commander_cv_img = None
 
             is_in_city = True
@@ -814,7 +820,7 @@ class Bot:
                 # tap attack button
                 _, _, atk_btn_pos = self.gui.check_any(ImagePathAndProps.ATTACK_BUTTON_POS_IMAGE_PATH.value)
                 x, y = atk_btn_pos
-                self.tap(x, y, 2)
+                self.tap(x, y, 3)
 
                 if not self.config.holdPosition or is_in_city:
                     # tap on new troop
@@ -841,10 +847,11 @@ class Bot:
                 else:
                     # find commander and tap it
                     _, _, pos = self.gui.check_any(ImagePathAndProps.HOLD_ICON_IMAGE_PATH.value)
+
                     if pos is None:
                         break;
                     x, y = pos
-                    self.tap(x - 10, y - 10, 1)
+                    self.tap(x - 10, y - 10, 2)
 
                     # tap on match button
                     _, _, pos = self.gui.check_any(ImagePathAndProps.MARCH_BAR_IMAGE_PATH.value)
@@ -893,6 +900,7 @@ class Bot:
 
     def gather_resource(self, next_task=TaskName.BREAK):
         self.set_text(title='Gather Resource', remove=True)
+        self.call_idle_back()
 
         if self.config.useGatheringBoosts:
             b_buff_props = BuffsImageAndProps.ENHANCED_GATHER_BLUE.value
