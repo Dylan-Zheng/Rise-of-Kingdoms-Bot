@@ -39,6 +39,7 @@ class GuiName(Enum):
 class GuiDetector:
 
     def __init__(self, device):
+        self.debug = False
         self.__device = device
 
     def get_curr_device_screen_img_byte_array(self):
@@ -150,9 +151,14 @@ class GuiDetector:
                                  cv2.IMREAD_COLOR)
             imsch = cv2.cvtColor(imsch, cv2.COLOR_BGR2GRAY)
             imsch = imsch[y0:y1, x0:x1]
-            ret, imsch = cv2.threshold(imsch, 165, 255, cv2.THRESH_BINARY)
+            # ret, imsch = cv2.threshold(imsch, 165, 255, cv2.THRESH_BINARY)
             resource_image = Image.fromarray(imsch)
-            result = int(''.join(c for c in img_to_string(resource_image) if c.isdigit()))
+            str = img_to_string(resource_image)
+            if self.debug:
+                cv2.imshow('imsch', imsch)
+                print(str)
+                cv2.waitKey(0)
+            result = int(''.join(c for c in str if c.isdigit()))
         except Exception as e:
             traceback.print_exc()
             return -1
@@ -178,6 +184,11 @@ class GuiDetector:
             imsrc = cv2.imread(resource_path(path))
 
             result = aircv.find_template(imsrc, imsch, threshold, True)
+
+            if self.debug:
+                cv2.imshow('imsrc', imsrc)
+                cv2.imshow('imsch', imsch)
+                cv2.waitKey(0)
 
             if result is not None:
                 return True, gui, result['result']
