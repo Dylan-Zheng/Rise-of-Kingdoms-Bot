@@ -65,6 +65,9 @@ class BotConfig:
         self.numberOfAttack = config.get('numberOfAttack', 1)
         self.barbariansLevel = config.get('barbariansLevel', 99)
         self.holdPosition = config.get('holdPosition', True)
+        self.healTroopsBeforeAttack = config.get('healTroopsBeforeAttack', True)
+        self.useDailyAPRecovery = config.get('useDailyAPRecovery', False)
+        self.useNormalAPRecovery = config.get('useNormalAPRecovery', False)
         self.timeout = config.get('timeout', 300)
 
         # Gather resource
