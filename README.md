@@ -31,7 +31,7 @@ Update:
 
 Note: Don't forget to move your **'save'**, **'config.json'** and **'devices_config.json'** to new version folder
 
-
+------
 
 ### Requirements
 
