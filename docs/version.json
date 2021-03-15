@@ -1,3 +1,17 @@
 {
-    "version": "1.2.1.031421_beta"
+    "version": "1.2.1.031421_beta",
+    "shouldUpdateInfo": true,
+    "label": {
+        "update": true,
+        "text": "Welcome to use Rise of Kingdoms Bot, check update on",
+        "row": 0,
+        "column": 0
+    },
+    "link": {
+        "update": true,
+        "text": "GitHub",
+        "url": "https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot",
+        "row": 0,
+        "column": 1
+    }
 }
