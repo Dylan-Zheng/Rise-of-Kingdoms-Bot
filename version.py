@@ -1,1 +1,1 @@
-version='1.2.1.031421_beta'
+version='1.2.2.031421_beta'
