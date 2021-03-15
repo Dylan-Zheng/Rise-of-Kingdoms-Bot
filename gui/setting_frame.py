@@ -13,18 +13,24 @@ class SettingFrame(Frame):
         Frame.__init__(self, windows, kwargs)
         self.windows_size = [kwargs['width'], kwargs['height']]
 
-        of = self.option_frame()
-        twocaptcha_ef = self.twocaptcha_entries()
-        haoi_ef = self.haoi_entries()
+        list = [
+            self.windows_resize(),
+            self.option_frame(),
+            self.twocaptcha_entries(),
+            self.haoi_entries()
+        ]
 
-        of.grid(row=0, column=0, sticky=N + W, padx=10, pady=(10, 0))
-        twocaptcha_ef.grid(row=1, column=0, sticky=N + W, padx=10, pady=(10, 0))
-        haoi_ef.grid(row=2, column=0, sticky=N + W, padx=10, pady=(10, 0))
+        for row in range(len(list)):
+            list[row].grid(row=row, column=0, sticky=N + W, padx=10, pady=(10, 0))
 
+        # of.grid(row=0, column=0, sticky=N + W, padx=10, pady=(10, 0))
+        # twocaptcha_ef.grid(row=1, column=0, sticky=N + W, padx=10, pady=(10, 0))
+        # haoi_ef.grid(row=2, column=0, sticky=N + W, padx=10, pady=(10, 0))
+        # wr.grid(row=3, column=0, sticky=N + W, padx=10, pady=(10, 0))
 
     def option_frame(self):
         f = Frame(self)
-        method_label = Label(f, text='Method: ')
+        method_label = Label(f, text='Pass Verification Method: ')
 
         options = [NONE, TWO_CAPTCHA, HAO_I]
         value = config.global_config.method
@@ -56,7 +62,7 @@ class SettingFrame(Frame):
 
         ul.config(width=10, anchor=W, justify=LEFT)
         ue.config(width=53, validate='key', validatecommand=(lf.register(self.creator('haoiUser')), '%P'))
-        rl.config(width=10, anchor=W, justify=LEFT,)
+        rl.config(width=10, anchor=W, justify=LEFT, )
         re.config(width=53, validate='key', validatecommand=(lf.register(self.creator('haoiRebate')), '%P'))
 
         ul.grid(row=0, column=0, sticky=N + W, padx=(10, 10), pady=(10, 0))
@@ -81,6 +87,27 @@ class SettingFrame(Frame):
         ue.grid(row=0, column=1, sticky=N + W, padx=(0, 10), pady=(10, 10))
 
         return lf
+
+    def windows_resize(self):
+        f = Frame(self)
+        label = Label(f, text='Windows Size(Restart to Effect): ')
+
+        options = ['470 x 450', '470 x 550', '470 x 650', '470 x 750', '470 x 850']
+        screen_size = config.global_config.screenSize
+        value = '{} x {}'.format(screen_size[0], screen_size[1])
+        variable = StringVar()
+        variable.set(value)
+
+        def command(value):
+            value = value.split('x')
+            config.global_config.screenSize = [int(value[0]), int(value[1])]
+            write_config(config.global_config)
+
+        option = OptionMenu(f, variable, *options, command=command)
+
+        label.grid(row=0, column=0, sticky=W)
+        option.grid(row=0, column=1, sticky=N + W)
+        return f
 
     def creator(self, attr_name):
         def validate_cmd(value):
