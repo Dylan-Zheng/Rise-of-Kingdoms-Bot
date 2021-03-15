@@ -1,6 +1,6 @@
 {
     "version": "1.2.1.031421_beta",
-    "shouldUpdateInfo": true,
+    "shouldUpdateInfo": false,
     "label": {
         "update": true,
         "text": "Welcome to use Rise of Kingdoms Bot, check update on",
