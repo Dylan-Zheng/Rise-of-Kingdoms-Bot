@@ -26,10 +26,12 @@ def write_config(config):
 
 class Config:
     def __init__(self, config={}):
+        self.screenSize = config.get('screenSize', [470, 850])
         self.method = config.get('method', NONE)
         self.haoiUser = config.get('haoiUser', None)
         self.haoiRebate = config.get('haoiRebate', None)
         self.twocaptchaKey = config.get('twocaptchaKey', None)
+
 
 
 global_config = Config()
