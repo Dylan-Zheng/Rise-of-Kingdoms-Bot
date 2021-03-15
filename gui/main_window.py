@@ -13,7 +13,7 @@ import config
 
 class MainWindow:
 
-    def __init__(self, size=(470, 850)):
+    def __init__(self):
         self.adb = adb.bridge
         config.global_config = load_config()
         twocaptcha.key = config.global_config.twocaptchaKey
@@ -21,17 +21,17 @@ class MainWindow:
         haoi.rebate = config.global_config.haoiRebate
 
         self.window = Tk()
-        self.size = size
+        self.size = config.global_config.screenSize
 
         self.window.title('Rise Of Kingdom Bot (v{})'.format(version))
-        self.window.geometry('{}x{}'.format(size[0], size[1]))
+        self.window.geometry('{}x{}'.format(self.size[0], self.size[1]))
         self.window.resizable(0, 0)
 
         self.curr_frame = None
         self.last_frame = None
         self.setting_frame = None
 
-        self.notebook = Notebook(self.window, height=size[1] - 80)
+        self.notebook = Notebook(self.window, height=self.size[1] - 80)
 
         # device = self.adb.get_device('127.0.0.1', 5585)
         # mf = SelectedDeviceFrame(self.notebook, device, width=size[0], height=size[1])
@@ -40,11 +40,11 @@ class MainWindow:
         # mf.grid(row=0, column=0, sticky=N + W)
         # mf.grid_propagate(False)
 
-        main_frame = Frame(self.notebook, width=size[0], height=size[1])
+        main_frame = Frame(self.notebook, width=self.size[0], height=self.size[1])
 
-        dlf = DeviceListFrame(self.notebook, main_frame, width=size[0], height=size[1])
+        dlf = DeviceListFrame(self.notebook, main_frame, width=self.size[0], height=self.size[1])
 
-        sf = SettingFrame(self.notebook, width=size[0], height=size[1])
+        sf = SettingFrame(self.notebook, width=self.size[0], height=self.size[1])
         self.setting_frame = sf
         sf.grid(row=0, column=0, sticky=N + W)
         sf.grid_propagate(False)
@@ -54,7 +54,7 @@ class MainWindow:
         self.notebook.add(sf, text='Setting')
         self.notebook.grid(row=0, column=0, sticky=N + W, pady=(10, 0))
 
-        bf = BottomFrame(self.window, width=size[0], height=size[1])
+        bf = BottomFrame(self.window, width=self.size[0], height=self.size[1])
         bf.grid(row=1, column=0, sticky=N + W, padx=10, pady=(10, 0))
 
     def run(self):
