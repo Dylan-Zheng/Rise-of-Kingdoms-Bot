@@ -40,6 +40,7 @@ def time_drop_down(app, parent):
 collecting_checkbox = checkbox_fn_creator('enableCollecting', 'Collecting resource, troops, and help alliance')
 
 produce_material = checkbox_fn_creator('enableMaterialProduce', 'Produce material')
+material_do_round = entry_int_fn_creator('materialDoRound', 'Execute at every round:')
 
 open_free_chest_in_tavern = checkbox_fn_creator('enableTavern', 'Open free chest in tavern')
 
@@ -67,11 +68,16 @@ train_siege = train_fn_creator(
 
 # other
 daily_vip_point_and_chest = checkbox_fn_creator('enableVipClaimChest', 'Claim daily vip point and chest')
+vip_do_round = entry_int_fn_creator('vipDoRound', 'Execute at every round:')
 
 claim_quest_checkbox = checkbox_fn_creator('claimQuests', 'Claim quests and daily objectives')
+quest_do_round = entry_int_fn_creator('questDoRound', 'Execute at every round:')
+
 
 alliance_action_checkbox = checkbox_fn_creator('allianceAction',
                                                'Collecting allied resource, gifts, and donate technology')
+alliance_do_round = entry_int_fn_creator('allianceDoRound', 'Execute at every round:')
+
 
 # Outside
 
@@ -135,11 +141,11 @@ def resource_ratio(app, parent):
 bot_config_title_fns = [
     [break_checkbox, [time_drop_down]],
     [collecting_checkbox, []],
-    [produce_material, []],
+    [produce_material, [material_do_round]],
     [open_free_chest_in_tavern, []],
-    [daily_vip_point_and_chest, []],
-    [claim_quest_checkbox, []],
-    [alliance_action_checkbox, []],
+    [daily_vip_point_and_chest, [vip_do_round]],
+    [claim_quest_checkbox, [quest_do_round]],
+    [alliance_action_checkbox, [alliance_do_round]],
     [training, [train_barracks, train_archery_range, train_stable, train_siege]],
     [attack_barbarians_checkbox, [hold_position_checkbox,
                                   heal_troops_checkbox,

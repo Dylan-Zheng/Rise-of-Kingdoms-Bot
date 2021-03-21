@@ -103,10 +103,13 @@ class Bot:
 
     def start(self, curr_task=TaskName.COLLECTING):
 
+        round_count = 0
+
         if self.building_pos is None:
             curr_task = TaskName.INIT_BUILDING_POS
 
         while True:
+            round_count = round_count + 1
             # 0 break
             if curr_task == TaskName.BREAK and self.config.enableBreak:
                 self.set_text(title='Break', remove=True)
@@ -138,25 +141,29 @@ class Bot:
             elif curr_task == TaskName.COLLECTING:
                 curr_task = TaskName.VIP_CHEST
 
-            if curr_task == TaskName.VIP_CHEST and self.config.enableVipClaimChest:
+            if curr_task == TaskName.VIP_CHEST and self.config.enableVipClaimChest \
+                    and round_count % self.config.vipDoRound == 0:
                 curr_task = self.claim_vip(TaskName.CLAIM_QUEST)
             elif curr_task == TaskName.VIP_CHEST:
                 curr_task = TaskName.CLAIM_QUEST
 
             # claim quests
-            if curr_task == TaskName.CLAIM_QUEST and self.config.claimQuests:
+            if curr_task == TaskName.CLAIM_QUEST and self.config.claimQuests \
+                    and round_count % self.config.questDoRound == 0:
                 curr_task = self.claim_quests(TaskName.ALLIANCE)
             elif curr_task == TaskName.CLAIM_QUEST:
                 curr_task = TaskName.ALLIANCE
 
             # alliance
-            if curr_task == TaskName.ALLIANCE and self.config.allianceAction:
+            if curr_task == TaskName.ALLIANCE and self.config.allianceAction \
+                    and round_count % self.config.allianceDoRound == 0:
                 curr_task = self.alliance(TaskName.METARIALS)
             elif curr_task == TaskName.ALLIANCE:
                 curr_task = TaskName.METARIALS
 
             # material
-            if curr_task == TaskName.METARIALS and self.config.enableMaterialProduce:
+            if curr_task == TaskName.METARIALS and self.config.enableMaterialProduce \
+                    and round_count % self.config.materialDoRound == 0:
                 curr_task = self.materials(TaskName.TAVERN)
             elif curr_task == TaskName.METARIALS:
                 curr_task = TaskName.TAVERN
@@ -361,6 +368,7 @@ class Bot:
         # tap on vip point chest
         self.set_text(insert='Claim daily vip point')
         x, y = vip_point_chest
+        self.tap(x, y, 5)
         self.tap(x, y, 1)
         # tap on free chest
         self.set_text(insert='Claim daily free vip chest')

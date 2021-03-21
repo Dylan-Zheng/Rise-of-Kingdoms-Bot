@@ -24,6 +24,7 @@ class BotConfig:
 
         # Producing
         self.enableMaterialProduce = config.get('enableMaterialProduce', True)
+        self.materialDoRound = config.get('materialDoRound', 1)
 
         # Tavern
         self.enableTavern = config.get('enableTavern', True)
@@ -53,12 +54,15 @@ class BotConfig:
 
         # Vip Chest
         self.enableVipClaimChest = config.get('enableVipClaimChest', True)
+        self.vipDoRound = config.get('vipDoRound', 1)
 
         # Quest
         self.claimQuests = config.get('claimQuests', True)
+        self.questDoRound = config.get('questDoRound', 1)
 
         # Alliance
         self.allianceAction = config.get('allianceAction', True)
+        self.allianceDoRound = config.get('allianceDoRound', 1)
 
         # Barbarians
         self.attackBarbarians = config.get('attackBarbarians', False)
