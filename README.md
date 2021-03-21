@@ -1,3 +1,8 @@
+![issues](https://img.shields.io/github/issues/Dylan-Zheng/Rise-of-Kingdoms-Bot)
+![forks](https://img.shields.io/github/forks/Dylan-Zheng/Rise-of-Kingdoms-Bot)
+![stars](https://img.shields.io/github/stars/Dylan-Zheng/Rise-of-Kingdoms-Bot)
+![lincense](https://img.shields.io/github/license/Dylan-Zheng/Rise-of-Kingdoms-Bot)
+
 # Rise of Kingdom Bot
 
 ### **Introduction**
