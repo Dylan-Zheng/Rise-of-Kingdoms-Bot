@@ -122,7 +122,7 @@ class ImagePathAndProps(Enum):
     HOLD_ICON_IMAGE_PATH = ['resource\\hold_icon.png',
                               (1280, 720), (0, 0, 0, 0), 0.90, 25, HOLD_ICON]
     HOLD_ICON_SMALL_IMAGE_PATH = ['resource\\hold_icon_small.png',
-                              (1280, 720), (0, 0, 0, 0), 0.95, 25, HOLD_ICON_SMALL]
+                              (1280, 720), (0, 0, 0, 0), 0.90, 25, HOLD_ICON_SMALL]
     MARCH_BAR_IMAGE_PATH = ['resource\\march_bar.png',
                               (1280, 720), (0, 0, 0, 0), 0.90, 25, MARCH_BAR]
     HEAL_ICON_IMAGE_PATH = ['resource\\heal_icon.png',
