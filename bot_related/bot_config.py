@@ -67,7 +67,8 @@ class BotConfig:
         # Barbarians
         self.attackBarbarians = config.get('attackBarbarians', False)
         self.numberOfAttack = config.get('numberOfAttack', 1)
-        self.barbariansLevel = config.get('barbariansLevel', 99)
+        self.barbariansMinLevel = config.get('barbariansMinLevel', 1)
+        self.barbariansMaxLevel = config.get('barbariansMaxLevel', 99)
         self.holdPosition = config.get('holdPosition', True)
         self.healTroopsBeforeAttack = config.get('healTroopsBeforeAttack', True)
         self.useDailyAPRecovery = config.get('useDailyAPRecovery', False)

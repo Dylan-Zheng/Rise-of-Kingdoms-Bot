@@ -7,6 +7,7 @@ from datetime import datetime
 from utils import aircv_rectangle_to_box
 from enum import Enum
 
+import random
 import config
 import traceback
 import math
@@ -642,7 +643,7 @@ class Bot:
         _, _, lock_pos = self.gui.check_any(ImagePathAndProps.LOCK_BUTTON_IMAGE_PATH.value)
 
         curr_lv = self.gui.barbarians_level_image_to_string()
-        if curr_lv == self.config.barbariansLevel:
+        if curr_lv == level:
             return
 
         if not has_inc_btn:
@@ -667,6 +668,13 @@ class Bot:
                 self.set_text(insert="Fail to read current level, set to lv.1".format(curr_lv))
                 x, y = min_pos
                 self.tap(x, y, 1)
+                curr_lv = 1
+            elif abs(level - curr_lv) > 5 :
+                self.set_text(insert="current level is {}".format(curr_lv))
+                self.set_text(insert="fail to read level, set to level 1")
+                x, y = min_pos
+                self.tap(x, y, 1)
+                curr_lv = 1
             else:
                 self.set_text(insert="current level is {}".format(curr_lv))
 
@@ -815,7 +823,9 @@ class Bot:
                 self.tap(x, y, 1)
 
                 # set barbarians level
-                self.set_barbarians_level(self.config.barbariansLevel)
+                level = random.randrange(self.config.barbariansMinLevel, self.config.barbariansMaxLevel + 1)
+                self.set_text(insert="Select Level is {}".format(level))
+                self.set_barbarians_level(level)
 
                 # tap search button
                 _, _, search_pos = self.gui.check_any(ImagePathAndProps.RESOURCE_SEARCH_BUTTON_IMAGE_PATH.value)

@@ -86,7 +86,8 @@ hold_position_checkbox = checkbox_fn_creator('holdPosition', 'Hold Position Afte
 heal_troops_checkbox = checkbox_fn_creator('healTroopsBeforeAttack', 'Heal Troops Before Attack')
 use_daily_ap_checkbox = checkbox_fn_creator('useDailyAPRecovery', 'Use Daily AP Recovery')
 use_normal_ap_checkbox = checkbox_fn_creator('useNormalAPRecovery', 'Use Normal AP Recovery')
-barbarians_level_entry = entry_int_fn_creator('barbariansLevel', 'Level:')
+barbarians_min_level_entry = entry_int_fn_creator('barbariansMinLevel', 'Minimum attack Level:')
+barbarians_max_level_entry = entry_int_fn_creator('barbariansMaxLevel', 'Maximum attack Level:')
 number_of_attack_entry = entry_int_fn_creator('numberOfAttack', 'Number of Attack:')
 timeout_entry = entry_int_fn_creator('timeout', 'Timeout (Second):')
 
@@ -151,7 +152,8 @@ bot_config_title_fns = [
                                   heal_troops_checkbox,
                                   use_daily_ap_checkbox,
                                   use_normal_ap_checkbox,
-                                  barbarians_level_entry,
+                                  barbarians_min_level_entry,
+                                  barbarians_max_level_entry,
                                   number_of_attack_entry,
                                   timeout_entry]],
     [gather_resource_checkbox, [use_gathering_boosts, resource_ratio, resource_no_secondery_commander]]
