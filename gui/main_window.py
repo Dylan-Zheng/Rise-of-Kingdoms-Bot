@@ -3,7 +3,6 @@ from tkinter.ttk import Notebook, Frame
 from gui.setting_frame import SettingFrame
 from gui.bottom_frame import BottomFrame
 from gui.device_list_frame import DeviceListFrame
-from gui.selected_device_frame import SelectedDeviceFrame
 from config import load_config
 from bot_related import twocaptcha, haoi
 import adb
