@@ -4,6 +4,7 @@ from tkinter import StringVar, OptionMenu, Frame, Label, Entry, N, W
 
 import webbrowser
 
+
 def integer_entry_validate_cmd_creator(app, attr_name, def_value=0):
     def validate_cmd(value, action_type):
         if action_type == '1':
@@ -17,6 +18,10 @@ def integer_entry_validate_cmd_creator(app, attr_name, def_value=0):
 
     return validate_cmd
 
+
+# restart
+restart_checkbox = checkbox_fn_creator('enableStop', 'Auto Restart Game')
+restart_do_round = entry_int_fn_creator('stopDoRound', 'Execute at every', 'round')
 
 # break
 break_checkbox = checkbox_fn_creator('enableBreak', 'Take break at every end of round')
@@ -40,7 +45,7 @@ def time_drop_down(app, parent):
 collecting_checkbox = checkbox_fn_creator('enableCollecting', 'Collecting resource, troops, and help alliance')
 
 produce_material = checkbox_fn_creator('enableMaterialProduce', 'Produce material')
-material_do_round = entry_int_fn_creator('materialDoRound', 'Execute at every round:')
+material_do_round = entry_int_fn_creator('materialDoRound', 'Execute at every', 'round')
 
 open_free_chest_in_tavern = checkbox_fn_creator('enableTavern', 'Open free chest in tavern')
 
@@ -68,16 +73,14 @@ train_siege = train_fn_creator(
 
 # other
 daily_vip_point_and_chest = checkbox_fn_creator('enableVipClaimChest', 'Claim daily vip point and chest')
-vip_do_round = entry_int_fn_creator('vipDoRound', 'Execute at every round:')
+vip_do_round = entry_int_fn_creator('vipDoRound', 'Execute at every', 'round')
 
 claim_quest_checkbox = checkbox_fn_creator('claimQuests', 'Claim quests and daily objectives')
-quest_do_round = entry_int_fn_creator('questDoRound', 'Execute at every round:')
-
+quest_do_round = entry_int_fn_creator('questDoRound', 'Execute at every', 'round')
 
 alliance_action_checkbox = checkbox_fn_creator('allianceAction',
                                                'Collecting allied resource, gifts, and donate technology')
-alliance_do_round = entry_int_fn_creator('allianceDoRound', 'Execute at every round:')
-
+alliance_do_round = entry_int_fn_creator('allianceDoRound', 'Execute at every', 'round')
 
 # Outside
 
@@ -90,7 +93,6 @@ barbarians_min_level_entry = entry_int_fn_creator('barbariansMinLevel', 'Minimum
 barbarians_max_level_entry = entry_int_fn_creator('barbariansMaxLevel', 'Maximum attack Level:')
 number_of_attack_entry = entry_int_fn_creator('numberOfAttack', 'Number of Attack:')
 timeout_entry = entry_int_fn_creator('timeout', 'Timeout (Second):')
-
 
 gather_resource_checkbox = checkbox_fn_creator('gatherResource', 'Gather resource')
 resource_no_secondery_commander = checkbox_fn_creator('gatherResourceNoSecondaryCommander', 'Not secondary commader')
@@ -140,10 +142,11 @@ def resource_ratio(app, parent):
 
 
 bot_config_title_fns = [
+    [restart_checkbox, [restart_do_round]],
     [break_checkbox, [time_drop_down]],
+    [open_free_chest_in_tavern, []],
     [collecting_checkbox, []],
     [produce_material, [material_do_round]],
-    [open_free_chest_in_tavern, []],
     [daily_vip_point_and_chest, [vip_do_round]],
     [claim_quest_checkbox, [quest_do_round]],
     [alliance_action_checkbox, [alliance_do_round]],
@@ -160,8 +163,5 @@ bot_config_title_fns = [
 ]
 
 
-
 def callback(url):
     webbrowser.open_new(url)
-
-
