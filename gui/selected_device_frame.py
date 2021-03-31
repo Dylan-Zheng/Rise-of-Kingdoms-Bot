@@ -3,14 +3,14 @@ from gui.creator import load_building_pos
 from gui.creator import write_building_pos, write_bot_config
 from gui.creator import button
 
-from tkinter import Label, Frame, Text, Scrollbar, Canvas, LabelFrame
-from tkinter import N, W, END, INSERT, LEFT, RIGHT
+from tkinter import Label, Frame, Text, Scrollbar, Canvas, LabelFrame, Toplevel, Entry, Button
+from tkinter import StringVar
+from tkinter import N, W, END, NSEW, INSERT, LEFT, RIGHT, CENTER, RIGHT, CENTER
 
-from utils import stop_thread
 from gui import bot_config_fns as atf
-from bot_related.bot import Bot
+from bot_related.bot import Bot, BuildingNames
 
-import threading
+from PIL import ImageTk, Image
 
 verification_method = None
 
@@ -20,11 +20,12 @@ class SelectedDeviceFrame(Frame):
     def __init__(self, windows, device, cnf={}, **kwargs):
         Frame.__init__(self, windows, kwargs)
 
-        self.bot = None
+        self.building_pos_window = None
+
+        self.bot = Bot(device)
         self.device = device
         self.bot_config = load_bot_config(device.serial.replace(':', "_"))
         self.bot_building_pos = load_building_pos(device.serial.replace(':', "_"))
-        self.bot_thread = None
         self.windows_size = [kwargs['width'], kwargs['height']]
 
         display_frame, self.task_title, self.task_text = self.task_display_frame()
@@ -35,6 +36,14 @@ class SelectedDeviceFrame(Frame):
         config_frame.grid(row=2, column=0, padx=10, sticky=N + W)
         bottom_frame.grid(row=3, column=0, padx=10, pady=(10, 10), sticky=N + W)
 
+        # def handle_focus(event):
+        #     if event.widget == self.master.master.master and self.building_pos_window is not None:
+        #         self.building_pos_window.attributes('-topmost', 1)
+        #         self.building_pos_window.attributes('-topmost', 0)
+        #         self.building_pos_window.focus_force()
+        #
+        # self.master.master.master.bind("<FocusIn>", handle_focus)
+
     def task_display_frame(self):
         width = self.windows_size[0] - 20
         height = 210
@@ -43,7 +52,7 @@ class SelectedDeviceFrame(Frame):
         frame.columnconfigure(0, weight=width)
         frame.rowconfigure(0, weight=5)
         frame.rowconfigure(1, weight=5)
-        frame.rowconfigure(2, weight=height - 20)
+        frame.rowconfigure(2, weight=height - 10)
 
         dl = Label(frame, text=self.device.serial, width=width, height=5, bg='white')
         title = Label(frame, text="Task: None", width=width, height=5)
@@ -59,7 +68,7 @@ class SelectedDeviceFrame(Frame):
         frame_canvas = LabelFrame(self,
                                   text='Config',
                                   width=self.windows_size[0],
-                                  height=self.windows_size[1] - 200
+                                  height=self.windows_size[1] - 100
                                   )
         frame_canvas.grid_rowconfigure(0, weight=1)
         frame_canvas.grid_columnconfigure(0, weight=1)
@@ -67,12 +76,12 @@ class SelectedDeviceFrame(Frame):
 
         # Add a canvas in that frame
         canvas = Canvas(frame_canvas)
-        canvas.grid(row=0, column=0, sticky=N+W)
+        canvas.grid(row=0, column=0, sticky=N + W)
 
         # Link a scrollbar to the canvas
 
         def on_mousewheel(event):
-            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+            canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
         def bound_to_mousewheel(event):
             canvas.bind_all("<MouseWheel>", on_mousewheel)
@@ -103,49 +112,54 @@ class SelectedDeviceFrame(Frame):
         inner_frame.update_idletasks()
 
         frame_canvas.config(width=self.windows_size[0] - 20, height=self.windows_size[1] - 350)
-        canvas.config(width=self.windows_size[0] - 20, height=self.windows_size[1] - 350, scrollregion=canvas.bbox("all"))
+        canvas.config(width=self.windows_size[0] - 20, height=self.windows_size[1] - 350,
+                      scrollregion=canvas.bbox("all"))
 
         return frame_canvas
 
     def start(self):
-        bot = Bot(self.device)
-        self.bot = bot
         if self.bot_building_pos is None:
             self.bot_config.hasBuildingPos = False
             self.bot_building_pos = {}
 
-        bot.config = self.bot_config
-        bot.building_pos = self.bot_building_pos
+        self.bot.config = self.bot_config
+        self.bot.building_pos = self.bot_building_pos
 
-        bot.text_update_event = self.on_task_update
-        bot.building_pos_update_event = lambda **kw: write_building_pos(kw['building_pos'], kw['prefix'])
-        bot.config_update_event = lambda **kw: write_bot_config(kw['config'], kw['prefix'])
+        self.bot.text_update_event = self.on_task_update
+        self.bot.building_pos_update_event = lambda **kw: write_building_pos(kw['building_pos'], kw['prefix'])
+        self.bot.config_update_event = lambda **kw: write_bot_config(kw['config'], kw['prefix'])
 
-        self.bot_thread = threading.Thread(target=bot.start)
-        self.bot_thread.start()
+        self.bot.start(self.bot.do_task)
 
     def stop(self):
-        if(self.bot_thread is not None):
-            stop_thread(self.bot_thread)
-            self.bot_thread = None
+        if self.bot.stop():
             self.task_title.config(text='Task: None')
             self.task_text.delete(1.0, END)
-            self.bot = None
 
     def bottom_frame(self):
         frame = Frame(self)
 
-        def on_click(btn):
-            if self.bot_thread is None:
+        # start/stop
+        def on_start_or_stop_click(btn):
+            if btn.cget('text') == 'Start':
                 self.start()
-                btn.config(text='STOP')
-            elif self.bot_thread is not None:
+                btn.config(text='Stop')
+            elif btn.cget('text') == 'Stop':
                 self.stop()
-                btn.config(text='START')
+                btn.config(text='Start')
             return
 
-        start_button = button(frame, on_click, text='START')
-        start_button.grid(row=0, column=0, sticky=N + W)
+        start_button = button(frame, on_start_or_stop_click, text='Start')
+        start_button.grid(row=0, column=0, padx=(0, 5), sticky=N + W)
+
+        #building position setting
+        def on_building_pos_click(btn):
+            if self.building_pos_window is None:
+                self.building_pos_window = building_pos_window(self)
+
+        building_pos_button = button(frame, on_building_pos_click, text='Building Pos')
+        building_pos_button.grid(row=0, column=1, sticky=N + W)
+
         return frame
 
     def on_task_update(self, text):
@@ -154,7 +168,6 @@ class SelectedDeviceFrame(Frame):
         self.task_text.delete(1.0, END)
         for t in text_list:
             self.task_text.insert(INSERT, t + '\n')
-
 
 
 def section_frame(app, parent, title_component_fn, sub_component_fns=[], start_row=0, start_column=0):
@@ -205,3 +218,158 @@ def enableChildren(parent):
                 child.config(width=8, bg='white')
         else:
             enableChildren(child)
+
+
+def building_pos_window(parent):
+    width = 940
+    height = 360
+
+    selected_building = {
+        'name': None,
+        'label': None,
+        'prev_pos': [-1, -1],
+    }
+
+    def building_name_xy_config_frame(master, row, name, pos):
+        name_label = Label(master, text=name.replace('_', ' '))
+        pos_label = Label(master, text='[{}, {}]'.format(pos[0], pos[1]), width=18)
+
+        def on_set_click(btn):
+            if selected_building['name'] is not None:
+                selected_building['label'].config(
+                    text='[{}, {}]'.format(
+                        selected_building['prev_pos'][0], selected_building['prev_pos'][1]
+                    )
+                )
+
+            selected_building['name'] = name
+            selected_building['label'] = pos_label
+            selected_building['label'].config(text='click on building')
+            selected_building['prev_pos'] = pos
+
+
+        set_button = button(master, on_set_click, text='Edit', )
+
+        name_label.grid(row=row, column=0, pady=2, sticky=W)
+        pos_label.grid(row=row, column=1, pady=2, sticky=W)
+        set_button.grid(row=row, column=2, pady=2, sticky=NSEW)
+
+    def close_window():
+        parent.building_pos_window.grab_release()
+        parent.building_pos_window.destroy()
+        parent.building_pos_window = None
+
+    def image_frame(parent):
+        frame = Frame(parent.building_pos_window, width=640, height=360)
+        frame.grid_rowconfigure(0, weight=1)
+        frame.grid_columnconfigure(0, weight=1)
+        frame.grid_propagate(False)
+        frame.grid(row=0, column=0, sticky=N + W)
+
+        label = Label(frame, text='Loading city image, Please wait!', background='white')
+        label.grid(row=0, column=0, sticky=NSEW)
+
+        canvas = Canvas(frame, width=640, height=360)
+
+        def setBuildingCoords(event):
+            if selected_building['name'] is None:
+                return
+            pos = [event.x * 2, event.y * 2]
+            parent.bot_building_pos[selected_building['name']] = [pos[0], pos[1]]
+            write_building_pos(
+                parent.bot_building_pos,
+                parent.device.serial.replace(':', "_")
+            )
+            selected_building['label'].config(text='[{}, {}]'.format(pos[0], pos[1]))
+            selected_building['name'] = None
+            selected_building['label'] = None
+
+        canvas.bind("<Button 1>", setBuildingCoords)
+
+        def after_image_load():
+            image = parent.bot.get_city_image().resize((640, 360), Image.ANTIALIAS)
+            frame.image = image = ImageTk.PhotoImage(image)
+            canvas.create_image((0, 0), image=image, anchor='nw')
+            parent.bot.curr_thread = None
+            label.grid_forget()
+            canvas.grid(row=0, column=0, sticky=N + W)
+
+        parent.bot.start(after_image_load)
+
+        return frame
+
+    def right_frame(parent):
+        rf_width = 300
+        rf_height = 360
+        # right side frame
+        frame_right = LabelFrame(parent.building_pos_window,
+                                 text="Building Position",
+                                 width=rf_width - 10,
+                                 height=rf_height - 10,
+                                 )
+
+        frame_right.grid_rowconfigure(0, weight=1)
+        frame_right.grid_columnconfigure(0, weight=1)
+        frame_right.grid_propagate(False)
+
+        canvas_right = Canvas(frame_right)
+        canvas_right.grid(row=0, column=0, sticky=N + W)
+
+        # Link a scrollbar to the canvas
+        def on_mousewheel(event):
+            canvas_right.yview_scroll(int(-1 * (event.delta / 120)), "units")
+
+        def bound_to_mousewheel(event):
+            canvas_right.bind_all("<MouseWheel>", on_mousewheel)
+
+        def unbound_to_mousewheel(event):
+            canvas_right.unbind_all("<MouseWheel>")
+
+        y_scrollbar = Scrollbar(frame_right, orient="vertical", command=canvas_right.yview)
+        y_scrollbar.grid(row=0, column=1, sticky='ns')
+        canvas_right.configure(yscrollcommand=y_scrollbar.set)
+
+        inner_frame_right = Frame(canvas_right)
+        inner_frame_right.bind('<Enter>', bound_to_mousewheel)
+        inner_frame_right.bind('<Leave>', unbound_to_mousewheel)
+
+        canvas_right.create_window((0, 0), window=inner_frame_right, anchor='nw')
+
+        idx = 0
+        for e_name in BuildingNames:
+            building_name_xy_config_frame(
+                inner_frame_right,
+                idx,
+                e_name.value.title(),
+                parent.bot_building_pos.get(e_name.value, [-1, -1]) if parent.bot_building_pos is not None else [-1, -1]
+            )
+            idx = idx + 1
+
+        inner_frame_right.update_idletasks()
+
+        frame_right.config(width=rf_width - 10, height=360 - 10)
+        canvas_right.config(width=rf_width - 10, height=360 - 10, scrollregion=canvas_right.bbox("all"))
+
+        frame_right.grid(row=0, column=1, padx=5, pady=5, sticky=N + W)
+
+        return inner_frame_right
+
+    def set_focus(event):
+        parent.building_pos_window.attributes('-topmost', 1)
+        parent.building_pos_window.attributes('-topmost', 0)
+        parent.building_pos_window.focus_force()
+
+    parent.building_pos_window = Toplevel(parent.master.master.master)
+    parent.building_pos_window.resizable(0, 0)
+    parent.building_pos_window.grab_set()
+
+    parent.building_pos_window.title("{} Building Position".format(parent.device.serial.replace(':', "_")))
+    parent.building_pos_window.geometry("{}x{}".format(width, height))
+    parent.building_pos_window.protocol("WM_DELETE_WINDOW", close_window)
+
+    image_frame(parent)
+    rf = right_frame(parent)
+
+    set_focus(None)
+
+    return parent.building_pos_window
