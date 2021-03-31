@@ -42,14 +42,14 @@ def checkbox_fn_creator(name, text):
     return title_checkbox
 
 
-def entry_int_fn_creator(name, text):
+def entry_int_fn_creator(name, begin_text, end_text=None):
 
     def entry(app, parent):
         str_value = StringVar()
         str_value.set(str(getattr(app.bot_config, name)))
 
         frame = Frame(parent)
-        label = Label(frame, text=text)
+        label = Label(frame, text=begin_text)
         entry = Entry(frame, textvariable=str_value)
 
         def creator(attr_name):
@@ -71,6 +71,10 @@ def entry_int_fn_creator(name, text):
 
         label.grid(row=0, column=0, sticky=N + W, padx=5)
         entry.grid(row=0, column=1, sticky=N + W, padx=5)
+
+        if end_text is not None:
+            Label(frame, text=end_text).grid(row=0, column=2, sticky=N+W, padx=5)
+
         return frame, None
 
     return entry
