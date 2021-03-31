@@ -31,7 +31,7 @@ Update:
 
 - Add auto restart
 - Add attack level range for barbarians
-- Allow to manually config building position
+- Allow to manually configure building position
 
 Note: Don't forget to move your **'save'**, **'config.json'** and **'devices_config.json'** to new version folder
 
