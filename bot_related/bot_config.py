@@ -13,6 +13,9 @@ class TrainingAndUpgradeLevel(Enum):
 
 class BotConfig:
     def __init__(self, config={}):
+        self.enableStop = config.get('enableStop', False)
+        self.stopDoRound = config.get('stopDoRound', 20)
+
         self.action_wait_time = config.get('action_wait_time', 1)
         self.enableBreak = config.get('enableBreak', True)
         self.breakTime = config.get('breakTime', 60 * 3)
