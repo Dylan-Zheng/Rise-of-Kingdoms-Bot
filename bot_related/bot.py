@@ -4,7 +4,7 @@ from bot_related import haoi, twocaptcha
 from config import HAO_I, TWO_CAPTCHA
 from filepath.file_relative_paths import ImagePathAndProps, BuffsImageAndProps, ItemsImageAndProps
 from datetime import datetime
-from utils import aircv_rectangle_to_box
+from utils import aircv_rectangle_to_box, stop_thread
 from enum import Enum
 
 import random
@@ -12,6 +12,7 @@ import config
 import traceback
 import math
 import time
+import threading
 
 from filepath.constants import \
     RESOURCES, SPEEDUPS, BOOSTS, EQUIPMENT, OTHER, MAP, HOME, VICTORY_MAIL, DEFEAT_MAIL, WINDOW
@@ -54,6 +55,7 @@ class TrainingType(Enum):
 
 
 class TaskName(Enum):
+    KILL_GAME = -2
     BREAK = -1
     NEXT_TASK = 0
     INIT_BUILDING_POS = 1
@@ -100,9 +102,37 @@ class Bot:
         self.building_pos = {}
 
         self.config = BotConfig(config)
+        self.curr_thread = None
         self.curr_task = TaskName.BREAK
 
-    def start(self, curr_task=TaskName.COLLECTING):
+    def start(self, fn):
+        self.curr_thread = threading.Thread(target=fn)
+        self.curr_thread.start()
+        return self.curr_thread
+
+    def stop(self):
+        if self.curr_thread is not None:
+            stop_thread(self.curr_thread)
+            self.curr_thread = None
+            return True
+        return False
+
+    def get_city_image(self):
+        self.set_text(title='Get City Image', remove=True)
+        self.set_text(append='Init Building Position', remove=True)
+        self.set_text(append='init view')
+        self.back_to_home_gui()
+        self.home_gui_full_view()
+        self.set_text(append='Done')
+        return self.gui.get_curr_device_screen_img()
+
+
+    def auto_set_building_pos(self):
+        if self.curr_thread is not None:
+            stop_thread()
+        self.start(self, self.init_building_pos)
+
+    def do_task(self, curr_task=TaskName.KILL_GAME):
 
         round_count = 0
 
@@ -110,8 +140,20 @@ class Bot:
             curr_task = TaskName.INIT_BUILDING_POS
 
         while True:
-            round_count = round_count + 1
-            # 0 break
+
+            # restart
+            if curr_task == TaskName.KILL_GAME and self.config.enableStop:
+                self.set_text(title='Kill The Game', remove=True)
+                self.set_text(insert='')
+                self.stopRok()
+                curr_task = TaskName.BREAK
+
+            elif curr_task == TaskName.KILL_GAME:
+                curr_task = TaskName.BREAK
+
+
+
+            # break
             if curr_task == TaskName.BREAK and self.config.enableBreak:
                 self.set_text(title='Break', remove=True)
                 self.set_text(insert='Init View')
@@ -192,6 +234,8 @@ class Bot:
                 curr_task = self.gather_resource(TaskName.BREAK)
             elif curr_task == TaskName.GATHER:
                 curr_task = TaskName.BREAK
+
+            round_count = round_count + 1
 
         return
 
@@ -669,7 +713,7 @@ class Bot:
                 x, y = min_pos
                 self.tap(x, y, 1)
                 curr_lv = 1
-            elif abs(level - curr_lv) > 5 :
+            elif abs(level - curr_lv) > 5:
                 self.set_text(insert="current level is {}".format(curr_lv))
                 self.set_text(insert="fail to read level, set to level 1")
                 x, y = min_pos
@@ -689,10 +733,10 @@ class Bot:
         if should_hold and not is_check:
             _, _, pos = self.gui.check_any(ImagePathAndProps.HOLD_POS_UNCHECK_IMAGE_PATH.value)
             x, y = pos
-            self.tap(x-3, y)
+            self.tap(x - 3, y)
         elif not should_hold and is_check:
             x, y = pos
-            self.tap(x-3, y)
+            self.tap(x - 3, y)
 
     def select_save_blue_one(self):
 
@@ -750,7 +794,8 @@ class Bot:
         while True:
             result = self.gui.has_image_cv_img(commander_cv_img)
             time_eclipsed = time.time() - start
-            self.set_text(replace='Wait Commander return to City: {}/{}'.format(int(time_eclipsed), self.config.timeout), index=0)
+            self.set_text(
+                replace='Wait Commander return to City: {}/{}'.format(int(time_eclipsed), self.config.timeout), index=0)
             if result is None:
                 return True
             elif time_eclipsed >= self.config.timeout:
@@ -787,15 +832,18 @@ class Bot:
                     self.tap(pos[0], pos[1], 1)
                     used = True
             if self.config.useNormalAPRecovery and not used:
-                _, _, use_btn_pos = self.gui.check_any(ImagePathAndProps.USE_AP_BUTTON_IMAGE_PATH.value)
+                _, _, pos = self.gui.check_any(ImagePathAndProps.USE_AP_BUTTON_IMAGE_PATH.value)
                 if pos is not None:
                     self.set_text(insert='Use Normal AP Recovery')
-                    self.tap(pos[0], pos[1], 1)
+                    for i in range(2):
+                        self.tap(pos[0], pos[1], 1)
                     used = True
             if not used:
                 self.set_text(insert='Run out of AP')
                 raise RuntimeError('Run out of AP')
-            self.back(1)
+                return False
+            self.back(3)
+            return True
 
     def attack_barbarians(self, next_task=TaskName.GATHER):
         icon_pos = (255, 640)
@@ -860,7 +908,14 @@ class Bot:
                     self.set_text(insert="March")
                     x, y = match_button_pos
                     self.tap(x, y, 1)
-                    self.use_ap_recovery()
+
+                    if self.use_ap_recovery():
+                        _, _, match_button_pos = self.gui.check_any(
+                            ImagePathAndProps.TROOPS_MATCH_BUTTON_IMAGE_PATH.value)
+                        self.set_text(insert="March")
+                        x, y = match_button_pos
+                        self.tap(x, y, 1)
+
                     commander_cv_img = self.gui.get_image_in_box(queue_one_pos)
                     is_in_city = False
 
@@ -877,7 +932,10 @@ class Bot:
                     _, _, pos = self.gui.check_any(ImagePathAndProps.MARCH_BAR_IMAGE_PATH.value)
                     x, y = pos
                     self.tap(x, y, 1)
-                    self.use_ap_recovery()
+                    if self.use_ap_recovery():
+                        _, _, pos = self.gui.check_any(ImagePathAndProps.MARCH_BAR_IMAGE_PATH.value)
+                        x, y = pos
+                        self.tap(x, y, 1)
 
                 # block and try to catch battle result
                 battle_result = self.battle_result_detector(commander_cv_img)
@@ -1270,6 +1328,11 @@ class Bot:
     def runOfRoK(self):
         cmd = 'am start -n com.lilithgame.roc.gp/com.harry.engine.MainActivity'
         str = self.device.shell(cmd)
+
+    def stopRok(self):
+        cmd = 'am force-stop com.lilithgame.roc.gp'
+        str = self.device.shell(cmd)
+        print(str)
 
     def set_text(self, **kwargs):
         dt_string = datetime.now().strftime("[%H:%M:%S]")
