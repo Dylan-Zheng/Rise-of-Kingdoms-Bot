@@ -13,7 +13,7 @@ class BottomFrame(Frame):
         Frame.__init__(self, windows, kwargs)
         self.windows_size = [kwargs['width'], kwargs['height']]
 
-        label = Label(self, text="Welcome to use Rise of Kingdoms Bot, You see update on")
+        label = Label(self, text="Welcome to use Rise of Kingdoms Bot, see update on")
         link = Label(self, text="GitHub", fg="blue", cursor="hand2")
 
         def callback():
