@@ -86,3 +86,7 @@ class BotConfig:
         self.gatherResourceRatioWood = config.get('gatherResourceRatioWood', 1)
         self.gatherResourceRatioStone = config.get('gatherResourceRatioStone', 1)
         self.gatherResourceRatioGold = config.get('gatherResourceRatioGold', 1)
+
+        # Scout
+        self.enableScout = config.get('enableScout', False)
+        self.enableInvestigation = config.get('enableInvestigation', True)

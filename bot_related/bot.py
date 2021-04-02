@@ -68,6 +68,7 @@ class TaskName(Enum):
     TAVERN = 8
     VIP_CHEST = 9
     BARBARIANS = 10
+    SCOUT = 11
 
 
 class Resource(Enum):
@@ -126,13 +127,12 @@ class Bot:
         self.set_text(append='Done')
         return self.gui.get_curr_device_screen_img()
 
-
     def auto_set_building_pos(self):
         if self.curr_thread is not None:
             stop_thread()
         self.start(self, self.init_building_pos)
 
-    def do_task(self, curr_task=TaskName.KILL_GAME):
+    def do_task(self, curr_task=TaskName.COLLECTING):
 
         round_count = 0
 
@@ -142,7 +142,8 @@ class Bot:
         while True:
 
             # restart
-            if curr_task == TaskName.KILL_GAME and self.config.enableStop:
+            if curr_task == TaskName.KILL_GAME and self.config.enableStop \
+                    and round_count % self.config.stopDoRound == 0:
                 self.set_text(title='Kill The Game', remove=True)
                 self.set_text(insert='')
                 self.stopRok()
@@ -150,8 +151,6 @@ class Bot:
 
             elif curr_task == TaskName.KILL_GAME:
                 curr_task = TaskName.BREAK
-
-
 
             # break
             if curr_task == TaskName.BREAK and self.config.enableBreak:
@@ -231,8 +230,14 @@ class Bot:
 
             # gather resource
             if curr_task == TaskName.GATHER and self.config.gatherResource:
-                curr_task = self.gather_resource(TaskName.BREAK)
+                curr_task = self.gather_resource(TaskName.SCOUT)
             elif curr_task == TaskName.GATHER:
+                curr_task = TaskName.SCOUT
+
+            # gather resource
+            if curr_task == TaskName.SCOUT and self.config.enableScout:
+                curr_task = self.auto_scout(TaskName.BREAK)
+            elif curr_task == TaskName.SCOUT:
                 curr_task = TaskName.BREAK
 
             round_count = round_count + 1
@@ -1116,6 +1121,164 @@ class Bot:
             if diff[m] < diff[i]:
                 m = i
         return m
+
+    def auto_scout(self, next_task=TaskName.BREAK):
+        self.set_text(title='Auto Scout')
+        mail_pos = [1230, 570]
+        center_pos = (640, 320)
+
+        idx = 0
+        while self.config.enableInvestigation:
+            self.back_to_map_gui()
+            self.set_text(insert='Open mail')
+            x, y = mail_pos
+            self.tap(x, y, 2)
+
+            found, name, pos = self.gui.check_any(
+                ImagePathAndProps.MAIL_EXPLORATION_REPORT_IMAGE_PATH.value,
+                ImagePathAndProps.MAIL_SCOUT_BUTTON_IMAGE_PATH.value
+            )
+
+            if found:
+                if name == ImagePathAndProps.MAIL_EXPLORATION_REPORT_IMAGE_PATH.value[5]:
+                    x, y = pos
+                    self.tap(x, y, 2)
+
+                    result_list = self.gui.find_all_image_props(
+                        ImagePathAndProps.MAIL_SCOUT_BUTTON_IMAGE_PATH.value
+                    )
+
+                    if idx < len(result_list):
+                        x, y = result_list[idx]['result']
+                        self.tap(x, y, 2)
+                    else:
+                        break
+
+                else:
+
+                    result_list = self.gui.find_all_image_props(
+                        ImagePathAndProps.MAIL_SCOUT_BUTTON_IMAGE_PATH.value
+                    )
+
+                    if idx < len(result_list):
+                        x, y = result_list[idx]['result']
+                        self.tap(x, y, 2)
+                    else:
+                        break
+
+                    x, y = pos
+                    self.tap(x, y, 2)
+            else:
+                break
+
+            x, y = center_pos
+            self.tap(x, y, 2)
+
+            found, name, pos = self.gui.check_any(
+                ImagePathAndProps.INVESTIGATE_BUTTON_IMAGE_PATH.value,
+                ImagePathAndProps.GREAT_BUTTON_IMAGE_PATH.value
+            )
+
+            if found:
+                x, y = pos
+                self.tap(x, y, 2)
+            else:
+                continue
+
+            if name == ImagePathAndProps.INVESTIGATE_BUTTON_IMAGE_PATH.value[5]:
+
+                found, name, pos = self.gui.check_any(
+                    ImagePathAndProps.SCOUT_IDLE_ICON_IMAGE_PATH.value,
+                    ImagePathAndProps.SCOUT_ZZ_ICON_IMAGE_PATH.value
+                )
+
+                if found:
+                    x, y = pos
+                    self.tap(x - 10, y - 10, 2)
+                else:
+                    break
+
+                found, name, pos = self.gui.check_any(
+                    ImagePathAndProps.SCOUT_SEND_BUTTON_IMAGE_PATH.value,
+                )
+
+                if found:
+                    x, y = pos
+                    self.tap(x, y, 2)
+                else:
+                    break
+            else:
+                continue
+
+            idx = idx + 1
+
+
+        while True:
+            self.set_text(insert='init view')
+            self.back_to_home_gui()
+            self.home_gui_full_view()
+
+            # open scout interface
+            self.set_text(insert='tap scout camp')
+            scout_camp_pos = self.building_pos[BuildingNames.SCOUT_CAMP.value]
+            x, y = scout_camp_pos
+            self.tap(x, y, 1)
+
+            # find and tap scout button
+            self.set_text(insert='open scout camp')
+            is_found, _, btn_pos = self.gui.check_any(
+                ImagePathAndProps.SCOUT_BUTTON_IMAGE_PATH.value
+            )
+            if is_found:
+                x, y = btn_pos
+                self.tap(x, y, 1)
+            else:
+                return next_task
+
+            # find and tap explore button
+            self.set_text(insert='try to tap explore')
+            is_found, _, btn_pos = self.gui.check_any(
+                ImagePathAndProps.SCOUT_EXPLORE_BUTTON_IMAGE_PATH.value
+            )
+            if is_found:
+                x, y = btn_pos
+                self.tap(x, y, 2)
+            else:
+                return next_task
+
+            # find and tap explore button
+            self.set_text(insert='try to tap explore')
+            is_found, _, btn_pos = self.gui.check_any(
+                ImagePathAndProps.SCOUT_EXPLORE2_BUTTON_IMAGE_PATH.value
+            )
+            if is_found:
+                x, y = btn_pos
+                self.tap(x, y, 2)
+            else:
+                return next_task
+
+            self.set_text(insert='try to tap send')
+
+            found, name, pos = self.gui.check_any(
+                ImagePathAndProps.SCOUT_IDLE_ICON_IMAGE_PATH.value,
+                ImagePathAndProps.SCOUT_ZZ_ICON_IMAGE_PATH.value
+            )
+            if found:
+                x, y = pos
+                self.tap(x - 10, y - 10, 2)
+            else:
+                return next_task
+
+            is_found, _, btn_pos = self.gui.check_any(
+                ImagePathAndProps.SCOUT_SEND_BUTTON_IMAGE_PATH.value
+            )
+            if is_found:
+                x, y = btn_pos
+                self.tap(x, y, 2)
+            else:
+                return next_task
+
+        return next_task
 
     # Home
     def back_to_home_gui(self):

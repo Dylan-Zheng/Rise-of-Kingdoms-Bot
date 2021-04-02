@@ -98,6 +98,10 @@ gather_resource_checkbox = checkbox_fn_creator('gatherResource', 'Gather resourc
 resource_no_secondery_commander = checkbox_fn_creator('gatherResourceNoSecondaryCommander', 'Not secondary commader')
 use_gathering_boosts = checkbox_fn_creator('useGatheringBoosts', 'Use gathering boosts')
 
+enable_scout_checkbox = checkbox_fn_creator('enableScout', 'Enable explore')
+enable_Investigation_checkbox = checkbox_fn_creator('enableInvestigation', 'Investigate Cave, Village')
+
+
 
 def resource_ratio(app, parent):
     label_texts = ['Food:', 'Wood:', 'Stone:', 'Gold:']
@@ -159,7 +163,8 @@ bot_config_title_fns = [
                                   barbarians_max_level_entry,
                                   number_of_attack_entry,
                                   timeout_entry]],
-    [gather_resource_checkbox, [use_gathering_boosts, resource_ratio, resource_no_secondery_commander]]
+    [gather_resource_checkbox, [use_gathering_boosts, resource_ratio, resource_no_secondery_commander]],
+    [enable_scout_checkbox, [enable_Investigation_checkbox]]
 ]
 
 
