@@ -275,6 +275,10 @@ def building_pos_window(parent):
             if selected_building['name'] is None:
                 return
             pos = [event.x * 2, event.y * 2]
+            if parent.bot_building_pos is None:
+                parent.bot_building_pos = {}
+
+            parent.bot_config.hasBuildingPos = True
             parent.bot_building_pos[selected_building['name']] = [pos[0], pos[1]]
             write_building_pos(
                 parent.bot_building_pos,
