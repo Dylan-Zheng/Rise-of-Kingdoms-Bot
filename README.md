@@ -23,15 +23,14 @@ If you like this project, give me a star or feedback , that is great help for me
 
 ------
 
-**New Version v1.3.2.033121_beta is out (3/31/2021):**
+**Current Version v1.4.1.040221_beta (4/2/2021):**
 
-Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/releases/tag/v1.3.2.033121_beta
+Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/releases/tag/v1.4.1.040221_beta
 
 Update:
 
-- Add auto restart
-- Add attack level range for barbarians
-- Allow to manually configure building position
+- Add auto explore
+- Fixed building position window not able to set building position
 
 Note: Don't forget to move your **'save'**, **'config.json'** and **'devices_config.json'** to new version folder
 
