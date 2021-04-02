@@ -131,7 +131,26 @@ class ImagePathAndProps(Enum):
                                      (1280, 720), (0, 0, 0, 0), 0.90, 25, DAILY_AP_CLAIM]
     USE_AP_BUTTON_IMAGE_PATH = ['resource\\use_ap.png',
                                      (1280, 720), (0, 0, 0, 0), 0.90, 25, USE_AP]
-
+    SCOUT_BUTTON_IMAGE_PATH = ['resource\\scout_button.png',
+                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, SCOUT_BUTTON]
+    SCOUT_EXPLORE_BUTTON_IMAGE_PATH = ['resource\\explore_button.png',
+                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, EXPLORE_BUTTON]
+    SCOUT_EXPLORE2_BUTTON_IMAGE_PATH = ['resource\\explore_button2.png',
+                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, EXPLORE_BUTTON2]
+    SCOUT_SEND_BUTTON_IMAGE_PATH = ['resource\\scout_send_button.png',
+                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, SEND_BUTTON]
+    MAIL_EXPLORATION_REPORT_IMAGE_PATH = ['resource\\mail_exploration_report.png',
+                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, MAIL_EXPLORATION_REPORT]
+    MAIL_SCOUT_BUTTON_IMAGE_PATH = ['resource\\mail_scout_button.png',
+                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, MAIL_SCOUT_BUTTON]
+    INVESTIGATE_BUTTON_IMAGE_PATH = ['resource\\investigate_button.png',
+                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, INVESTIGATE_BUTTON]
+    GREAT_BUTTON_IMAGE_PATH = ['resource\\great_button.png',
+                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, GREAT_BUTTON]
+    SCOUT_IDLE_ICON_IMAGE_PATH = ['resource\\scout_idle_icon.png',
+                                     (1280, 720), (0, 0, 0, 0), 0.80, 25, IDLE_ICON]
+    SCOUT_ZZ_ICON_IMAGE_PATH = ['resource\\scout_zz_icon.png',
+                                     (1280, 720), (0, 0, 0, 0), 0.80, 25, ZZ_ICON]
 
 
 class GuiCheckImagePathAndProps(Enum):
