@@ -203,6 +203,14 @@ class GuiDetector:
         result = aircv.find_template(imsrc, imsch, threshold, True)
         return result
 
+    def find_all_image_props(self, props):
+        path, size, box, threshold, least_diff, gui = props
+        imsch = cv2.imdecode(np.asarray(self.get_curr_device_screen_img_byte_array(), dtype=np.uint8),
+                             cv2.IMREAD_COLOR)
+        imsrc = cv2.imread(resource_path(path))
+        result = aircv.find_all_template(imsrc, imsch, threshold, True)
+        return result
+
     def has_image_cv_img(self, cv_img, threshold=0.90):
         imsch = cv2.imdecode(np.asarray(self.get_curr_device_screen_img_byte_array(), dtype=np.uint8),
                              cv2.IMREAD_COLOR)
