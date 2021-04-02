@@ -231,7 +231,7 @@ def building_pos_window(parent):
     }
 
     def building_name_xy_config_frame(master, row, name, pos):
-        name_label = Label(master, text=name.replace('_', ' '))
+        name_label = Label(master, text=name.replace('_', ' ').title())
         pos_label = Label(master, text='[{}, {}]'.format(pos[0], pos[1]), width=18)
 
         def on_set_click(btn):
@@ -340,7 +340,7 @@ def building_pos_window(parent):
             building_name_xy_config_frame(
                 inner_frame_right,
                 idx,
-                e_name.value.title(),
+                e_name.value,
                 parent.bot_building_pos.get(e_name.value, [-1, -1]) if parent.bot_building_pos is not None else [-1, -1]
             )
             idx = idx + 1
