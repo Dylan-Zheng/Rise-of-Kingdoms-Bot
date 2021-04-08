@@ -1151,35 +1151,29 @@ class Bot:
                         x, y = pos
                         self.tap(x, y, 2)
 
-                        result_list = self.gui.find_all_image_props(
-                            ImagePathAndProps.MAIL_SCOUT_BUTTON_IMAGE_PATH.value
-                        )
+                    result_list = self.gui.find_all_image_props(
+                        ImagePathAndProps.MAIL_SCOUT_BUTTON_IMAGE_PATH.value
+                    )
+                    result_list.sort(key=lambda result: result['result'][1])
 
-                        if idx < len(result_list):
-                            x, y = result_list[idx]['result']
-                            self.tap(x, y, 2)
-                        else:
-                            break
-
-                    else:
-
-                        result_list = self.gui.find_all_image_props(
-                            ImagePathAndProps.MAIL_SCOUT_BUTTON_IMAGE_PATH.value
-                        )
-
-                        if idx < len(result_list):
-                            x, y = result_list[idx]['result']
-                            self.tap(x, y, 2)
-                        else:
-                            break
-
-                        x, y = pos
+                    if idx < len(result_list):
+                        x, y = result_list[idx]['result']
                         self.tap(x, y, 2)
+                    else:
+                        break
+
+                    x, y = pos
+                    self.tap(x, y, 2)
+
                 else:
                     break
 
                 x, y = center_pos
-                self.tap(x, y, 2)
+                self.tap(x, y, 0.1)
+                self.tap(x, y, 0.1)
+                self.tap(x, y, 0.1)
+                self.tap(x, y, 0.1)
+                self.tap(x, y, 0.5)
 
                 found, name, pos = self.gui.check_any(
                     ImagePathAndProps.INVESTIGATE_BUTTON_IMAGE_PATH.value,
@@ -1391,14 +1385,16 @@ class Bot:
     def pass_verification(self):
         try:
             self.set_text(insert='pass verification')
-            box = (400, 0, 880, 720)
-            ok = [780, 680]
+            add_y = 0
             img = self.gui.get_curr_device_screen_img()
-            img = img.crop(box)
             pos_list = None
             if config.global_config.method == HAO_I:
+                img = img.crop((400, 0, 880, 720))
+                add_y = 0
                 pos_list = haoi.solve_verification(img)
             elif config.global_config.method == TWO_CAPTCHA:
+                add_y = 105
+                img = img.crop((400, 105, 880, 720))
                 pos_list = twocaptcha.solve_verification(img)
 
             if pos_list is None:
@@ -1406,10 +1402,11 @@ class Bot:
                 return None
 
             for pos in pos_list:
-                self.tap(400 + pos[0], pos[1], 1)
+                self.tap(400 + pos[0], pos[1] + add_y, 1)
             self.tap(780, 680, 5)
 
         except Exception as e:
+            self.tap(100, 100)
             traceback.print_exc()
 
         return pos_list
