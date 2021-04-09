@@ -1495,9 +1495,9 @@ class Bot:
         time.sleep(sleep_time)
 
     def isRoKRunning(self):
-        cmd = ('dumpsys activity activities')
+        cmd = 'dumpsys window windows | grep mCurrentFocus'
         str = self.device.shell(cmd)
-        return str.find('com.lilithgame.roc.gp') != -1
+        return str.find('com.lilithgame.roc.gp/com.harry.engine.MainActivity') != -1
 
     def runOfRoK(self):
         cmd = 'am start -n com.lilithgame.roc.gp/com.harry.engine.MainActivity'
