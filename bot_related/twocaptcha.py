@@ -52,6 +52,11 @@ def get_answer(tid):
     return resp_text
 
 
+def refund(tid):
+    url = "http://2captcha.com/res.php?key={}&action=reportbad&id={}".format(key, tid)
+    resp_text = requests.get(url).text
+
+
 def solve_verification(img):
     if key is None:
         return None
@@ -64,7 +69,7 @@ def solve_verification(img):
     time.sleep(5)
 
     ans = None
-    while ans is None or ans['status'] != 1 :
+    while ans is None or ans['status'] != 1:
         ans = json.loads(get_answer(tid))
         if ans['request'] == 'CAPCHA_NOT_READY':
             time.sleep(5)
@@ -72,7 +77,10 @@ def solve_verification(img):
             raise RuntimeError('2Captcha Error: {}'.format(ans['request']))
 
     points = []
-    for p in ans['request']:
-        points.append([int(p['x']), int(p['y'])])
+    try:
+        for p in ans['request']:
+            points.append([int(p['x']), int(p['y'])])
+    except:
+        refund(tid)
 
     return points
