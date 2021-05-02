@@ -4,15 +4,13 @@ from gui.creator import write_building_pos, write_bot_config
 from gui.creator import button
 
 from tkinter import Label, Frame, Text, Scrollbar, Canvas, LabelFrame, Toplevel, Entry, Button
-from tkinter import StringVar
-from tkinter import N, W, END, NSEW, INSERT, LEFT, RIGHT, CENTER, RIGHT, CENTER
+from tkinter import N, W, END, NSEW, INSERT, LEFT
 
 from gui import bot_config_fns as atf
-from bot_related.bot import Bot, BuildingNames
+from bot_related.bot import Bot
+from tasks.constants import BuildingNames
 
 from PIL import ImageTk, Image
-
-verification_method = None
 
 
 class SelectedDeviceFrame(Frame):
