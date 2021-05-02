@@ -174,4 +174,11 @@ class Bot:
                 curr_task = TaskName.BREAK
 
             round_count = round_count + 1
+        return
+
+    
+    def isRoKRunning(self):
+        cmd = 'dumpsys window windows | grep mCurrentFocus'
+        str = self.device.shell(cmd)
+        return str.find('com.lilithgame.roc.gp/com.harry.engine.MainActivity') != -1
 
