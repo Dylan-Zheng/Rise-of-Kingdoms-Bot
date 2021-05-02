@@ -208,7 +208,7 @@ class GuiDetector:
         imsch = cv2.imdecode(np.asarray(self.get_curr_device_screen_img_byte_array(), dtype=np.uint8),
                              cv2.IMREAD_COLOR)
         imsrc = cv2.imread(resource_path(path))
-        result = aircv.find_all_template(imsrc, imsch, threshold, True)
+        result = aircv.find_all_template(imsrc, imsch, threshold, 3, True)
         return result
 
     def has_image_cv_img(self, cv_img, threshold=0.90):
