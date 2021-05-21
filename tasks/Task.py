@@ -18,6 +18,8 @@ from filepath.constants import \
 
 class Task:
 
+    center = (640, 360)
+
     def __init__(self, bot):
         self.bot = bot
         self.device = bot.device
@@ -30,7 +32,10 @@ class Task:
             _, _, commander_pos = self.gui.check_any(ImagePathAndProps.HOLD_ICON_SMALL_IMAGE_PATH.value)
             if commander_pos is not None:
                 x, y = commander_pos
-                self.tap(x - 10, y - 10, 1)
+                self.tap(x - 10, y - 10, 2)
+                x, y = self.center
+                self.tap(x, y)
+                self.tap(x, y, 1)
             else:
                 return
             _, _, return_btn_pos = self.gui.check_any(ImagePathAndProps.RETURN_BUTTON_IMAGE_PATH.value)
@@ -247,6 +252,18 @@ class Task:
             self.device.shell(cmd)
             time.sleep(duration / 1000 + 0.2)
 
+    def zoom(self, x_f, y_f, x_t, y_t, times=1, duration=300, zoom_type="out"):
+        cmd_hold = "input swipe {} {} {} {} {}".format(x_t, y_t, x_t, y_t, duration + 50)
+        if type == "out":
+            cmd_swipe = "input swipe {} {} {} {} {}".format(x_f, y_t, x_f, y_t, duration)
+        else:
+            cmd_swipe = "input swipe {} {} {} {} {}".format(x_t, y_t, x_f, y_f, duration)
+
+        for i in range(times):
+            self.device.shell(cmd_hold)
+            self.device.shell(cmd_swipe)
+            time.sleep(duration / 1000 + 0.5 + 0.2)
+
     # long_press_duration is in milliseconds
     def tap(self, x, y, sleep_time=0.1, long_press_duration=-1):
         cmd = None
@@ -259,10 +276,11 @@ class Task:
         str = self.device.shell(cmd)
         time.sleep(sleep_time)
 
+    # edit by seashell-freya, github: https://github.com/seashell-freya
     def isRoKRunning(self):
-        cmd = ('dumpsys activity activities')
+        cmd = 'dumpsys window windows | grep mCurrentFocus'
         str = self.device.shell(cmd)
-        return str.find('com.lilithgame.roc.gp') != -1
+        return str.find('com.lilithgame.roc.gp/com.harry.engine.MainActivity') != -1
 
     def runOfRoK(self):
         cmd = 'am start -n com.lilithgame.roc.gp/com.harry.engine.MainActivity'
@@ -271,7 +289,6 @@ class Task:
     def stopRok(self):
         cmd = 'am force-stop com.lilithgame.roc.gp'
         str = self.device.shell(cmd)
-        print(str)
 
     def set_text(self, **kwargs):
         dt_string = datetime.now().strftime("[%H:%M:%S]")
