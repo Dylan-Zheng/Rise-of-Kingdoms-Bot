@@ -22,7 +22,7 @@ class MainWindow:
         self.window = Tk()
         self.size = config.global_config.screenSize
 
-        self.window.title('Rise Of Kingdom Bot (v{})'.format(version))
+        self.window.title('Rise Of Kingdom Bot ({})'.format(version))
         self.window.geometry('{}x{}'.format(self.size[0], self.size[1]))
         self.window.resizable(0, 0)
 
@@ -31,13 +31,6 @@ class MainWindow:
         self.setting_frame = None
 
         self.notebook = Notebook(self.window, height=self.size[1] - 80)
-
-        # device = self.adb.get_device('127.0.0.1', 5585)
-        # mf = SelectedDeviceFrame(self.notebook, device, width=size[0], height=size[1])
-        # self.curr_frame = mf
-        # self.main_frame_list.append(mf)
-        # mf.grid(row=0, column=0, sticky=N + W)
-        # mf.grid_propagate(False)
 
         main_frame = Frame(self.notebook, width=self.size[0], height=self.size[1])
 
