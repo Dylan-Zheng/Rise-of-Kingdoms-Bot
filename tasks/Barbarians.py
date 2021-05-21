@@ -17,6 +17,10 @@ class Barbarians(Task):
         center_pos = (640, 320)
         queue_one_pos = (1205, 205, 1235, 230)
 
+        min_lv = self.bot.config.barbariansMinLevel
+        max_lv = self.bot.config.barbariansMaxLevel
+        base_lv = self.bot.config.barbariansBaseLevel
+
         try:
 
             super().set_text(title='Attack Barbarians', remove=True)
@@ -24,7 +28,14 @@ class Barbarians(Task):
 
             is_in_city = True
 
-            for r in range(super().config.numberOfAttack):
+            for r in range(self.bot.config.numberOfAttack):
+
+                if min_lv < base_lv:
+                    min_lv = base_lv
+
+                if min_lv > max_lv | max_lv < base_lv:
+                    return next_task
+
                 super().set_text(insert="Attack Round [{}]".format(r + 1))
                 if self.bot.config.healTroopsBeforeAttack or r == 0:
                     super().heal_troops()
@@ -38,8 +49,7 @@ class Barbarians(Task):
                 super().tap(x, y, 1)
 
                 # set barbarians level
-                level = random.randrange(self.bot.config.barbariansMinLevel,
-                                         self.bot.config.barbariansMaxLevel + 1)
+                level = random.randrange(min_lv, max_lv + 1)
                 super().set_text(insert="Select Level is {}".format(level))
                 self.set_barbarians_level(level)
 
@@ -49,6 +59,11 @@ class Barbarians(Task):
                 super().tap(x, y, 2)
                 x, y = center_pos
                 super().tap(x, y, 1)
+
+                found, _, _ = self.gui.check_any(ImagePathAndProps.RESOURCE_SEARCH_BUTTON_IMAGE_PATH.value)
+                if found:
+                    min_lv = min_lv + 1
+                    continue
 
                 # hold position
                 self.hold_pos_after_attack(self.bot.config.holdPosition)
@@ -116,7 +131,7 @@ class Barbarians(Task):
                     is_in_city = True
                     continue
                 elif battle_result == VICTORY_MAIL:
-                    if not super().config.holdPosition:
+                    if not self.bot.config.holdPosition:
                         if not self.wait_for_commander_back_to_city(commander_cv_img):
                             break
                         is_in_city = True
@@ -148,6 +163,7 @@ class Barbarians(Task):
     def set_barbarians_level(self, level):
         max_pos = (375, 405)
         min_pos = (168, 405)
+        base_level = self.bot.config.barbariansBaseLevel - 1
 
         _, _, dec_pos = self.gui.check_any(ImagePathAndProps.DECREASING_BUTTON_IMAGE_PATH.value)
         has_inc_btn, _, inc_pos = self.gui.check_any(ImagePathAndProps.INCREASING_BUTTON_IMAGE_PATH.value)
@@ -167,7 +183,7 @@ class Barbarians(Task):
         max_lv = self.gui.barbarians_level_image_to_string()
         super().set_text(insert="Max level is {}".format(max_lv))
         if max_lv != -1:
-            x = max_pos[0] if level > max_pos[0] or level >= 99 else (level / max_lv) * (max_pos[0] - min_pos[0]) + \
+            x = max_pos[0] if level > max_pos[0] or level >= 99 else ((level - base_level) / (max_lv - base_level)) * (max_pos[0] - min_pos[0]) + \
                                                                      min_pos[0]
             y = max_pos[1]
             super().tap(x, y, 1)
@@ -185,7 +201,7 @@ class Barbarians(Task):
                 super().set_text(insert="fail to read level, set to level 1")
                 x, y = min_pos
                 super().tap(x, y, 1)
-                curr_lv = 1
+                curr_lv = base_level + 1
             else:
                 super().set_text(insert="current level is {}".format(curr_lv))
 
@@ -205,16 +221,16 @@ class Barbarians(Task):
             x, y = pos
             super().tap(x - 3, y)
 
-    def select_save_blue_one(self):
+    def tap_on_save_btn(self, pos):
+        _x, _y = pos
+        super().tap(_x, _y, 1)
+        is_save_unselect, _, _ = self.gui.check_any(
+            ImagePathAndProps.UNSELECT_BLUE_ONE_SAVE_BUTTON_IMAGE_PATH.value)
+        if is_save_unselect:
+            super().set_text(insert='Commander not in city, stop current task')
+            raise RuntimeError('Commander not in city, stop current task')
 
-        def tap_on_save_btn(pos):
-            _x, _y = pos
-            super().tap(_x, _y, 1)
-            is_save_unselect, _, _ = self.gui.check_any(
-                ImagePathAndProps.UNSELECT_BLUE_ONE_SAVE_BUTTON_IMAGE_PATH.value)
-            if is_save_unselect:
-                super().set_text(insert='Commander not in city, stop current task')
-                raise RuntimeError('Commander not in city, stop current task')
+    def select_save_blue_one(self):
 
         # if blue save one not exist, try to find switch button
         has_save_btn, _, save_btn_pos = self.gui.check_any(
@@ -234,7 +250,7 @@ class Barbarians(Task):
                         ImagePathAndProps.UNSELECT_BLUE_ONE_SAVE_BUTTON_IMAGE_PATH.value)
                     # if exists tap it else continue
         if has_save_btn:
-            tap_on_save_btn(save_btn_pos)
+            self.tap_on_save_btn(save_btn_pos)
         else:
             super().set_text(insert='Save not found')
             raise RuntimeError('Save not found')
