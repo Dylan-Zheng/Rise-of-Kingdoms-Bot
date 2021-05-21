@@ -17,8 +17,11 @@ class BotConfig:
         self.stopDoRound = config.get('stopDoRound', 20)
 
         self.action_wait_time = config.get('action_wait_time', 1)
+
+        # Break
         self.enableBreak = config.get('enableBreak', True)
         self.breakTime = config.get('breakTime', 60 * 3)
+        self.terminate = config.get("terminate", False)
 
         self.hasBuildingPos = config.get('hasBuildingPos', False)
 
@@ -70,6 +73,7 @@ class BotConfig:
         # Barbarians
         self.attackBarbarians = config.get('attackBarbarians', False)
         self.numberOfAttack = config.get('numberOfAttack', 1)
+        self.barbariansBaseLevel = config.get('barbariansBaseLevel', 1)
         self.barbariansMinLevel = config.get('barbariansMinLevel', 1)
         self.barbariansMaxLevel = config.get('barbariansMaxLevel', 99)
         self.holdPosition = config.get('holdPosition', True)

@@ -29,7 +29,21 @@ break_checkbox = checkbox_fn_creator('enableBreak', 'Take break at every end of 
 
 def time_drop_down(app, parent):
     value = '{} Minute'.format(int(app.bot_config.breakTime / 60))
-    options = ['1 Minute', '2 Minute', '3 Minute', '4 Minute', '5 Minute', '10 Minute', '15 Minute', '20 Minute']
+    options = [
+        '1 Minute',
+        '2 Minute',
+        '3 Minute',
+        '4 Minute',
+        '5 Minute',
+        '10 Minute',
+        '15 Minute',
+        '20 Minute',
+        '25 Minute',
+        '30 Minute',
+        '40 Minute',
+        '50 Minute',
+        '60 Minute'
+    ]
     variable = StringVar()
     variable.set(value)
 
@@ -40,6 +54,8 @@ def time_drop_down(app, parent):
     option = OptionMenu(parent, variable, *options, command=command)
     return option, variable
 
+
+terminate_checkbox = checkbox_fn_creator('terminate', 'Terminate when break')
 
 # In city
 collecting_checkbox = checkbox_fn_creator('enableCollecting', 'Collecting resource, troops, and help alliance')
@@ -89,6 +105,7 @@ hold_position_checkbox = checkbox_fn_creator('holdPosition', 'Hold Position Afte
 heal_troops_checkbox = checkbox_fn_creator('healTroopsBeforeAttack', 'Heal Troops Before Attack')
 use_daily_ap_checkbox = checkbox_fn_creator('useDailyAPRecovery', 'Use Daily AP Recovery')
 use_normal_ap_checkbox = checkbox_fn_creator('useNormalAPRecovery', 'Use Normal AP Recovery')
+barbarians_base_level_entry = entry_int_fn_creator('barbariansBaseLevel', 'Base Level(normal/kvk):')
 barbarians_min_level_entry = entry_int_fn_creator('barbariansMinLevel', 'Minimum attack Level:')
 barbarians_max_level_entry = entry_int_fn_creator('barbariansMaxLevel', 'Maximum attack Level:')
 number_of_attack_entry = entry_int_fn_creator('numberOfAttack', 'Number of Attack:')
@@ -100,7 +117,6 @@ use_gathering_boosts = checkbox_fn_creator('useGatheringBoosts', 'Use gathering 
 
 enable_scout_checkbox = checkbox_fn_creator('enableScout', 'Enable explore')
 enable_Investigation_checkbox = checkbox_fn_creator('enableInvestigation', 'Investigate Cave, Village')
-
 
 
 def resource_ratio(app, parent):
@@ -147,7 +163,7 @@ def resource_ratio(app, parent):
 
 bot_config_title_fns = [
     [restart_checkbox, [restart_do_round]],
-    [break_checkbox, [time_drop_down]],
+    [break_checkbox, [terminate_checkbox, time_drop_down]],
     [open_free_chest_in_tavern, []],
     [collecting_checkbox, []],
     [produce_material, [material_do_round]],
@@ -159,6 +175,7 @@ bot_config_title_fns = [
                                   heal_troops_checkbox,
                                   use_daily_ap_checkbox,
                                   use_normal_ap_checkbox,
+                                  barbarians_base_level_entry,
                                   barbarians_min_level_entry,
                                   barbarians_max_level_entry,
                                   number_of_attack_entry,
