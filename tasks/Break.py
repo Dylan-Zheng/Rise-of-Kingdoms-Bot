@@ -10,7 +10,7 @@ class Break(Task):
     def __init__(self, bot):
         super().__init__(bot)
 
-    def do(self, next_task = TaskName.COLLECTING ):
+    def do(self, next_task = TaskName.COLLECTING):
         try:
             super().set_text(title='Break', remove=True)
             super().set_text(insert='Init View')
@@ -19,6 +19,11 @@ class Break(Task):
             super().set_text(insert='0/{} seconds'.format(self.bot.config.breakTime))
             super().back_to_home_gui()
             super().home_gui_full_view()
+
+            # stop game if config set true
+            if self.bot.config.terminate:
+                super().stopRok()
+
             count = 0
             for i in range(self.bot.config.breakTime):
                 time.sleep(1)
