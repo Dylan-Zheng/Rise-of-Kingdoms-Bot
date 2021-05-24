@@ -26,6 +26,9 @@ restart_do_round = entry_int_fn_creator('stopDoRound', 'Execute at every', 'roun
 # break
 break_checkbox = checkbox_fn_creator('enableBreak', 'Take break at every end of round')
 
+# Mystery Merchant
+mystery_merchant_checkbox = checkbox_fn_creator('enableMysteryMerchant', 'Use resource buy item in Mystery Merchant')
+
 
 def time_drop_down(app, parent):
     value = '{} Minute'.format(int(app.bot_config.breakTime / 60))
@@ -114,6 +117,7 @@ timeout_entry = entry_int_fn_creator('timeout', 'Timeout (Second):')
 gather_resource_checkbox = checkbox_fn_creator('gatherResource', 'Gather resource')
 resource_no_secondery_commander = checkbox_fn_creator('gatherResourceNoSecondaryCommander', 'Not secondary commader')
 use_gathering_boosts = checkbox_fn_creator('useGatheringBoosts', 'Use gathering boosts')
+hold_one_query_space_checkbox = checkbox_fn_creator('holdOneQuerySpace', 'Hold space for attack barbarians')
 
 enable_scout_checkbox = checkbox_fn_creator('enableScout', 'Enable explore')
 enable_Investigation_checkbox = checkbox_fn_creator('enableInvestigation', 'Investigate Cave, Village')
@@ -164,6 +168,7 @@ def resource_ratio(app, parent):
 bot_config_title_fns = [
     [restart_checkbox, [restart_do_round]],
     [break_checkbox, [terminate_checkbox, time_drop_down]],
+    [mystery_merchant_checkbox, []],
     [open_free_chest_in_tavern, []],
     [collecting_checkbox, []],
     [produce_material, [material_do_round]],
@@ -180,7 +185,7 @@ bot_config_title_fns = [
                                   barbarians_max_level_entry,
                                   number_of_attack_entry,
                                   timeout_entry]],
-    [gather_resource_checkbox, [use_gathering_boosts, resource_ratio, resource_no_secondery_commander]],
+    [gather_resource_checkbox, [use_gathering_boosts, hold_one_query_space_checkbox, resource_ratio, resource_no_secondery_commander]],
     [enable_scout_checkbox, [enable_Investigation_checkbox]]
 ]
 
