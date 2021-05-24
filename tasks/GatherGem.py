@@ -2,10 +2,9 @@ from filepath.file_relative_paths import ImagePathAndProps
 from tasks.Task import Task
 import traceback
 
-from tasks.constants import TaskName
 
 
-class GatherGem(Task):
+class CourierStation(Task):
     def __init__(self, bot):
         super().__init__(bot)
 
