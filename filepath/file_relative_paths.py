@@ -151,12 +151,21 @@ class ImagePathAndProps(Enum):
                                      (1280, 720), (0, 0, 0, 0), 0.80, 25, IDLE_ICON]
     SCOUT_ZZ_ICON_IMAGE_PATH = ['resource\\scout_zz_icon.png',
                                      (1280, 720), (0, 0, 0, 0), 0.80, 25, ZZ_ICON]
-
+    MERCHANT_ICON_IMAGE_PATH = ['resource\\merchant_icon.png',
+                                     (1280, 720), (0, 0, 0, 0), 0.80, 25, MERCHANT_ICON]
+    MERCHANT_FREE_BTN_IMAGE_PATH = ['resource\\merchant_free_btn.png',
+                                     (1280, 720), (0, 0, 0, 0), 0.80, 25, MERCHANT_FREE_BTN]
+    MERCHANT_BUY_WITH_WOOD_IMAGE_PATH = ['resource\\merchant_buy_with_wood.png',
+                                    (1280, 720), (0, 0, 0, 0), 0.80, 25, MERCHANT_BUY_WITH_WOOD]
+    MERCHANT_BUY_WITH_FOOD_IMAGE_PATH = ['resource\\merchant_buy_with_food.png',
+                                    (1280, 720), (0, 0, 0, 0), 0.80, 25, MERCHANT_BUY_WITH_FOOD]
+    HAS_MATCH_QUERY_IMAGE_PATH = ['resource\\has_match_query.png',
+                                    (1280, 720), (0, 0, 0, 0), 0.80, 25, HAS_MATCH_QUERY]
 
 class GuiCheckImagePathAndProps(Enum):
-    VERIFICATION_CLOSE_REFRESH_OK_BUTTON_IMAGE_PATH = ['resource\\verification_close_refresh_ok_button.png',
-                                                       (1280, 720), (0, 0, 0, 0), 0.90, 25,
-                                                       VERIFICATION_CLOSE_REFRESH_OK]
+    # VERIFICATION_CLOSE_REFRESH_OK_BUTTON_IMAGE_PATH = ['resource\\verification_close_refresh_ok_button.png',
+    #                                                    (1280, 720), (0, 0, 0, 0), 0.90, 25,
+    #                                                    VERIFICATION_CLOSE_REFRESH_OK]
     VERIFICATION_VERIFY_BUTTON_IMAGE_PATH = ['resource\\verification_verify_button.png',
                                              (1280, 720), (0, 0, 0, 0), 0.90, 25, VERIFICATION_VERIFY]
 
@@ -166,3 +175,12 @@ class GuiCheckImagePathAndProps(Enum):
                             (1280, 720), (10, 602, 113, 709), 0.98, 25, MAP]
     WINDOW_IMG_PATH = ['resource\\window.png',
                        (1280, 720), (0, 0, 0, 0), 0.70, 25, WINDOW]
+
+
+GuiCheckImagePathAndPropsOrdered = [
+    # GuiCheckImagePathAndProps.VERIFICATION_CLOSE_REFRESH_OK_BUTTON_IMAGE_PATH,
+    GuiCheckImagePathAndProps.VERIFICATION_VERIFY_BUTTON_IMAGE_PATH,
+    GuiCheckImagePathAndProps.MAP_BUTTON_IMG_PATH,
+    GuiCheckImagePathAndProps.HOME_BUTTON_IMG_PATH,
+    GuiCheckImagePathAndProps.WINDOW_IMG_PATH
+]
