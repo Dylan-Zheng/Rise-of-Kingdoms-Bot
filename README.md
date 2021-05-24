@@ -23,14 +23,24 @@ If you like this project, give me a star or feedback , that is great help for me
 
 ------
 
-**Current Version v1.4.1.040221_beta (4/2/2021):**
+**Current Version v1.4.1.052421_beta (5/24/2021):**
 
 Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/releases/tag/v1.4.1.040221_beta
 
-Update:
+**Update:**
 
-- Add auto explore
-- Fixed building position window not able to set building position
+**new feature:**
+
+- add base barbarians level for attack barbarians (because in kvk minimum level is not 1).
+- add auto buy items from mystery merchant with resource.
+- add hold one position in match query for attack barbarians.
+- some gui changes
+
+**bugs fixed:**
+
+- fix sometime attack barbarian, command is not going back to city.
+- fix 2capcha image to big error
+- fix some other bugs
 
 Note: Don't forget to move your **'save'**, **'config.json'** and **'devices_config.json'** to new version folder
 
@@ -82,6 +92,7 @@ Note: Don't forget to move your **'save'**, **'config.json'** and **'devices_con
 | Attack barbarians                                      | <u>**Done**</u> |
 | Heal troops                                            | <u>**Done**</u> |
 | Gather resource                                        | **<u>Done</u>** |
+| Mystery Merchant                                       | <u>**Done**</u> |
 | A simple GUI                                           | **<u>Done</u>** |
 | Allow bot control multi-devices/emulator               | **<u>Done</u>** |
 | Pass verification with haoi API                        | **<u>Done</u>** |
