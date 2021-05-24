@@ -31,11 +31,11 @@ class Collecting(Task):
                 BuildingNames.ALLIANCE_CENTER.value
             ]:
                 x, y = self.bot.building_pos[name]
-                super().set_text(insert='tap {} at position ({},{})'.format(name, x, y))
-                super().tap(x, y)
-                super().tap(x_e, y_e)
+                self.set_text(insert='tap {} at position ({},{})'.format(name, x, y))
+                self.tap(x, y)
+                self.tap(x_e, y_e, 0.2)
 
         except Exception as e:
             traceback.print_exc()
-            return TaskName.COLLECTING
+            return next_task
         return next_task
