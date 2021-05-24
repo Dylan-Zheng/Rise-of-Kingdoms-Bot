@@ -16,6 +16,7 @@ from tasks.Scout import Scout
 from tasks.ScreenShot import ScreenShot
 from tasks.Tavern import Tavern
 from tasks.Training import Training
+from tasks.MysteryMerchant import MysteryMerchant
 from tasks.constants import TaskName
 from utils import stop_thread
 
@@ -50,9 +51,11 @@ class Bot:
         self.config = BotConfig(config)
         self.curr_task = TaskName.BREAK
 
+
         # tasks
         self.restart_task = Restart(self)
         self.break_task = Break(self)
+        self.mystery_merchant_task = MysteryMerchant(self)
         self.alliance_task = Alliance(self)
         self.barbarians_task = Barbarians(self)
         self.claim_quests_task = ClaimQuests(self)
@@ -111,8 +114,14 @@ class Bot:
 
             # collecting resource
             if curr_task == TaskName.COLLECTING and self.config.enableCollecting:
-                curr_task = self.collecting_task.do(TaskName.VIP_CHEST)
+                curr_task = self.collecting_task.do(TaskName.MYSTERY_MERCHANT)
             elif curr_task == TaskName.COLLECTING:
+                curr_task = TaskName.MYSTERY_MERCHANT
+
+            # Mystery Merchant
+            if curr_task == TaskName.MYSTERY_MERCHANT and self.config.enableMysteryMerchant:
+                curr_task = self.mystery_merchant_task.do(TaskName.VIP_CHEST)
+            elif curr_task == TaskName.MYSTERY_MERCHANT:
                 curr_task = TaskName.VIP_CHEST
 
             # claim vip chest
