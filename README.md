@@ -38,7 +38,7 @@ Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/releases/tag/v1.4.1.04
 
 **bugs fixed:**
 
-- fix sometime attack barbarian, command is not going back to city.
+- fix sometime attack barbarian, commander is not going back to city.
 - fix 2capcha image to big error
 - fix some other bugs
 
