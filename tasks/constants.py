@@ -51,6 +51,7 @@ class TaskName(Enum):
     BARBARIANS = 10
     SCOUT = 11
     GATHER_GEM = 12
+    MYSTERY_MERCHANT = 13
 
 
 class Resource(Enum):
