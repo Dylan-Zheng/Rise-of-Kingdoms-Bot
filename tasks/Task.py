@@ -152,8 +152,9 @@ class Task:
             gui_name, pos = ['UNKNOW', None] if result is None else result
             if gui_name == GuiName.VERIFICATION_VERIFY.name:
                 self.tap(pos[0], pos[1], 5)
-            elif gui_name == GuiName.VERIFICATION_CLOSE_REFRESH_OK.name and pos_list is None:
                 pos_list = self.pass_verification()
+            # elif gui_name == GuiName.VERIFICATION_CLOSE_REFRESH_OK.name and pos_list is None:
+            #     pos_list = self.pass_verification()
             else:
                 return result
 
