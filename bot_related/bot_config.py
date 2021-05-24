@@ -25,6 +25,9 @@ class BotConfig:
 
         self.hasBuildingPos = config.get('hasBuildingPos', False)
 
+        # Mystery Merchant
+        self.enableMysteryMerchant = config.get('enableMysteryMerchant', False)
+
         # Collecting
         self.enableCollecting = config.get('enableCollecting', True)
 
@@ -90,6 +93,7 @@ class BotConfig:
         self.gatherResourceRatioWood = config.get('gatherResourceRatioWood', 1)
         self.gatherResourceRatioStone = config.get('gatherResourceRatioStone', 1)
         self.gatherResourceRatioGold = config.get('gatherResourceRatioGold', 1)
+        self.holdOneQuerySpace = config.get('holdOneQuerySpace', False)
 
         # Scout
         self.enableScout = config.get('enableScout', False)
