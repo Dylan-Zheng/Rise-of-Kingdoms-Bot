@@ -1,6 +1,6 @@
 from PIL import Image
 from filepath.file_relative_paths import ImagePathAndProps
-from filepath.file_relative_paths import GuiCheckImagePathAndProps
+from filepath.file_relative_paths import GuiCheckImagePathAndPropsOrdered
 from filepath.file_relative_paths import FilePaths
 from utils import resource_path
 from utils import img_to_string
@@ -53,7 +53,7 @@ class GuiDetector:
         image.save(resource_path(FilePaths.TEST_SRC_FOLDER_PATH.value + file_name))
 
     def get_curr_gui_name(self):
-        for image_path_and_props in GuiCheckImagePathAndProps:
+        for image_path_and_props in GuiCheckImagePathAndPropsOrdered:
             result = self.check_any(image_path_and_props.value)
             if result[0]:
                 return [result[1], result[2]]
@@ -144,6 +144,22 @@ class GuiDetector:
         result = ''.join(c for c in img_to_string(resource_image) if c.isdigit())
         return result
 
+    def match_query_to_string(self):
+        x0, y0, x1, y1 = (1211, 162, 1242, 179)
+
+        try:
+            imsch = cv2.imdecode(np.asarray(self.get_curr_device_screen_img_byte_array(), dtype=np.uint8),
+                                 cv2.IMREAD_COLOR)
+            imsch = cv2.cvtColor(imsch, cv2.COLOR_BGR2GRAY)
+            imsch = imsch[y0:y1, x0:x1]
+            ret, imsch = cv2.threshold(imsch, 215, 255, cv2.THRESH_BINARY)
+            resource_image = Image.fromarray(imsch)
+            result = ''.join(c for c in img_to_string(resource_image) if c.isdigit())
+            return int(result[0]), int(result[1])
+        except Exception as e:
+            return None, None
+
+
     def barbarians_level_image_to_string(self):
         try:
             x0, y0, x1, y1 = (106, 370, 436, 384)
@@ -203,12 +219,12 @@ class GuiDetector:
         result = aircv.find_template(imsrc, imsch, threshold, True)
         return result
 
-    def find_all_image_props(self, props):
+    def find_all_image_props(self, props, max_cnt=3):
         path, size, box, threshold, least_diff, gui = props
         imsch = cv2.imdecode(np.asarray(self.get_curr_device_screen_img_byte_array(), dtype=np.uint8),
                              cv2.IMREAD_COLOR)
         imsrc = cv2.imread(resource_path(path))
-        result = aircv.find_all_template(imsrc, imsch, threshold, 3, True)
+        result = aircv.find_all_template(imsrc, imsch, threshold, max_cnt, True)
         return result
 
     def has_image_cv_img(self, cv_img, threshold=0.90):
