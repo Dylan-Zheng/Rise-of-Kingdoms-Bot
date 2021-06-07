@@ -25,22 +25,12 @@ If you like this project, give me a star or feedback , that is great help for me
 
 **Current Version v1.4.1.052421_beta (5/24/2021):**
 
-Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/releases/tag/v1.4.1.040221_beta
+Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/releases/tag/v1.4.3.040221_beta
 
 **Update:**
 
-**new feature:**
-
-- add base barbarians level for attack barbarians (because in kvk minimum level is not 1).
-- add auto buy items from mystery merchant with resource.
-- add hold one position in match query for attack barbarians.
-- some gui changes
-
-**bugs fixed:**
-
-- fix sometime attack barbarian, commander is not going back to city.
-- fix 2capcha image to big error
-- fix some other bugs
+- Random tasks order.
+- fix sometime stuck on pass verification.
 
 Note: Don't forget to move your **'save'**, **'config.json'** and **'devices_config.json'** to new version folder
 
