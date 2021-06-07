@@ -33,7 +33,8 @@ class GuiName(Enum):
     WINDOW_TITLE = 3
     # VERIFICATION_CHEST = 4
     VERIFICATION_VERIFY = 5
-    VERIFICATION_CLOSE_REFRESH_OK = 6
+    # VERIFICATION_VERIFY_TITLE = 6
+    # VERIFICATION_CLOSE_REFRESH_OK = 7
 
 
 class GuiDetector:
@@ -158,7 +159,6 @@ class GuiDetector:
             return int(result[0]), int(result[1])
         except Exception as e:
             return None, None
-
 
     def barbarians_level_image_to_string(self):
         try:
