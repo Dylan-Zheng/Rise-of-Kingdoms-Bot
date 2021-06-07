@@ -130,9 +130,9 @@ class SelectedDeviceFrame(Frame):
         self.bot.start(self.bot.do_task)
 
     def stop(self):
-        if self.bot.stop():
-            self.task_title.config(text='Task: None')
-            self.task_text.delete(1.0, END)
+        self.bot.stop()
+        self.task_title.config(text='Task: None')
+        self.task_text.delete(1.0, END)
 
     def bottom_frame(self):
         frame = Frame(self)
