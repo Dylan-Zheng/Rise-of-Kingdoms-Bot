@@ -13,8 +13,8 @@ class TrainingAndUpgradeLevel(Enum):
 
 class BotConfig:
     def __init__(self, config={}):
+        self.stopDoRound = config.get('stopDoRound', 1)
         self.enableStop = config.get('enableStop', False)
-        self.stopDoRound = config.get('stopDoRound', 20)
 
         self.action_wait_time = config.get('action_wait_time', 1)
 
@@ -22,6 +22,7 @@ class BotConfig:
         self.enableBreak = config.get('enableBreak', True)
         self.breakTime = config.get('breakTime', 60 * 3)
         self.terminate = config.get("terminate", False)
+        self.breakDoRound = config.get('breakDoRound', 1)
 
         self.hasBuildingPos = config.get('hasBuildingPos', False)
 
@@ -98,3 +99,4 @@ class BotConfig:
         # Scout
         self.enableScout = config.get('enableScout', False)
         self.enableInvestigation = config.get('enableInvestigation', True)
+
