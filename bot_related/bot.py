@@ -1,7 +1,12 @@
 import threading
+from threading import Lock
+import time
 
+from Task import Task
 from bot_related.bot_config import BotConfig
-from bot_related.device_gui_detector import GuiDetector
+from bot_related.device_gui_detector import GuiDetector, GuiName
+
+from file_relative_paths import ImagePathAndProps, VERIFICATION_CLOSE_REFRESH_OK, VERIFICATION_VERIFY_TITLE
 from tasks.Alliance import Alliance
 from tasks.Barbarians import Barbarians
 from tasks.Break import Break
@@ -19,13 +24,15 @@ from tasks.Training import Training
 from tasks.MysteryMerchant import MysteryMerchant
 from tasks.constants import TaskName
 from utils import stop_thread
+import random
 
 DEFAULT_RESOLUTION = {'height': 720, 'width': 1280}
 
 
-class Bot:
+class Bot():
 
     def __init__(self, device, config={}):
+        self.daemon_thread = None
         self.curr_thread = None
         self.device = device
         self.gui = GuiDetector(device)
@@ -51,6 +58,7 @@ class Bot:
         self.config = BotConfig(config)
         self.curr_task = TaskName.BREAK
 
+        self.task = Task(self)
 
         # tasks
         self.restart_task = Restart(self)
@@ -71,33 +79,55 @@ class Bot:
         # Other task
         self.screen_shot_task = ScreenShot(self)
 
+        self.round_count = 0
+
     def start(self, fn):
-        self.curr_thread = threading.Thread(target=fn)
-        self.curr_thread.start()
-        return self.curr_thread
+        if self.daemon_thread is not None and self.daemon_thread.is_alive():
+            stop_thread(self.daemon_thread)
+            print('daemon_thread: {}', self.daemon_thread.is_alive())
+
+        if self.curr_thread is not None and self.curr_thread.is_alive():
+            stop_thread(self.curr_thread)
+            print('curr_thread: {}', self.curr_thread.is_alive())
+        self.daemon(fn)
 
     def stop(self):
-        if self.curr_thread is not None:
+        if self.daemon_thread is not None and self.daemon_thread.is_alive():
+            stop_thread(self.daemon_thread)
+            print('daemon_thread: {}', self.daemon_thread.is_alive())
+
+        if self.curr_thread is not None and self.curr_thread.is_alive():
             stop_thread(self.curr_thread)
-            self.curr_thread = None
-            return True
-        return False
+            print('curr_thread: {}', self.curr_thread.is_alive())
+
 
     def get_city_image(self):
         return self.screen_shot_task.do_city_screen()
 
     def do_task(self, curr_task=TaskName.COLLECTING):
 
-        round_count = 0
+        tasks = [
+            [self.mystery_merchant_task, 'enableMysteryMerchant'],
+            [self.alliance_task, 'allianceAction', 'allianceDoRound'],
+            [self.barbarians_task, 'attackBarbarians'],
+            [self.claim_quests_task, 'claimQuests', 'questDoRound'],
+            [self.claim_vip_task, 'enableVipClaimChest', 'vipDoRound'],
+            [self.collecting_task, 'enableCollecting'],
+            [self.gather_resource_task, 'gatherResource'],
+            [self.materials_task, 'enableMaterialProduce' , 'materialDoRound'],
+            [self.scout_task, 'enableScout'],
+            [self.tavern_task, 'enableTavern'],
+            [self.training, 'enableTraining'],
+        ]
 
         if self.building_pos is None:
             curr_task = TaskName.INIT_BUILDING_POS
 
         while True:
-
+            random.shuffle(tasks)
             # restart
             if curr_task == TaskName.KILL_GAME and self.config.enableStop \
-                    and round_count % self.config.stopDoRound == 0:
+                    and self.round_count % self.config.stopDoRound == 0:
                 curr_task = self.restart_task.do(TaskName.BREAK)
             elif curr_task == TaskName.KILL_GAME:
                 curr_task = TaskName.BREAK
@@ -105,83 +135,50 @@ class Bot:
             # init building position if need
             if not self.config.hasBuildingPos or curr_task == TaskName.INIT_BUILDING_POS:
                 curr_task = self.locate_building_task.do(next_task=TaskName.COLLECTING)
-
-            # break
-            if curr_task == TaskName.BREAK and self.config.enableBreak:
+            elif curr_task == TaskName.BREAK and self.config.enableBreak \
+                    and self.round_count % self.config.breakDoRound == 0:
                 curr_task = self.break_task.do(TaskName.COLLECTING)
             elif curr_task == TaskName.BREAK:
-                curr_task = self.break_task.do_no_wait(TaskName.COLLECTING)
+                curr_task = self.break_task.do_no_wait(TaskName.KILL_GAME)
 
-            # collecting resource
-            if curr_task == TaskName.COLLECTING and self.config.enableCollecting:
-                curr_task = self.collecting_task.do(TaskName.MYSTERY_MERCHANT)
-            elif curr_task == TaskName.COLLECTING:
-                curr_task = TaskName.MYSTERY_MERCHANT
+            for task in tasks:
+                if len(task) == 2:
+                    if getattr(self.config, task[1]):
+                        curr_task = task[0].do()
+                else:
+                    if getattr(self.config, task[1]) and self.round_count % getattr(self.config, task[2]) == 0:
+                        curr_task = task[0].do()
 
-            # Mystery Merchant
-            if curr_task == TaskName.MYSTERY_MERCHANT and self.config.enableMysteryMerchant:
-                curr_task = self.mystery_merchant_task.do(TaskName.VIP_CHEST)
-            elif curr_task == TaskName.MYSTERY_MERCHANT:
-                curr_task = TaskName.VIP_CHEST
-
-            # claim vip chest
-            if curr_task == TaskName.VIP_CHEST and self.config.enableVipClaimChest \
-                    and round_count % self.config.vipDoRound == 0:
-                curr_task = self.claim_vip_task.do(TaskName.CLAIM_QUEST)
-            elif curr_task == TaskName.VIP_CHEST:
-                curr_task = TaskName.CLAIM_QUEST
-
-            # claim quests
-            if curr_task == TaskName.CLAIM_QUEST and self.config.claimQuests \
-                    and round_count % self.config.questDoRound == 0:
-                curr_task = self.claim_quests_task.do(TaskName.ALLIANCE)
-            elif curr_task == TaskName.CLAIM_QUEST:
-                curr_task = TaskName.ALLIANCE
-
-            # alliance
-            if curr_task == TaskName.ALLIANCE and self.config.allianceAction \
-                    and round_count % self.config.allianceDoRound == 0:
-                curr_task = self.alliance_task.do(TaskName.METARIALS)
-            elif curr_task == TaskName.ALLIANCE:
-                curr_task = TaskName.METARIALS
-
-            # material
-            if curr_task == TaskName.METARIALS and self.config.enableMaterialProduce \
-                    and round_count % self.config.materialDoRound == 0:
-                curr_task = self.materials_task.do(TaskName.TAVERN)
-            elif curr_task == TaskName.METARIALS:
-                curr_task = TaskName.TAVERN
-
-            # tavern
-            if curr_task == TaskName.TAVERN and self.config.enableTavern:
-                curr_task = self.tavern_task.do(TaskName.TRAINING)
-            elif curr_task == TaskName.TAVERN:
-                curr_task = TaskName.TRAINING
-
-            # train soldiers
-            if curr_task == TaskName.TRAINING and self.config.enableTraining:
-                curr_task = self.training.do(TaskName.BARBARIANS)
-            elif curr_task == TaskName.TRAINING:
-                curr_task = TaskName.BARBARIANS
-
-            # Attack Barbarians
-            if curr_task == TaskName.BARBARIANS and self.config.attackBarbarians:
-                curr_task = self.barbarians_task.do(next_task=TaskName.GATHER)
-            elif curr_task == TaskName.BARBARIANS:
-                curr_task = TaskName.GATHER
-
-            # gather resource
-            if curr_task == TaskName.GATHER and self.config.gatherResource:
-                curr_task = self.gather_resource_task.do(TaskName.SCOUT)
-            elif curr_task == TaskName.GATHER:
-                curr_task = TaskName.SCOUT
-
-            # scout
-            if curr_task == TaskName.SCOUT and self.config.enableScout:
-                curr_task = self.scout_task.do(TaskName.BREAK)
-            elif curr_task == TaskName.SCOUT:
+            if self.config.enableStop:
+                curr_task = TaskName.KILL_GAME
+            else:
                 curr_task = TaskName.BREAK
 
-            round_count = round_count + 1
+            self.round_count = self.round_count + 1
         return
+
+    def daemon(self, fn):
+        def run():
+            main_thread = threading.Thread(target=fn)
+            self.curr_thread = main_thread
+            main_thread.start()
+
+            while True:
+                if self.daemon_thread is None or not main_thread.is_alive():
+                    break
+                time.sleep(60)
+                found, _, pos = self.gui.   check_any(ImagePathAndProps.VERIFICATION_VERIFY_TITLE_IMAGE_PATH.value)
+                if found:
+                    found, _, pos = self.gui.check_any(ImagePathAndProps.VERIFICATION_CLOSE_REFRESH_OK_BUTTON_IMAGE_PATH.value)
+                    if not found:
+                        stop_thread(main_thread)
+                        time.sleep(1)
+                        main_thread = threading.Thread(target=fn)
+                        self.curr_thread = main_thread
+                        main_thread.start()
+
+        daemon_thread = threading.Thread(target=run)
+        daemon_thread.start()
+        self.daemon_thread = daemon_thread
+
 
