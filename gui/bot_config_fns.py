@@ -24,6 +24,8 @@ restart_checkbox = checkbox_fn_creator('enableStop', 'Auto Restart Game')
 restart_do_round = entry_int_fn_creator('stopDoRound', 'Execute at every', 'round')
 
 # break
+break_do_round = entry_int_fn_creator('breakDoRound', 'Execute at every', 'round')
+terminate_checkbox = checkbox_fn_creator('terminate', 'Terminate when break')
 break_checkbox = checkbox_fn_creator('enableBreak', 'Take break at every end of round')
 
 # Mystery Merchant
@@ -58,7 +60,6 @@ def time_drop_down(app, parent):
     return option, variable
 
 
-terminate_checkbox = checkbox_fn_creator('terminate', 'Terminate when break')
 
 # In city
 collecting_checkbox = checkbox_fn_creator('enableCollecting', 'Collecting resource, troops, and help alliance')
@@ -166,8 +167,8 @@ def resource_ratio(app, parent):
 
 
 bot_config_title_fns = [
-    [restart_checkbox, [restart_do_round]],
-    [break_checkbox, [terminate_checkbox, time_drop_down]],
+    # [restart_checkbox, [restart_do_round]],
+    [break_checkbox, [break_do_round, terminate_checkbox, time_drop_down]],
     [mystery_merchant_checkbox, []],
     [open_free_chest_in_tavern, []],
     [collecting_checkbox, []],
