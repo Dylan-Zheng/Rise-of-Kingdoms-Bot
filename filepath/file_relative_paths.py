@@ -161,14 +161,12 @@ class ImagePathAndProps(Enum):
                                     (1280, 720), (0, 0, 0, 0), 0.80, 25, MERCHANT_BUY_WITH_FOOD]
     HAS_MATCH_QUERY_IMAGE_PATH = ['resource\\has_match_query.png',
                                     (1280, 720), (0, 0, 0, 0), 0.80, 25, HAS_MATCH_QUERY]
+    VERIFICATION_VERIFY_TITLE_IMAGE_PATH = ['resource\\verification_verify_title.png',
+                                             (1280, 720), (0, 0, 0, 0), 0.90, 25, VERIFICATION_VERIFY_TITLE]
 
 class GuiCheckImagePathAndProps(Enum):
-    # VERIFICATION_CLOSE_REFRESH_OK_BUTTON_IMAGE_PATH = ['resource\\verification_close_refresh_ok_button.png',
-    #                                                    (1280, 720), (0, 0, 0, 0), 0.90, 25,
-    #                                                    VERIFICATION_CLOSE_REFRESH_OK]
     VERIFICATION_VERIFY_BUTTON_IMAGE_PATH = ['resource\\verification_verify_button.png',
                                              (1280, 720), (0, 0, 0, 0), 0.90, 25, VERIFICATION_VERIFY]
-
     MAP_BUTTON_IMG_PATH = ['resource\\map_button_0.png',
                            (1280, 720), (10, 602, 113, 709), 0.98, 25, HOME]
     HOME_BUTTON_IMG_PATH = ['resource\\home_button_0.png',
