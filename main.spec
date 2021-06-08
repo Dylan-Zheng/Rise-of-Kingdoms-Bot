@@ -1,10 +1,11 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+
 block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['C:\\Users\\Zi\\PycharmProjects\\RiseOfKingdomsAssistant'],
+             pathex=['C:\\Users\\zhzhe\\Documents\\Projects\\RiseOfKingdomsAssistant'],
              binaries=[],
              datas=[],
              hiddenimports=[],
