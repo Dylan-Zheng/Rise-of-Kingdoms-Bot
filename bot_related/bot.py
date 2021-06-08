@@ -2,11 +2,11 @@ import threading
 from threading import Lock
 import time
 
-from Task import Task
+from tasks.Task import Task
 from bot_related.bot_config import BotConfig
 from bot_related.device_gui_detector import GuiDetector, GuiName
 
-from file_relative_paths import ImagePathAndProps, VERIFICATION_CLOSE_REFRESH_OK, VERIFICATION_VERIFY_TITLE
+from filepath.file_relative_paths import ImagePathAndProps, VERIFICATION_CLOSE_REFRESH_OK, VERIFICATION_VERIFY_TITLE
 from tasks.Alliance import Alliance
 from tasks.Barbarians import Barbarians
 from tasks.Break import Break
