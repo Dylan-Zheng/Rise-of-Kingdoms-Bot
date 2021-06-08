@@ -23,7 +23,7 @@ If you like this project, give me a star or feedback , that is great help for me
 
 ------
 
-**Current Version v1.4.1.052421_beta (5/24/2021):**
+**Current Version v1.4.3.060721_beta (06/07/2021):**
 
 Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/releases/tag/v1.4.3.040221_beta
 
