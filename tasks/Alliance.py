@@ -10,7 +10,7 @@ class Alliance(Task):
     def __init__(self, bot):
         super().__init__(bot)
 
-    def do(self, next_task=TaskName.METARIALS):
+    def do(self, next_task=TaskName.MATERIALS):
         super().set_text(title='Alliance', remove=True)
         alliance_btn_pos = (1030, 670)
         try:
