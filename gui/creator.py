@@ -151,9 +151,8 @@ def load_bot_config(prefix):
 
 
 def write_bot_config(config, prefix):
-    config_json = json.dumps(config.__dict__)
     with open(resource_path(FilePaths.SAVE_FOLDER_PATH.value + "{}_config.json".format(prefix)), 'w') as f:
-        f.write(config_json)
+        json.dump(config.__dict__, f, indent=2)
 
 
 def load_building_pos(prefix):
@@ -168,9 +167,8 @@ def load_building_pos(prefix):
 
 
 def write_building_pos(building_pos, prefix):
-    building_pos_json = json.dumps(building_pos)
     with open(resource_path(FilePaths.SAVE_FOLDER_PATH.value + "{}_building_pos.json".format(prefix)), 'w') as f:
-        f.write(building_pos_json)
+        json.dump(building_pos, f, indent=2)
 
 
 def load_device_config():

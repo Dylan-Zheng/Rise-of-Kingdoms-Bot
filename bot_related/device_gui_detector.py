@@ -242,3 +242,49 @@ class GuiDetector:
         img = cv2.imdecode(np.asarray(self.get_curr_device_screen_img_byte_array(), dtype=np.uint8),
                            cv2.IMREAD_COLOR)
         return img[y0:y1, x0:x1]
+
+    def sunset_canyon_attempts_image_to_string(self):
+        try:
+            # Free attempts
+            x0, y0, x1, y1 = (820, 90, 855, 120)
+            imsch = cv2.imdecode(np.asarray(self.get_curr_device_screen_img_byte_array(), dtype=np.uint8),
+                                 cv2.IMREAD_COLOR)
+            imsch = cv2.cvtColor(imsch, cv2.COLOR_BGR2GRAY)
+            imsch = imsch[y0:y1, x0:x1]
+            resource_image = Image.fromarray(imsch)
+            str = img_to_string(resource_image)
+            free_attempts = int(str.split('/')[0])
+
+            # Tickets
+            x0, y0, x1, y1 = (970, 90, 995, 120)
+            imsch = cv2.imdecode(np.asarray(self.get_curr_device_screen_img_byte_array(), dtype=np.uint8),
+                                 cv2.IMREAD_COLOR)
+            imsch = cv2.cvtColor(imsch, cv2.COLOR_BGR2GRAY)
+            imsch = imsch[y0:y1, x0:x1]
+            resource_image = Image.fromarray(imsch)
+            str = img_to_string(resource_image)
+            ticket_attempts = int(str)
+        except Exception as e:
+            traceback.print_exc()
+            return -1, -1
+        if free_attempts > 99 or ticket_attempts > 99:
+            return -1, -1
+        return free_attempts, ticket_attempts
+
+    def lost_canyon_attempts_image_to_string(self):
+        try:
+            # Free attempts
+            x0, y0, x1, y1 = (800, 90, 840, 120)
+            imsch = cv2.imdecode(np.asarray(self.get_curr_device_screen_img_byte_array(), dtype=np.uint8),
+                                 cv2.IMREAD_COLOR)
+            imsch = cv2.cvtColor(imsch, cv2.COLOR_BGR2GRAY)
+            imsch = imsch[y0:y1, x0:x1]
+            resource_image = Image.fromarray(imsch)
+            str = img_to_string(resource_image)
+            free_attempts = int(str.split('/')[0])
+        except Exception as e:
+            traceback.print_exc()
+            return -1
+        if free_attempts > 99:
+            return -1
+        return free_attempts

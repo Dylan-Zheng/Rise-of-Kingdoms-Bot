@@ -147,7 +147,7 @@ class Task:
                     break
 
         pos_list = None
-        while True:
+        for i in range(0, 1):
             result = self.gui.get_curr_gui_name()
             gui_name, pos = ['UNKNOW', None] if result is None else result
             if gui_name == GuiName.VERIFICATION_VERIFY.name:
@@ -157,6 +157,8 @@ class Task:
             #     pos_list = self.pass_verification()
             else:
                 return result
+        if not pos_list:
+            raise Exception("Could not pass verification")
 
     def pass_verification(self):
         pos_list = None
@@ -303,15 +305,19 @@ class Task:
 
         if title in kwargs:
             self.bot.text[title] = kwargs[title]
+            print(kwargs[title])
 
         if replace in kwargs:
             self.bot.text[text_list][kwargs[index]] = dt_string + " " + kwargs[replace].lower()
+            print(f"\t* {dt_string} {kwargs[replace].lower()}")
 
         if insert in kwargs:
             self.bot.text[text_list].insert(kwargs.get(index, 0), dt_string + " " + kwargs[insert].lower())
+            print(f"\t* {dt_string} {kwargs[insert].lower()}")
 
         if append in kwargs:
             self.bot.text[text_list].append(dt_string + " " + kwargs[append].lower())
+            print(f"\t* {dt_string} {kwargs[append].lower()}")
 
         if remove in kwargs and kwargs.get(remove, False):
             self.bot.text[text_list].clear()

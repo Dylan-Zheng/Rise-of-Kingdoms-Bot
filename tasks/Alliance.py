@@ -10,18 +10,23 @@ class Alliance(Task):
     def __init__(self, bot):
         super().__init__(bot)
 
-    def do(self, next_task=TaskName.METARIALS):
+    def do(self, next_task=TaskName.MATERIALS):
         super().set_text(title='Alliance', remove=True)
         alliance_btn_pos = (1030, 670)
         try:
-            for name in ['GIFTS', 'TERRITORY', 'TECHNOLOGY']:
+            for name in ['HELP', 'GIFTS', 'TERRITORY', 'TECHNOLOGY']:
                 super().set_text(insert='Open alliance')
                 super().back_to_home_gui()
                 super().menu_should_open(True)
                 x, y = alliance_btn_pos
                 super().tap(x, y, 3)
 
-                if name == 'GIFTS':
+                if name == 'HELP':
+                    super().set_text(insert='Help Alliance')
+                    super().tap(1020, 400)  # enter the help page
+                    super().tap(650, 650)  # tap the help button if present, otherwise it will tap on empty space
+
+                elif name == 'GIFTS':
                     super().set_text(insert='Claim gift')
                     gifts_pos = (885, 560)
                     rate_pos = (930, 205)

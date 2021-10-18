@@ -1,7 +1,10 @@
 import threading
+import traceback
 from threading import Lock
 import time
 
+from tasks.Items import Items
+from tasks.LostCanyon import LostCanyon
 from tasks.Task import Task
 from bot_related.bot_config import BotConfig
 from bot_related.device_gui_detector import GuiDetector, GuiName
@@ -22,6 +25,7 @@ from tasks.ScreenShot import ScreenShot
 from tasks.Tavern import Tavern
 from tasks.Training import Training
 from tasks.MysteryMerchant import MysteryMerchant
+from tasks.SunsetCanyon import SunsetCanyon
 from tasks.constants import TaskName
 from utils import stop_thread
 import random
@@ -75,6 +79,9 @@ class Bot():
         self.scout_task = Scout(self)
         self.tavern_task = Tavern(self)
         self.training = Training(self)
+        self.sunset_canyon = SunsetCanyon(self)
+        self.lost_canyon = LostCanyon(self)
+        self.items_task = Items(self)
 
         # Other task
         self.screen_shot_task = ScreenShot(self)
@@ -118,12 +125,25 @@ class Bot():
             [self.scout_task, 'enableScout'],
             [self.tavern_task, 'enableTavern'],
             [self.training, 'enableTraining'],
+            [self.sunset_canyon, 'enableSunsetCanyon'],
+            [self.lost_canyon, 'enableLostCanyon'],
+            [self.items_task, 'useItems']
         ]
 
         if self.building_pos is None:
             curr_task = TaskName.INIT_BUILDING_POS
+        else:
+            self.config.hasBuildingPos = True
 
         while True:
+            # Check verification before every task
+            try:
+                self.task.get_curr_gui_name()
+            except Exception as e:
+                traceback.print_exc()
+                self.task.set_text(insert='cannot pass verification - stopping bot now')
+                self.stop()
+
             random.shuffle(tasks)
             # restart
             if curr_task == TaskName.KILL_GAME and self.config.enableStop \
@@ -134,6 +154,7 @@ class Bot():
 
             # init building position if need
             if not self.config.hasBuildingPos or curr_task == TaskName.INIT_BUILDING_POS:
+                self.task.set_text(insert='building positions not saved - recalculating')
                 curr_task = self.locate_building_task.do(next_task=TaskName.COLLECTING)
             elif curr_task == TaskName.BREAK and self.config.enableBreak \
                     and self.round_count % self.config.breakDoRound == 0:
@@ -180,5 +201,3 @@ class Bot():
         daemon_thread = threading.Thread(target=run)
         daemon_thread.start()
         self.daemon_thread = daemon_thread
-
-

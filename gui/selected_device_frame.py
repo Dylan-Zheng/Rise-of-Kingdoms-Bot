@@ -52,7 +52,7 @@ class SelectedDeviceFrame(Frame):
         frame.rowconfigure(1, weight=5)
         frame.rowconfigure(2, weight=height - 10)
 
-        dl = Label(frame, text=self.device.serial, width=width, height=5, bg='white')
+        dl = Label(frame, text=self.device.save_file_prefix, width=width, height=5, bg='white')
         title = Label(frame, text="Task: None", width=width, height=5)
         text = Text(frame, width=width, height=height - 30)
         title.config(bg='white', anchor=W, justify=LEFT)

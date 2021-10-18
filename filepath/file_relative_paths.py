@@ -71,7 +71,7 @@ class ImagePathAndProps(Enum):
     INCREASING_BUTTON_IMAGE_PATH = ['resource\\increasing_button.png',
                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, INCREASING]
     LOCK_BUTTON_IMAGE_PATH = ['resource\\lock_button.png',
-                                    (1280, 720), (0, 0, 0, 0), 0.90, 25, LOCK]
+                              (1280, 720), (0, 0, 0, 0), 0.90, 25, LOCK]
     RESOURCE_SEARCH_BUTTON_IMAGE_PATH = ['resource\\resource_search_button.png',
                                          (1280, 720), (0, 0, 0, 0), 0.90, 25, RESOURCE_SEARCH]
     RESOURCE_GATHER_BUTTON_IMAGE_PATH = ['resource\\resource_gather_button.png',
@@ -102,67 +102,94 @@ class ImagePathAndProps(Enum):
     CHEST_CONFIRM_BUTTON_IMAGE_PATH = ['resource\\chest_confirm_button.png',
                                        (1280, 720), (0, 0, 0, 0), 0.90, 25, CHEST_CONFIRM]
     ATTACK_BUTTON_POS_IMAGE_PATH = ['resource\\attack_button.png',
-                                       (1280, 720), (0, 0, 0, 0), 0.90, 25, ATTACK_BUTTON]
+                                    (1280, 720), (0, 0, 0, 0), 0.90, 25, ATTACK_BUTTON]
     HOLD_POS_CHECKED_IMAGE_PATH = ['resource\\hold_posistion_checked.png',
-                                    (1280, 720), (0, 0, 0, 0), 0.90, 25, HOLD_POS_CHECKED]
+                                   (1280, 720), (0, 0, 0, 0), 0.90, 25, HOLD_POS_CHECKED]
     HOLD_POS_UNCHECK_IMAGE_PATH = ['resource\\hold_position_unchecked.png',
                                    (1280, 720), (0, 0, 0, 0), 0.90, 25, HOLD_POS_UNCHECK]
     UNSELECT_BLUE_ONE_SAVE_BUTTON_IMAGE_PATH = ['resource\\unselect_save_blue_one.png',
-                                   (1280, 720), (0, 0, 0, 0), 0.95, 25,  UNSELECT_BLUE_ONE]
+                                                (1280, 720), (0, 0, 0, 0), 0.95, 25, UNSELECT_BLUE_ONE]
     SELECTED_BLUE_ONE_SAVE_BUTTON_IMAGE_PATH = ['resource\\selected_save_blue_one.png',
                                                 (1280, 720), (0, 0, 0, 0), 0.95, 25, SELECTED_BLUE_ONE]
     SAVE_SWITCH_BUTTON_IMAGE_PATH = ['resource\\switch_save.png',
-                                                (1280, 720), (0, 0, 0, 0), 0.90, 25, SAVE_SWITCH]
+                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, SAVE_SWITCH]
     VICTORY_MAIL_IMAGE_PATH = ['resource\\victory_mail.png',
-                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, VICTORY_MAIL]
+                               (1280, 720), (0, 0, 0, 0), 0.90, 25, VICTORY_MAIL]
     DEFEAT_MAIL_IMAGE_PATH = ['resource\\defeat_mail.png',
-                               (1280, 720), (0, 0, 0, 0), 0.90, 25, DEFEAT_MAIL]
+                              (1280, 720), (0, 0, 0, 0), 0.90, 25, DEFEAT_MAIL]
     RETURN_BUTTON_IMAGE_PATH = ['resource\\return_button.png',
-                              (1280, 720), (0, 0, 0, 0), 0.90, 25, RETURN_BUTTON]
+                                (1280, 720), (0, 0, 0, 0), 0.90, 25, RETURN_BUTTON]
     HOLD_ICON_IMAGE_PATH = ['resource\\hold_icon.png',
-                              (1280, 720), (0, 0, 0, 0), 0.90, 25, HOLD_ICON]
+                            (1280, 720), (0, 0, 0, 0), 0.90, 25, HOLD_ICON]
     HOLD_ICON_SMALL_IMAGE_PATH = ['resource\\hold_icon_small.png',
-                              (1280, 720), (0, 0, 0, 0), 0.90, 25, HOLD_ICON_SMALL]
+                                  (1280, 720), (0, 0, 0, 0), 0.90, 25, HOLD_ICON_SMALL]
     MARCH_BAR_IMAGE_PATH = ['resource\\march_bar.png',
-                              (1280, 720), (0, 0, 0, 0), 0.90, 25, MARCH_BAR]
+                            (1280, 720), (0, 0, 0, 0), 0.90, 25, MARCH_BAR]
     HEAL_ICON_IMAGE_PATH = ['resource\\heal_icon.png',
-                              (1280, 720), (0, 0, 0, 0), 0.80, 25, HEAL_ICON]
+                            (1280, 720), (0, 0, 0, 0), 0.80, 25, HEAL_ICON]
     DAILY_AP_CLAIM_BUTTON_IMAGE_PATH = ['resource\\daily_ap_claim.png',
-                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, DAILY_AP_CLAIM]
+                                        (1280, 720), (0, 0, 0, 0), 0.90, 25, DAILY_AP_CLAIM]
     USE_AP_BUTTON_IMAGE_PATH = ['resource\\use_ap.png',
-                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, USE_AP]
+                                (1280, 720), (0, 0, 0, 0), 0.90, 25, USE_AP]
     SCOUT_BUTTON_IMAGE_PATH = ['resource\\scout_button.png',
-                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, SCOUT_BUTTON]
+                               (1280, 720), (0, 0, 0, 0), 0.90, 25, SCOUT_BUTTON]
     SCOUT_EXPLORE_BUTTON_IMAGE_PATH = ['resource\\explore_button.png',
-                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, EXPLORE_BUTTON]
+                                       (1280, 720), (0, 0, 0, 0), 0.90, 25, EXPLORE_BUTTON]
     SCOUT_EXPLORE2_BUTTON_IMAGE_PATH = ['resource\\explore_button2.png',
-                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, EXPLORE_BUTTON2]
+                                        (1280, 720), (0, 0, 0, 0), 0.90, 25, EXPLORE_BUTTON2]
     SCOUT_SEND_BUTTON_IMAGE_PATH = ['resource\\scout_send_button.png',
-                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, SEND_BUTTON]
+                                    (1280, 720), (0, 0, 0, 0), 0.90, 25, SEND_BUTTON]
     MAIL_EXPLORATION_REPORT_IMAGE_PATH = ['resource\\mail_exploration_report.png',
-                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, MAIL_EXPLORATION_REPORT]
+                                          (1280, 720), (0, 0, 0, 0), 0.90, 25, MAIL_EXPLORATION_REPORT]
     MAIL_SCOUT_BUTTON_IMAGE_PATH = ['resource\\mail_scout_button.png',
-                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, MAIL_SCOUT_BUTTON]
+                                    (1280, 720), (0, 0, 0, 0), 0.90, 25, MAIL_SCOUT_BUTTON]
     INVESTIGATE_BUTTON_IMAGE_PATH = ['resource\\investigate_button.png',
                                      (1280, 720), (0, 0, 0, 0), 0.90, 25, INVESTIGATE_BUTTON]
     GREAT_BUTTON_IMAGE_PATH = ['resource\\great_button.png',
-                                     (1280, 720), (0, 0, 0, 0), 0.90, 25, GREAT_BUTTON]
+                               (1280, 720), (0, 0, 0, 0), 0.90, 25, GREAT_BUTTON]
     SCOUT_IDLE_ICON_IMAGE_PATH = ['resource\\scout_idle_icon.png',
-                                     (1280, 720), (0, 0, 0, 0), 0.80, 25, IDLE_ICON]
+                                  (1280, 720), (0, 0, 0, 0), 0.80, 25, IDLE_ICON]
     SCOUT_ZZ_ICON_IMAGE_PATH = ['resource\\scout_zz_icon.png',
-                                     (1280, 720), (0, 0, 0, 0), 0.80, 25, ZZ_ICON]
+                                (1280, 720), (0, 0, 0, 0), 0.80, 25, ZZ_ICON]
     MERCHANT_ICON_IMAGE_PATH = ['resource\\merchant_icon.png',
-                                     (1280, 720), (0, 0, 0, 0), 0.80, 25, MERCHANT_ICON]
+                                (1280, 720), (0, 0, 0, 0), 0.80, 25, MERCHANT_ICON]
     MERCHANT_FREE_BTN_IMAGE_PATH = ['resource\\merchant_free_btn.png',
-                                     (1280, 720), (0, 0, 0, 0), 0.80, 25, MERCHANT_FREE_BTN]
+                                    (1280, 720), (0, 0, 0, 0), 0.80, 25, MERCHANT_FREE_BTN]
     MERCHANT_BUY_WITH_WOOD_IMAGE_PATH = ['resource\\merchant_buy_with_wood.png',
-                                    (1280, 720), (0, 0, 0, 0), 0.80, 25, MERCHANT_BUY_WITH_WOOD]
+                                         (1280, 720), (0, 0, 0, 0), 0.80, 25, MERCHANT_BUY_WITH_WOOD]
     MERCHANT_BUY_WITH_FOOD_IMAGE_PATH = ['resource\\merchant_buy_with_food.png',
-                                    (1280, 720), (0, 0, 0, 0), 0.80, 25, MERCHANT_BUY_WITH_FOOD]
+                                         (1280, 720), (0, 0, 0, 0), 0.80, 25, MERCHANT_BUY_WITH_FOOD]
     HAS_MATCH_QUERY_IMAGE_PATH = ['resource\\has_match_query.png',
-                                    (1280, 720), (0, 0, 0, 0), 0.80, 25, HAS_MATCH_QUERY]
+                                  (1280, 720), (0, 0, 0, 0), 0.80, 25, HAS_MATCH_QUERY]
     VERIFICATION_VERIFY_TITLE_IMAGE_PATH = ['resource\\verification_verify_title.png',
-                                             (1280, 720), (0, 0, 0, 0), 0.90, 25, VERIFICATION_VERIFY_TITLE]
+                                            (1280, 720), (0, 0, 0, 0), 0.90, 25, VERIFICATION_VERIFY_TITLE]
+    SUNSET_CANYON_IMAGE_PATH = ['resource\\sunset_canyon.png',
+                                (1280, 720), (0, 0, 0, 0), 0.90, 25, SUNSET_CANYON_BTN]
+    SUNSET_CANYON_OK_IMAGE_PATH = ['resource\\sunset_canyon_ok.png',
+                                   (1280, 720), (0, 0, 0, 0), 0.90, 25, SUNSET_CANYON_OK_BTN]
+    LOST_CANYON_IMAGE_PATH = ['resource\\lost_canyon.png',
+                              (1280, 720), (0, 0, 0, 0), 0.90, 25, SUNSET_CANYON_BTN]
+    LOST_CANYON_OK_IMAGE_PATH = ['resource\\lost_canyon_ok.png',
+                                 (1280, 720), (0, 0, 0, 0), 0.90, 25, LOST_CANYON_OK_BTN]
+    SKIP_BATTLE_CHECKED_IMAGE_PATH = ['resource\\skip_battle_checked.png',
+                                      (1280, 720), (0, 0, 0, 0), 0.90, 25, SKIP_BATTLE_CHECKED]
+    ITEM_VIP1_IMAGE_PATH = ['resource\\items\\resources\\vip1.png',
+                            (1280, 720), (0, 0, 0, 0), 0.90, 25, ITEM_VIP1]
+    ITEM_VIP2_IMAGE_PATH = ['resource\\items\\resources\\vip2.png',
+                            (1280, 720), (0, 0, 0, 0), 0.90, 25, ITEM_VIP2]
+    ITEM_GEMS1_IMAGE_PATH = ['resource\\items\\resources\\gems1.png',
+                             (1280, 720), (0, 0, 0, 0), 0.90, 25, ITEM_GEMS1]
+    ITEM_GEMS2_IMAGE_PATH = ['resource\\items\\resources\\gems2.png',
+                             (1280, 720), (0, 0, 0, 0), 0.90, 25, ITEM_GEMS2]
+    ITEM_GEMS3_IMAGE_PATH = ['resource\\items\\resources\\gems3.png',
+                             (1280, 720), (0, 0, 0, 0), 0.90, 25, ITEM_GEMS3]
+    ITEM_RESOURCE_PACK1_IMAGE_PATH = ['resource\\items\\resources\\resource_pack1.png',
+                                      (1280, 720), (0, 0, 0, 0), 0.90, 25, ITEM_RESOURCE_PACK1]
+    ITEM_EXCESS_RESOURCE_PROMPT_YES_IMAGE_PATH = ['resource\\items\\resources\\excess_resource_prompt_yes.png',
+                                                  (1280, 720), (0, 0, 0, 0), 0.90, 25, ITEM_EXCESS_RESOURCE_PROMPT_YES]
+    ITEM_EXCESS_RESOURCE_PROMPT_NO_IMAGE_PATH = ['resource\\items\\resources\\excess_resource_prompt_no.png',
+                                                 (1280, 720), (0, 0, 0, 0), 0.90, 25, ITEM_EXCESS_RESOURCE_PROMPT_NO]
+
 
 class GuiCheckImagePathAndProps(Enum):
     VERIFICATION_VERIFY_BUTTON_IMAGE_PATH = ['resource\\verification_verify_button.png',

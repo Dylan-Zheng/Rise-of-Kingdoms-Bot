@@ -123,6 +123,14 @@ hold_one_query_space_checkbox = checkbox_fn_creator('holdOneQuerySpace', 'Hold s
 enable_scout_checkbox = checkbox_fn_creator('enableScout', 'Enable explore')
 enable_Investigation_checkbox = checkbox_fn_creator('enableInvestigation', 'Investigate Cave, Village')
 
+enable_sunset_canyon_checkbox = checkbox_fn_creator('enableSunsetCanyon', 'Enable Sunset Canyon')
+enable_lost_canyon_checkbox = checkbox_fn_creator('enableLostCanyon', 'Enable Lost Canyon')
+
+use_items = checkbox_fn_creator('useItems', 'Use Items')
+use_items_vip = checkbox_fn_creator('useItemsVip', 'Use VIP Points')
+use_items_gems = checkbox_fn_creator('useItemsGems', 'Use Gem Items')
+use_items_daily_rss = checkbox_fn_creator('useItemsDailyRss', 'Use 5 Level1 Resource Packs for Daily Quest')
+
 
 def resource_ratio(app, parent):
     label_texts = ['Food:', 'Wood:', 'Stone:', 'Gold:']
@@ -187,7 +195,10 @@ bot_config_title_fns = [
                                   number_of_attack_entry,
                                   timeout_entry]],
     [gather_resource_checkbox, [use_gathering_boosts, hold_one_query_space_checkbox, resource_ratio, resource_no_secondery_commander]],
-    [enable_scout_checkbox, [enable_Investigation_checkbox]]
+    [enable_scout_checkbox, [enable_Investigation_checkbox]],
+    [enable_sunset_canyon_checkbox, []],
+    [enable_lost_canyon_checkbox, []],
+    [use_items, [use_items_vip, use_items_gems, use_items_daily_rss]]
 ]
 
 
