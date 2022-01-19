@@ -10,7 +10,7 @@ class Alliance(Task):
     def __init__(self, bot):
         super().__init__(bot)
 
-    def do(self, next_task=TaskName.METARIALS):
+    def do(self, next_task=TaskName.MATERIALS):
         super().set_text(title='Alliance', remove=True)
         alliance_btn_pos = (1030, 670)
         try:
@@ -24,16 +24,16 @@ class Alliance(Task):
                 if name == 'GIFTS':
                     super().set_text(insert='Claim gift')
                     gifts_pos = (885, 560)
-                    rate_pos = (930, 205)
+                    rare_pos = (930, 205)
                     normal_pos = (670, 205)
                     claim_all_pos = (1110, 205)
                     treasure = (330, 410)
                     x, y = gifts_pos
                     super().tap(x, y, 2)
 
-                    # collecting rate gifts
-                    super().set_text(insert='Claim rate gift')
-                    x, y = rate_pos
+                    # collecting rare gifts
+                    super().set_text(insert='Claim rare gift')
+                    x, y = rare_pos
                     super().tap(x, y, 1)
                     for i in range(20):
                         _, _, pos = self.gui.check_any(ImagePathAndProps.GIFTS_CLAIM_BUTTON_IMAGE_PATH.value)

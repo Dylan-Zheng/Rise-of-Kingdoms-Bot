@@ -45,7 +45,7 @@ class TaskName(Enum):
     TRAINING = 4
     GATHER = 5
     ALLIANCE = 6
-    METARIALS = 7
+    MATERIALS = 7
     TAVERN = 8
     VIP_CHEST = 9
     BARBARIANS = 10
