@@ -2,7 +2,6 @@
 ![forks](https://img.shields.io/github/forks/Dylan-Zheng/Rise-of-Kingdoms-Bot)
 ![stars](https://img.shields.io/github/stars/Dylan-Zheng/Rise-of-Kingdoms-Bot)
 ![lincense](https://img.shields.io/github/license/Dylan-Zheng/Rise-of-Kingdoms-Bot)
-#### I‘m apology to any who still using this bot, I'm not longer develop this project
 
 # Rise of Kingdom Bot
 
@@ -19,11 +18,14 @@ If you don't want to set up by yourself, there is executable version for windows
 
 - Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/releases/
 
+
+If you like this project, give me a star or feedback , that is great help for me. **:smile:**
+
 ------
 
-**Current Version v1.4.3.060721_beta (06/07/2021):**
+**Current Version v1.4.1.052421_beta (5/24/2021):**
 
-Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/releases/tag/v1.4.3.060721_beta
+Link: https://github.com/Dylan-Zheng/Rise-of-Kingdoms-Bot/releases/tag/v1.4.3.040221_beta
 
 **Update:**
 

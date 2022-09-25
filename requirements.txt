@@ -1,0 +1,7 @@
+opencv-python
+pytesseract
+numpy
+pillow
+pure-python-adb
+requests
+requests-toolbelt

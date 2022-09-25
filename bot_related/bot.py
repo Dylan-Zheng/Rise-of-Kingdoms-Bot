@@ -2,7 +2,7 @@ import threading
 from threading import Lock
 import time
 
-from tasks.Task import Task
+from tasks.Task import *
 from bot_related.bot_config import BotConfig
 from bot_related.device_gui_detector import GuiDetector, GuiName
 
