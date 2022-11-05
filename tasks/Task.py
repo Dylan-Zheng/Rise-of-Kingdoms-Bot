@@ -277,6 +277,13 @@ class Task:
         str = self.device.shell(cmd)
         time.sleep(sleep_time)
 
+
+    # Input some value
+    def input(self, val, sleep_time=0.1):
+        cmd = 'input text {}'.format(val)
+        str = self.device.shell(cmd)
+        time.sleep(sleep_time)
+
     # edit by seashell-freya, github: https://github.com/seashell-freya
     def isRoKRunning(self):
         cmd = 'dumpsys window windows | grep mCurrentFocus'

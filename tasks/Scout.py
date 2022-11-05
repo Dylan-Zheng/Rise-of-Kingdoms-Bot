@@ -1,4 +1,5 @@
 import traceback
+import time
 
 from filepath.file_relative_paths import ImagePathAndProps
 from tasks.constants import TaskName, BuildingNames
@@ -11,12 +12,54 @@ class Scout(Task):
         with open("resource/cavelist.txt") as file:
             self.lines = [line.rstrip() for line in file]
 
+    def click_on_cave(self):
+        idx = 0
+        result_list = self.gui.find_all_image_props(
+                        ImagePathAndProps.CAVE_IMG_PATH.value
+                    )
+        result_list.sort(key=lambda result: result['result'][1])
+        print(len(result_list))
+        if idx < len(result_list):
+            x, y = result_list[idx]['result']
+            print(x,y)
+            self.tap(x, y, 2)
+    
+    def goto_cave(self, cx, cy):
+        coord = {
+            "magifier" : (440, 22),
+            "cavexinput": (608, 145),
+            "caveyinput" : (762, 145),
+            "gotocave" : (888, 145)
+        }
+        #coord = [(440, 22), (608, 145), (762, 145), (888, 145)]
+        x, y = coord["magifier"]
+        self.tap(x, y, 2)
+        x, y = coord["cavexinput"]
+        self.tap(x, y, 2)
+        self.input(cx, 2)
+        self.tap(x, y, 2)
+        x, y = coord["caveyinput"]
+        self.tap(x, y, 2)
+        self.input(cy, 2)
+        self.tap(x, y, 2)
+        x, y = coord["gotocave"]
+        self.tap(x, y, 2)
+
+
     def do(self, next_task=TaskName.BREAK):
+        coord_input_pos = (60, 540)
+        coord_x_pos = ()
+        coord_y_pos = ()
+        self.back_to_map_gui()
         try:
             self.set_text(title='Auto Scout')
             for line in self.lines:
                 cx, cy, ctype = line.split(",")
                 self.set_text(insert = line)
+                self.back_to_map_gui()
+                self.goto_cave(cx, cy)
+                self.click_on_cave()
+                time.sleep(10)
             return next_task
         except Exception as e:
             traceback.print_exc()
