@@ -8,20 +8,8 @@ from tasks.Task import Task
 class Scout(Task):
     def __init__(self, bot):
         super().__init__(bot)
-        with open("resource/cavelist.txt") as file:
-            self.lines = [line.rstrip() for line in file]
 
     def do(self, next_task=TaskName.BREAK):
-        try:
-            self.set_text(title='Auto Scout')
-            for line in self.lines:
-                cx, cy, ctype = line.split(",")
-                self.set_text(insert = line)
-            return next_task
-        except Exception as e:
-            traceback.print_exc()
-            return next_task
-
 
         try:
             self.set_text(title='Auto Scout')
