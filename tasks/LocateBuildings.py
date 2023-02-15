@@ -15,7 +15,8 @@ class LocateBuilding(Task):
         # screen range x0 250, x1 950, y0 95, y1 615
 
     def do(self, next_task=TaskName.COLLECTING):
-
+        self.bot.config.hasBuildingPos = True
+        return next_task
         try:
             super().set_text(title='Init Building Position', remove=True)
             super().set_text(insert='progress: 0%', index=0)

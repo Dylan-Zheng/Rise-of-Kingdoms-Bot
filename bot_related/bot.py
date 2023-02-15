@@ -14,6 +14,7 @@ from tasks.ClaimQuests import ClaimQuests
 from tasks.ClaimVip import ClaimVip
 from tasks.Collecting import Collecting
 from tasks.GatherResource import GatherResource
+from tasks.GatherGem import GatherGem
 from tasks.LocateBuildings import LocateBuilding
 from tasks.Materials import Materials
 from tasks.Restart import Restart
@@ -70,6 +71,7 @@ class Bot():
         self.claim_vip_task = ClaimVip(self)
         self.collecting_task = Collecting(self)
         self.gather_resource_task = GatherResource(self)
+        self.gather_gem_task = GatherGem(self)
         self.locate_building_task = LocateBuilding(self)
         self.materials_task = Materials(self)
         self.scout_task = Scout(self)
@@ -114,12 +116,17 @@ class Bot():
             [self.claim_vip_task, 'enableVipClaimChest', 'vipDoRound'],
             [self.collecting_task, 'enableCollecting'],
             [self.gather_resource_task, 'gatherResource'],
+            [self.gather_gem_task,'gatherGem'],
             [self.materials_task, 'enableMaterialProduce' , 'materialDoRound'],
             [self.scout_task, 'enableScout'],
             [self.tavern_task, 'enableTavern'],
             [self.training, 'enableTraining'],
         ]
-
+        """
+        tasks = [
+            [self.gather_gem_task,'gatherGem'],
+        ]
+        """
         if self.building_pos is None:
             curr_task = TaskName.INIT_BUILDING_POS
 
@@ -142,6 +149,7 @@ class Bot():
                 curr_task = self.break_task.do_no_wait(TaskName.KILL_GAME)
 
             for task in tasks:
+                print(task[1])
                 if len(task) == 2:
                     if getattr(self.config, task[1]):
                         curr_task = task[0].do()

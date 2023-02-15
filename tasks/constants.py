@@ -59,3 +59,4 @@ class Resource(Enum):
     WOOD = 1
     STONE = 2
     GOLD = 3
+    GEM = 4

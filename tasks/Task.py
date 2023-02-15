@@ -46,6 +46,7 @@ class Task:
                 return
 
     def heal_troops(self):
+        return
         self.set_text(insert='Heal Troops')
         heal_button_pos = (960, 590)
         self.back_to_home_gui()
@@ -264,6 +265,17 @@ class Task:
             self.device.shell(cmd_hold)
             self.device.shell(cmd_swipe)
             time.sleep(duration / 1000 + 0.5 + 0.2)
+
+    def move(self, direction = "up"):
+        cmd_hold = "input swipe 200 300 200 400 200"
+        if direction == "down":
+            cmd_hold = "input swipe 200 300 200 200 200"
+        elif direction == "right":
+            cmd_hold = "input swipe 200 300 100 300 200"
+        elif direction == "left":
+            cmd_hold = "input swipe 200 300 300 300 200"
+        self.device.shell(cmd_hold)
+        time.sleep(0.1)
 
     # long_press_duration is in milliseconds
     def tap(self, x, y, sleep_time=0.1, long_press_duration=-1):

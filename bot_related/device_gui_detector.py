@@ -189,6 +189,38 @@ class GuiDetector:
         title_image.save(resource_path('{}title_x_{}_y_{}.png'.format(FilePaths.TEST_SRC_FOLDER_PATH.value, x0, y0)))
         bot_print("Building <{}> on position [({}, {}), ({}, {})] ".format(s, x0, y0, x1, y1))
 
+    def check_any_cv2(self, *props_list):
+        imsch = cv2.imdecode(np.asarray(self.get_curr_device_screen_img_byte_array(), dtype=np.uint8),
+                             cv2.IMREAD_COLOR)
+        grimsch = cv2.cvtColor(imsch, cv2.COLOR_BGR2GRAY)
+        for props in props_list:
+            path, size, box, threshold, least_diff, gui = props
+            imsrc = cv2.imread(resource_path(path))
+            grimsrc = cv2.cvtColor(imsrc, cv2.COLOR_BGR2GRAY)
+            # cv2.imshow("dst", grimsrc)
+            # cv2.imshow("src", grimsch)
+            # cv2.waitKey(0)
+            # cv2.destroyAllWindows()
+            result = cv2.matchTemplate(grimsrc, grimsch, cv2.TM_CCOEFF_NORMED)
+            # while True:
+            #     loc = np.where(result >= threshold)
+            #     if len(loc[0]) == 0:
+            #         threshold = threshold - 0.05
+            #     else:
+            #         x, y = np.mean(loc[::-1], axis=1)
+            #         return True, gui, (x,y)
+            # _, max_val, _, max_loc = cv2.minMaxLoc(result)
+            # return True, gui, max_loc
+            loc = np.where(result >= threshold)
+            if len(loc[0]) == 0:
+                return False, None, None
+            else:
+                x, y = np.mean(loc[::-1], axis=1)
+                return True, gui, (x,y)
+            _, max_val, _, max_loc = cv2.minMaxLoc(result)
+
+
+
     def check_any(self, *props_list):
         imsch = cv2.imdecode(np.asarray(self.get_curr_device_screen_img_byte_array(), dtype=np.uint8),
                              cv2.IMREAD_COLOR)

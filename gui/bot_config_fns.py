@@ -116,6 +116,9 @@ number_of_attack_entry = entry_int_fn_creator('numberOfAttack', 'Number of Attac
 timeout_entry = entry_int_fn_creator('timeout', 'Timeout (Second):')
 
 gather_resource_checkbox = checkbox_fn_creator('gatherResource', 'Gather resource')
+gather_gem_checkbox = checkbox_fn_creator('gatherGem', 'Gather Gem')
+gather_gem_distance = entry_int_fn_creator('gatherGemDistance', 'Gem distance')
+gather_gem_signal = checkbox_fn_creator('gatherGemSignal', 'Do not have signal')
 resource_no_secondery_commander = checkbox_fn_creator('gatherResourceNoSecondaryCommander', 'Not secondary commader')
 use_gathering_boosts = checkbox_fn_creator('useGatheringBoosts', 'Use gathering boosts')
 hold_one_query_space_checkbox = checkbox_fn_creator('holdOneQuerySpace', 'Hold space for attack barbarians')
@@ -187,9 +190,15 @@ bot_config_title_fns = [
                                   number_of_attack_entry,
                                   timeout_entry]],
     [gather_resource_checkbox, [use_gathering_boosts, hold_one_query_space_checkbox, resource_ratio, resource_no_secondery_commander]],
-    [enable_scout_checkbox, [enable_Investigation_checkbox]]
+    [enable_scout_checkbox, [enable_Investigation_checkbox]],
+    [gather_gem_checkbox,[gather_gem_distance,gather_gem_signal]]
 ]
-
-
+"""
+bot_config_title_fns = [
+    [break_checkbox, [break_do_round, terminate_checkbox, time_drop_down]],
+    [open_free_chest_in_tavern, []],
+    [gather_gem_checkbox,[gather_gem_distance,gather_gem_signal]]
+]
+"""
 def callback(url):
     webbrowser.open_new(url)

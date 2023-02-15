@@ -95,6 +95,9 @@ class BotConfig:
         self.gatherResourceRatioStone = config.get('gatherResourceRatioStone', 1)
         self.gatherResourceRatioGold = config.get('gatherResourceRatioGold', 1)
         self.holdOneQuerySpace = config.get('holdOneQuerySpace', False)
+        self.gatherGem = config.get('gatherGem', True)
+        self.gatherGemDistance = config.get('gatherGemDistance', 50)
+        self.gatherGemSignal = config.get('gatherGemSignal', True)
 
         # Scout
         self.enableScout = config.get('enableScout', False)

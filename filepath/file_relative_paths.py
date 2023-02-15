@@ -32,6 +32,8 @@ class ItemsImageAndProps(Enum):
 class ImagePathAndProps(Enum):
     CAVE_IMG_PATH = ['resource\\cave.png',
                            (1280, 720), (0, 0, 0, 0), 0.98, 25, HOME] 
+    GEM_IMG_PATH = ['resource\\gem.png',
+                            (1280, 720), (0, 0, 0, 0), 0.9, 25, GEM]
     MAP_BUTTON_IMG_PATH = ['resource\\map_button.png',
                            (1280, 720), (10, 602, 113, 709), 0.98, 25, HOME]
     HOME_BUTTON_IMG_PATH = ['resource\\home_button.png',
@@ -110,7 +112,7 @@ class ImagePathAndProps(Enum):
     HOLD_POS_UNCHECK_IMAGE_PATH = ['resource\\hold_position_unchecked.png',
                                    (1280, 720), (0, 0, 0, 0), 0.90, 25, HOLD_POS_UNCHECK]
     UNSELECT_BLUE_ONE_SAVE_BUTTON_IMAGE_PATH = ['resource\\unselect_save_blue_one.png',
-                                   (1280, 720), (0, 0, 0, 0), 0.95, 25,  UNSELECT_BLUE_ONE]
+                                   (1280, 720), (0, 0, 0, 0), 0.90, 25,  UNSELECT_BLUE_ONE]
     SELECTED_BLUE_ONE_SAVE_BUTTON_IMAGE_PATH = ['resource\\selected_save_blue_one.png',
                                                 (1280, 720), (0, 0, 0, 0), 0.95, 25, SELECTED_BLUE_ONE]
     SAVE_SWITCH_BUTTON_IMAGE_PATH = ['resource\\switch_save.png',
