@@ -37,6 +37,9 @@ build/
 adb
 tesseract
 venv
-_pycache_
+_pycache_/
 test_code
 test_screen_caps
+
+### Python cache ###
+*.pyc
