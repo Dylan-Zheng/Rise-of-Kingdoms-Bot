@@ -25,6 +25,7 @@ class GatherGem(Task):
         self.move_time["left"] = 0
         self.move_time["right"] = 0
 
+    # Function to decide what to move next, however it may missed some direction
     def get_next_move(self, allowed_time = 50):
         next_move = "done"
         if self.move_time["up"] >= allowed_time:

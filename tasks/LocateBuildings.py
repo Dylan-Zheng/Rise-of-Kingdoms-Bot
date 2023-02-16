@@ -95,8 +95,8 @@ class LocateBuilding(Task):
             # save building pos to json
             self.bot.config.hasBuildingPos = True
             self.bot.building_pos_update_event(building_pos=self.bot.building_pos,
-                                              prefix=self.device.serial.replace(':', "_"))
-            self.bot.config_update_event(config=self.bot.config, prefix=super().device.serial.replace(':', "_"))
+                                              prefix=self.device.save_file_prefix)
+            self.bot.config_update_event(config=self.bot.config, prefix=super().device.save_file_prefix)
         except Exception as e:
             traceback.print_exc()
             self.bot.config.hasBuildingPos = False

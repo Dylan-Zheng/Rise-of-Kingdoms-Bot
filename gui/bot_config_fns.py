@@ -13,7 +13,7 @@ def integer_entry_validate_cmd_creator(app, attr_name, def_value=0):
             if len(value) > 1 and value[0] == '0':
                 return False
         setattr(app.bot_config, attr_name, int(value if value != '' else str(def_value)))
-        write_bot_config(app.bot_config, app.device.serial.replace(':', "_"))
+        write_bot_config(app.bot_config, app.device.save_file_prefix)
         return True
 
     return validate_cmd
@@ -54,7 +54,7 @@ def time_drop_down(app, parent):
 
     def command(value):
         app.bot_config.breakTime = int(value.replace(' Minute', '')) * 60
-        write_bot_config(app.bot_config, app.device.serial.replace(':', "_"))
+        write_bot_config(app.bot_config, app.device.save_file_prefix)
 
     option = OptionMenu(parent, variable, *options, command=command)
     return option, variable
@@ -154,7 +154,7 @@ def resource_ratio(app, parent):
                     if len(value) > 1 and value[0] == '0':
                         return False
                 setattr(app.bot_config, attr_name, int(value if value != '' else '0'))
-                write_bot_config(app.bot_config, app.device.serial.replace(':', "_"))
+                write_bot_config(app.bot_config, app.device.save_file_prefix)
                 return True
 
             return validate_cmd
