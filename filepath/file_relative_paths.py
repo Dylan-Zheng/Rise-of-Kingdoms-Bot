@@ -31,9 +31,9 @@ class ItemsImageAndProps(Enum):
 
 class ImagePathAndProps(Enum):
     CAVE_IMG_PATH = ['resource\\cave.png',
-                           (1280, 720), (0, 0, 0, 0), 0.98, 25, HOME] 
+                           (1280, 720), (0, 0, 0, 0), 0.98, 25, CAVE] 
     GEM_IMG_PATH = ['resource\\gem.png',
-                            (1280, 720), (0, 0, 0, 0), 0.9, 25, GEM]
+                            (1280, 720), (0, 0, 0, 0), 0.9, 25, GEM_ICO]
     MAP_BUTTON_IMG_PATH = ['resource\\map_button.png',
                            (1280, 720), (10, 602, 113, 709), 0.98, 25, HOME]
     HOME_BUTTON_IMG_PATH = ['resource\\home_button.png',
