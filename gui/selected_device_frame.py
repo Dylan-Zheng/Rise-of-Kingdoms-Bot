@@ -22,8 +22,8 @@ class SelectedDeviceFrame(Frame):
 
         self.bot = Bot(device)
         self.device = device
-        self.bot_config = load_bot_config(device.serial.replace(':', "_"))
-        self.bot_building_pos = load_building_pos(device.serial.replace(':', "_"))
+        self.bot_config = load_bot_config(self.device.save_file_prefix)
+        self.bot_building_pos = load_building_pos(self.device.save_file_prefix)
         self.windows_size = [kwargs['width'], kwargs['height']]
 
         display_frame, self.task_title, self.task_text = self.task_display_frame()
@@ -280,7 +280,7 @@ def building_pos_window(parent):
             parent.bot_building_pos[selected_building['name']] = [pos[0], pos[1]]
             write_building_pos(
                 parent.bot_building_pos,
-                parent.device.serial.replace(':', "_")
+                parent.device.save_file_prefix
             )
             selected_building['label'].config(text='[{}, {}]'.format(pos[0], pos[1]))
             selected_building['name'] = None
