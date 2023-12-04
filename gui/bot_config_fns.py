@@ -174,32 +174,36 @@ def resource_ratio(app, parent):
     return frame, None
 
 
-bot_config_title_fns = [
-    # [restart_checkbox, [restart_do_round]],
-    [break_checkbox, [break_do_round, terminate_checkbox, time_drop_down]],
-    [mystery_merchant_checkbox, []],
-    [open_free_chest_in_tavern, []],
-    [collecting_checkbox, []],
-    [produce_material, [material_do_round]],
-    [daily_vip_point_and_chest, [vip_do_round]],
-    [claim_quest_checkbox, [quest_do_round]],
-    [alliance_action_checkbox, [alliance_do_round]],
-    [training, [train_barracks, train_archery_range, train_stable, train_siege]],
-    [attack_barbarians_checkbox, [hold_position_checkbox,
-                                  heal_troops_checkbox,
-                                  use_daily_ap_checkbox,
-                                  use_normal_ap_checkbox,
-                                  barbarians_base_level_entry,
-                                  barbarians_min_level_entry,
-                                  barbarians_max_level_entry,
-                                  number_of_attack_entry,
-                                  timeout_entry]],
-    [gather_resource_checkbox, [use_gathering_boosts, hold_one_query_space_checkbox, resource_ratio, resource_no_secondery_commander]],
-    [enable_scout_checkbox, [enable_Investigation_checkbox]],
-    [enable_sunset_canyon_checkbox, []],
-    [enable_lost_canyon_checkbox, []],
-    [use_items, [use_items_vip, use_items_gems, use_items_daily_rss]]
-]
+def bot_config_title_fns(bot):
+    return [
+        # [restart_checkbox, [restart_do_round]],
+        [break_checkbox, bot.break_task, [break_do_round, terminate_checkbox, time_drop_down]],
+        [mystery_merchant_checkbox, bot.mystery_merchant_task, []],
+        [open_free_chest_in_tavern, bot.tavern_task, []],
+        [collecting_checkbox, bot.collecting_task, []],
+        [produce_material, bot.materials_task, [material_do_round]],
+        [daily_vip_point_and_chest, bot.claim_vip_task, [vip_do_round]],
+        [claim_quest_checkbox, bot.claim_quests_task, [quest_do_round]],
+        [alliance_action_checkbox, bot.alliance_task, [alliance_do_round]],
+        [training, bot.training_task, [train_barracks, train_archery_range, train_stable, train_siege]],
+        [attack_barbarians_checkbox, bot.barbarians_task, [hold_position_checkbox,
+                                                           heal_troops_checkbox,
+                                                           use_daily_ap_checkbox,
+                                                           use_normal_ap_checkbox,
+                                                           barbarians_base_level_entry,
+                                                           barbarians_min_level_entry,
+                                                           barbarians_max_level_entry,
+                                                           number_of_attack_entry,
+                                                           timeout_entry]],
+        [gather_resource_checkbox, bot.gather_resource_task, [use_gathering_boosts,
+                                                              hold_one_query_space_checkbox,
+                                                              resource_ratio,
+                                                              resource_no_secondery_commander]],
+        [enable_scout_checkbox, bot.scout_task, [enable_Investigation_checkbox]],
+        [enable_sunset_canyon_checkbox, bot.sunset_canyon_task, []],
+        [enable_lost_canyon_checkbox, bot.lost_canyon_task, []],
+        [use_items, bot.items_task, [use_items_vip, use_items_gems, use_items_daily_rss]]
+    ]
 
 
 def callback(url):

@@ -26,13 +26,15 @@ class SelectedDeviceFrame(Frame):
         self.bot_building_pos = load_building_pos(self.device.save_file_prefix)
         self.windows_size = [kwargs['width'], kwargs['height']]
 
-        display_frame, self.task_title, self.task_text = self.task_display_frame()
-        config_frame = self.config_frame()
-        bottom_frame = self.bottom_frame()
+        self.task_run_buttons = set()
 
-        display_frame.grid(row=1, column=0, padx=10, pady=(0, 10), sticky=N + W)
-        config_frame.grid(row=2, column=0, padx=10, sticky=N + W)
-        bottom_frame.grid(row=3, column=0, padx=10, pady=(10, 10), sticky=N + W)
+        self.display_frame, self.task_title, self.task_text = self.task_display_frame()
+        self.config_frame = self.create_config_frame()
+        self.bottom_frame, self.start_button = self.create_bottom_frame()
+
+        self.display_frame.grid(row=1, column=0, padx=10, pady=(0, 10), sticky=N + W)
+        self.config_frame.grid(row=2, column=0, padx=10, sticky=N + W)
+        self.bottom_frame.grid(row=3, column=0, padx=10, pady=(10, 10), sticky=N + W)
 
         # def handle_focus(event):
         #     if event.widget == self.master.master.master and self.building_pos_window is not None:
@@ -62,7 +64,7 @@ class SelectedDeviceFrame(Frame):
         text.grid(row=2, column=0, sticky=N + W)
         return frame, title, text
 
-    def config_frame(self):
+    def create_config_frame(self):
         frame_canvas = LabelFrame(self,
                                   text='Config',
                                   width=self.windows_size[0],
@@ -97,16 +99,18 @@ class SelectedDeviceFrame(Frame):
 
         canvas.create_window((0, 0), window=inner_frame, anchor='nw')
 
-        for i in range(len(atf.bot_config_title_fns)):
-            title_fns, sub_fns = atf.bot_config_title_fns[i]
-            check = section_frame(
+        bot_fns = atf.bot_config_title_fns(self.bot)
+        for i in range(len(bot_fns)):
+            title_fn, bot_task, sub_fns = bot_fns[i]
+            check, task_run_btn = section_frame(
                 self,
                 inner_frame,
-                title_fns,
+                title_fn,
+                bot_task,
                 sub_fns
             )
             check.grid(row=i, column=0, sticky=N + W)
-
+            self.task_run_buttons.add(task_run_btn)
         inner_frame.update_idletasks()
 
         frame_canvas.config(width=self.windows_size[0] - 20, height=self.windows_size[1] - 350)
@@ -115,7 +119,7 @@ class SelectedDeviceFrame(Frame):
 
         return frame_canvas
 
-    def start(self):
+    def start(self, specific_task=None):
         if self.bot_building_pos is None:
             self.bot_config.hasBuildingPos = False
             self.bot_building_pos = {}
@@ -127,6 +131,7 @@ class SelectedDeviceFrame(Frame):
         self.bot.building_pos_update_event = lambda **kw: write_building_pos(kw['building_pos'], kw['prefix'])
         self.bot.config_update_event = lambda **kw: write_bot_config(kw['config'], kw['prefix'])
 
+        self.bot.task_to_run = specific_task
         self.bot.start(self.bot.do_task)
 
     def stop(self):
@@ -134,17 +139,25 @@ class SelectedDeviceFrame(Frame):
         self.task_title.config(text='Task: None')
         self.task_text.delete(1.0, END)
 
-    def bottom_frame(self):
+    def pre_start(self, btn, specific_task=None):
+        self.start(specific_task)
+        btn.config(text='Stop')
+        self.update_all_task_btns(state="disable")
+
+    def pre_stop(self, btn):
+        self.stop()
+        btn.config(text='Start')
+        self.update_all_task_btns(state="normal", text="Run")
+
+    def create_bottom_frame(self):
         frame = Frame(self)
 
         # start/stop
         def on_start_or_stop_click(btn):
             if btn.cget('text') == 'Start':
-                self.start()
-                btn.config(text='Stop')
+                self.pre_start(btn)
             elif btn.cget('text') == 'Stop':
-                self.stop()
-                btn.config(text='Start')
+                self.pre_stop(btn)
             return
 
         start_button = button(frame, on_start_or_stop_click, text='Start')
@@ -158,7 +171,7 @@ class SelectedDeviceFrame(Frame):
         building_pos_button = button(frame, on_building_pos_click, text='Building Pos')
         building_pos_button.grid(row=0, column=1, sticky=N + W)
 
-        return frame
+        return frame, start_button
 
     def on_task_update(self, text):
         title, text_list = text['title'], text['text_list']
@@ -167,8 +180,12 @@ class SelectedDeviceFrame(Frame):
         for t in text_list:
             self.task_text.insert(INSERT, t + '\n')
 
+    def update_all_task_btns(self, **kwargs):
+        for btn in self.task_run_buttons:
+            btn.configure(**kwargs)
 
-def section_frame(app, parent, title_component_fn, sub_component_fns=[], start_row=0, start_column=0):
+
+def section_frame(app, parent, title_component_fn, bot_task, sub_component_fns=[], start_row=0, start_column=0):
     outer_frame = Frame(parent)
     inner_frame = Frame(outer_frame)
 
@@ -181,7 +198,14 @@ def section_frame(app, parent, title_component_fn, sub_component_fns=[], start_r
     title, variable = title_component_fn(app, outer_frame, disable_when_false)
     title.grid(row=start_row, column=start_column, sticky=N + W)
 
-    inner_frame.grid(row=start_row + 1, column=0, padx=30, pady=0, sticky=N + W)
+    def run_btn_fn(btn):
+        btn.config(text="Running")
+        app.pre_start(app.start_button, specific_task=bot_task)
+
+    run_btn = button(outer_frame, run_btn_fn, text="Run")
+    run_btn.grid(row=start_row+1, column=start_column, sticky=N + W)
+
+    inner_frame.grid(row=start_row + 2, column=start_column, padx=30, pady=0, sticky=N + W)
 
     for row in range(len(sub_component_fns)):
         component, _ = sub_component_fns[row](app, inner_frame)
@@ -192,7 +216,7 @@ def section_frame(app, parent, title_component_fn, sub_component_fns=[], start_r
     else:
         enableChildren(inner_frame)
 
-    return outer_frame
+    return outer_frame, run_btn
 
 
 def disableChildren(parent):

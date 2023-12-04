@@ -1,7 +1,5 @@
 from filepath.file_relative_paths import ImagePathAndProps
 from tasks.Task import Task
-import traceback
-
 from tasks.constants import TaskName
 
 
@@ -46,10 +44,14 @@ class LostCanyon(Task):
                     self.set_text(insert='No more attempts left')
                     break
 
-                # Check if skip battle button is checked, if not press it
-                is_check, _, pos = self.gui.check_any(ImagePathAndProps.SKIP_BATTLE_CHECKED_IMAGE_PATH.value)
-                if not is_check:
-                    self.tap(590, 590, 1)
+                # Check if skip battle button is checked, if not press it. Do this 3 times as there are sometimes
+                # random clouds that go over the green check mark
+                for i in range(0, 5):
+                    is_checked, _, pos = self.gui.check_any(ImagePathAndProps.SKIP_BATTLE_CHECKED_IMAGE_PATH.value)
+                    if is_checked:
+                        break
+                    # We did not find the check mark the first time, tap it and check again
+                    self.tap(590, 590, 2)
 
                 # Click OK
                 self.tap(640, 650, 3)

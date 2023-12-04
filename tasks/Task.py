@@ -24,6 +24,7 @@ class Task:
         self.bot = bot
         self.device = bot.device
         self.gui = bot.gui
+        self.running = False
 
     def call_idle_back(self):
         self.set_text(insert='call back idle commander')
