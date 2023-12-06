@@ -1,7 +1,10 @@
 import threading
+import traceback
 from threading import Lock
 import time
 
+from tasks.Items import Items
+from tasks.LostCanyon import LostCanyon
 from tasks.Task import Task
 from bot_related.bot_config import BotConfig
 from bot_related.device_gui_detector import GuiDetector, GuiName
@@ -22,6 +25,7 @@ from tasks.ScreenShot import ScreenShot
 from tasks.Tavern import Tavern
 from tasks.Training import Training
 from tasks.MysteryMerchant import MysteryMerchant
+from tasks.SunsetCanyon import SunsetCanyon
 from tasks.constants import TaskName
 from utils import stop_thread
 import random
@@ -74,7 +78,10 @@ class Bot():
         self.materials_task = Materials(self)
         self.scout_task = Scout(self)
         self.tavern_task = Tavern(self)
-        self.training = Training(self)
+        self.training_task = Training(self)
+        self.sunset_canyon_task = SunsetCanyon(self)
+        self.lost_canyon_task = LostCanyon(self)
+        self.items_task = Items(self)
 
         # Other task
         self.screen_shot_task = ScreenShot(self)
@@ -100,11 +107,15 @@ class Bot():
             stop_thread(self.curr_thread)
             print('curr_thread: {}', self.curr_thread.is_alive())
 
-
     def get_city_image(self):
         return self.screen_shot_task.do_city_screen()
 
     def do_task(self, curr_task=TaskName.COLLECTING):
+        if self.task_to_run:
+            self.task_to_run.do()
+            self.task_to_run.back_to_home_gui()
+            self.task_to_run = None
+            return
 
         tasks = [
             [self.mystery_merchant_task, 'enableMysteryMerchant'],
@@ -117,13 +128,26 @@ class Bot():
             [self.materials_task, 'enableMaterialProduce' , 'materialDoRound'],
             [self.scout_task, 'enableScout'],
             [self.tavern_task, 'enableTavern'],
-            [self.training, 'enableTraining'],
+            [self.training_task, 'enableTraining'],
+            [self.sunset_canyon_task, 'enableSunsetCanyon'],
+            [self.lost_canyon_task, 'enableLostCanyon'],
+            [self.items_task, 'useItems']
         ]
 
         if self.building_pos is None:
             curr_task = TaskName.INIT_BUILDING_POS
+        else:
+            self.config.hasBuildingPos = True
 
         while True:
+            # Check verification before every task
+            try:
+                self.task.get_curr_gui_name()
+            except Exception as e:
+                traceback.print_exc()
+                self.task.set_text(insert='cannot pass verification - stopping bot now')
+                self.stop()
+
             random.shuffle(tasks)
             # restart
             if curr_task == TaskName.KILL_GAME and self.config.enableStop \
@@ -134,6 +158,7 @@ class Bot():
 
             # init building position if need
             if not self.config.hasBuildingPos or curr_task == TaskName.INIT_BUILDING_POS:
+                self.task.set_text(insert='building positions not saved - recalculating')
                 curr_task = self.locate_building_task.do(next_task=TaskName.COLLECTING)
             elif curr_task == TaskName.BREAK and self.config.enableBreak \
                     and self.round_count % self.config.breakDoRound == 0:
@@ -157,6 +182,14 @@ class Bot():
             self.round_count = self.round_count + 1
         return
 
+    def is_verification_open(self):
+        found, _, pos = self.gui.   check_any(ImagePathAndProps.VERIFICATION_VERIFY_TITLE_IMAGE_PATH.value)
+        if found:
+            found, _, pos = self.gui.check_any(ImagePathAndProps.VERIFICATION_CLOSE_REFRESH_OK_BUTTON_IMAGE_PATH.value)
+            if not found:
+                return True
+        return False
+
     def daemon(self, fn):
         def run():
             main_thread = threading.Thread(target=fn)
@@ -167,18 +200,13 @@ class Bot():
                 if self.daemon_thread is None or not main_thread.is_alive():
                     break
                 time.sleep(60)
-                found, _, pos = self.gui.   check_any(ImagePathAndProps.VERIFICATION_VERIFY_TITLE_IMAGE_PATH.value)
-                if found:
-                    found, _, pos = self.gui.check_any(ImagePathAndProps.VERIFICATION_CLOSE_REFRESH_OK_BUTTON_IMAGE_PATH.value)
-                    if not found:
-                        stop_thread(main_thread)
-                        time.sleep(1)
-                        main_thread = threading.Thread(target=fn)
-                        self.curr_thread = main_thread
-                        main_thread.start()
+                if self.is_verification_open():
+                    stop_thread(main_thread)
+                    time.sleep(1)
+                    main_thread = threading.Thread(target=fn)
+                    self.curr_thread = main_thread
+                    main_thread.start()
 
         daemon_thread = threading.Thread(target=run)
         daemon_thread.start()
         self.daemon_thread = daemon_thread
-
-

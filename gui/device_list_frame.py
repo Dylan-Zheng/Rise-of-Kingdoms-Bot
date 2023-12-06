@@ -120,6 +120,8 @@ class DeviceRow(Frame):
 
         def callback():
             device = adb.bridge.get_device(self.ip, self.port)
+            device.name = self.name
+            device.save_file_prefix = f"{self.name}_{device.serial.replace(':', '_')}"
             if device is None:
                 return
             if self.device_frame is None:

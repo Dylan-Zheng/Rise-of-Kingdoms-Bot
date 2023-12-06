@@ -100,3 +100,12 @@ class BotConfig:
         self.enableScout = config.get('enableScout', False)
         self.enableInvestigation = config.get('enableInvestigation', True)
 
+        # Sunset and Lost Canyon
+        self.enableSunsetCanyon = config.get('enableSunsetCanyon', True)
+        self.enableLostCanyon = config.get('enableLostCanyon', True)
+
+        # Items
+        self.useItems = config.get('useItems', False)
+        self.useItemsVip = config.get('useItemsVip', False)
+        self.useItemsGems = config.get('useItemsGems', False)
+        self.useItemsDailyRss = config.get('useItemsDailyRss', False)

@@ -28,7 +28,7 @@ def checkbox_fn_creator(name, text):
 
         def command():
             setattr(app.bot_config, name, variable.get())
-            write_bot_config(app.bot_config, app.device.serial.replace(':', "_"))
+            write_bot_config(app.bot_config, app.device.save_file_prefix)
             on_click(variable.get())
 
         checkbox = Checkbutton(
@@ -60,7 +60,7 @@ def entry_int_fn_creator(name, begin_text, end_text=None):
                     if value[0] == '0':
                         return False
                 setattr(app.bot_config, attr_name, int(value if value != '' else '1'))
-                write_bot_config(app.bot_config, app.device.serial.replace(':', "_"))
+                write_bot_config(app.bot_config, app.device.save_file_prefix)
                 return True
 
             return validate_cmd
@@ -97,7 +97,7 @@ def train_fn_creator(name, train_attr_name, upgrade_attr_name):
 
         def update_command(v):
             setattr(app.bot_config, upgrade_attr_name, option_value_to_num(v))
-            write_bot_config(app.bot_config, app.device.serial.replace(':', "_"))
+            write_bot_config(app.bot_config, app.device.save_file_prefix)
 
         upgrade_label = Label(frame, text='Upgrade Lv.')
         upgrade_variable = StringVar()
@@ -111,7 +111,7 @@ def train_fn_creator(name, train_attr_name, upgrade_attr_name):
 
         def train_command(v):
             setattr(app.bot_config, train_attr_name, option_value_to_num(v))
-            write_bot_config(app.bot_config, app.device.serial.replace(':', "_"))
+            write_bot_config(app.bot_config, app.device.save_file_prefix)
 
         train_label = Label(frame, text='Training Lv.')
         train_variable = StringVar()
@@ -151,9 +151,8 @@ def load_bot_config(prefix):
 
 
 def write_bot_config(config, prefix):
-    config_json = json.dumps(config.__dict__)
     with open(resource_path(FilePaths.SAVE_FOLDER_PATH.value + "{}_config.json".format(prefix)), 'w') as f:
-        f.write(config_json)
+        json.dump(config.__dict__, f, indent=2)
 
 
 def load_building_pos(prefix):
@@ -168,9 +167,8 @@ def load_building_pos(prefix):
 
 
 def write_building_pos(building_pos, prefix):
-    building_pos_json = json.dumps(building_pos)
     with open(resource_path(FilePaths.SAVE_FOLDER_PATH.value + "{}_building_pos.json".format(prefix)), 'w') as f:
-        f.write(building_pos_json)
+        json.dump(building_pos, f, indent=2)
 
 
 def load_device_config():
